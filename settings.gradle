@@ -1,0 +1,2 @@
+include ':APClient'
+project(":APClient").projectDir = file("../APClient")
