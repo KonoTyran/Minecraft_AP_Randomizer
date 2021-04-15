@@ -64,6 +64,7 @@ public class APRandomizer
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
         event.getServer().getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
+        event.getServer().getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);
     }
 
     @SubscribeEvent
