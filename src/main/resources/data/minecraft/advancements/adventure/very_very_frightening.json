@@ -8,9 +8,15 @@
     "title": {
       "translate": "advancements.adventure.very_very_frightening.title"
     },
-    "description": {
-      "translate": "advancements.adventure.very_very_frightening.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.adventure.very_very_frightening.description"
+      },
+      {
+        "color": "#B22222",
+        "text": " (Hard)"
+      }
+    ],
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": false,

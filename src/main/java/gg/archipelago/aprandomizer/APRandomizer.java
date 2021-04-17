@@ -9,6 +9,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,7 +69,11 @@ public class APRandomizer
     }
 
     @SubscribeEvent
-    public void onServerStarting(FMLServerStoppingEvent event) {
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        apClient.close();
+    }
+    @SubscribeEvent
+    public void onServerStopped(FMLServerStoppedEvent event) {
         apClient.close();
     }
 }

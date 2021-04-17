@@ -8,9 +8,15 @@
     "title": {
       "translate": "advancements.adventure.kill_all_mobs.title"
     },
-    "description": {
-      "translate": "advancements.adventure.kill_all_mobs.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.adventure.kill_all_mobs.description"
+      },
+      {
+        "color": "#6A5ACD",
+        "text": " (Post-Game)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

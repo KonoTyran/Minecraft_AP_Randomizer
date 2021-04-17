@@ -7,9 +7,15 @@
     "title": {
       "translate": "advancements.nether.create_full_beacon.title"
     },
-    "description": {
-      "translate": "advancements.nether.create_full_beacon.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.nether.create_full_beacon.description"
+      },
+      {
+        "color": "#B22222",
+        "text": " (Hard)"
+      }
+    ],
     "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,

@@ -8,9 +8,15 @@
     "title": {
       "translate": "advancements.adventure.adventuring_time.title"
     },
-    "description": {
-      "translate": "advancements.adventure.adventuring_time.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.adventure.adventuring_time.description"
+      },
+      {
+        "color": "#FF0000",
+        "text": " (Insane)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

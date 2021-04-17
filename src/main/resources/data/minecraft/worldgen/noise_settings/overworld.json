@@ -16,8 +16,8 @@
         "salt": 0
       },
       "minecraft:ruined_portal": {
-        "spacing": 10,
-        "separation": 5,
+        "spacing": 25,
+        "separation": 15,
         "salt": 34222645
       },
       "minecraft:mansion": {
@@ -61,8 +61,8 @@
         "salt": 10387313
       },
       "minecraft:pillager_outpost": {
-        "spacing": 10,
-        "separation": 2,
+        "spacing": 15,
+        "separation": 8,
         "salt": 165745296
       },
       "minecraft:ocean_ruin": {
@@ -76,8 +76,8 @@
         "salt": 0
       },
       "minecraft:village": {
-        "spacing": 10,
-        "separation": 2,
+        "spacing": 24,
+        "separation": 15,
         "salt": 10387312
       },
       "minecraft:shipwreck": {
@@ -104,7 +104,7 @@
   },
   "noise": {
     "random_density_offset": true,
-    "density_factor": 1.0,
+    "density_factor": 1,
     "density_offset": -0.46875,
     "simplex_surface_noise": true,
     "bottom_slide": {
@@ -118,7 +118,7 @@
     "sampling": {
       "xz_scale": 0.9999999814507745,
       "y_scale": 0.9999999814507745,
-      "xz_factor": 40.0,
+      "xz_factor": 80.0,
       "y_factor": 160.0
     },
     "top_slide": {

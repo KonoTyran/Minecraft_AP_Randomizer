@@ -23,7 +23,6 @@
           1.0
         ]
       },
-      "seed": 0,
       "biomes": [
         {
           "parameters": {
@@ -85,7 +84,6 @@
       },
       "type": "minecraft:multi_noise"
     },
-    "seed": 0,
     "settings": "minecraft:nether",
     "type": "minecraft:noise"
   }

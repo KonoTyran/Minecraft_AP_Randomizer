@@ -7,9 +7,15 @@
     "title": {
       "translate": "advancements.husbandry.balanced_diet.title"
     },
-    "description": {
-      "translate": "advancements.husbandry.balanced_diet.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.husbandry.balanced_diet.description"
+      },
+      {
+        "color": "#B22222",
+        "text": " (Hard)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

@@ -7,9 +7,15 @@
     "title": {
       "translate": "advancements.end.dragon_egg.title"
     },
-    "description": {
-      "translate": "advancements.end.dragon_egg.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.end.dragon_egg.description"
+      },
+      {
+        "color": "#6A5ACD",
+        "text": " (Post-Game)"
+      }
+    ],
     "frame": "goal",
     "show_toast": true,
     "announce_to_chat": false,

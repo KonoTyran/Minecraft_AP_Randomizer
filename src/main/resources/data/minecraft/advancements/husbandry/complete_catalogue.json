@@ -7,9 +7,15 @@
     "title": {
       "translate": "advancements.husbandry.complete_catalogue.title"
     },
-    "description": {
-      "translate": "advancements.husbandry.complete_catalogue.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.husbandry.complete_catalogue.description"
+      },
+      {
+        "color": "#B22222",
+        "text": " (Hard)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

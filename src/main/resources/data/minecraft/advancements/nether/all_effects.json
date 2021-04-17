@@ -7,9 +7,15 @@
     "title": {
       "translate": "advancements.nether.all_effects.title"
     },
-    "description": {
-      "translate": "advancements.nether.all_effects.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.nether.all_effects.description"
+      },
+      {
+        "color": "#FF0000",
+        "text": " (Insane)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

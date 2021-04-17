@@ -53,7 +53,9 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onPrint(String print) {
-        Utils.sendMessageToAll(print);
+        if (!print.startsWith(getAlias())) {
+            Utils.sendMessageToAll(print);
+        }
     }
 
     @Override
@@ -75,7 +77,6 @@ public class APClient extends gg.archipelago.APClient.APClient {
         } else {
             Utils.sendMessageToAll(reason);
         }
-
     }
 
     @Override

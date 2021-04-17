@@ -1,5 +1,5 @@
 {
-  "scale": 0.05,
+  "scale": 0.025,
   "effects": {
     "mood_sound": {
       "sound": "minecraft:ambient.cave",

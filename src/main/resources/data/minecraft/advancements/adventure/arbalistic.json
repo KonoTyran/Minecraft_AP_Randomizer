@@ -8,9 +8,15 @@
     "title": {
       "translate": "advancements.adventure.arbalistic.title"
     },
-    "description": {
-      "translate": "advancements.adventure.arbalistic.description"
-    },
+    "description": [
+      {
+        "translate": "advancements.adventure.arbalistic.description"
+      },
+      {
+        "color": "#B22222",
+        "text": " (Hard)"
+      }
+    ],
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,

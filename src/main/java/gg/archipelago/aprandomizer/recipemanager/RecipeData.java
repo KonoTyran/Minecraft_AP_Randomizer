@@ -20,7 +20,7 @@ public class RecipeData {
         put(45004 , new GroupRecipe(45004, "Enchanting",new String[]{"minecraft:enchanting_table","minecraft:brewing_stand","minecraft:anvil"}));
         put(45005 , new GroupRecipe(45005, "Bucket",new String[]{"minecraft:bucket"}));
         put(45006 , new GroupRecipe(45006, "Flint & Steel",new String[]{"minecraft:flint_and_steel"}));
-        put(45007 , new GroupRecipe(45007, "Bed",new String[]{"minecraft:bed"}));
+        put(45007 , new GroupRecipe(45007, "Bed",new String[]{"minecraft:black_bed","minecraft:blue_bed","minecraft:brown_bed","minecraft:cyan_bed","minecraft:gray_bed","minecraft:green_bed","minecraft:light_blue_bed","minecraft:light_gray_bed","minecraft:lime_bed","minecraft:magenta_bed","minecraft:orange_bed","minecraft:pink_bed","minecraft:purple_bed","minecraft:red_bed","minecraft:white_bed","minecraft:yellow_bed"}));
         put(45008 , new GroupRecipe(45008, "Bottles",new String[]{"minecraft:glass_bottle"}));
         put(45009 , new GroupRecipe(45009, "Shield",new String[]{"minecraft:shield"}));
         put(45010 , new GroupRecipe(45010, "Fishing Rod",new String[]{"minecraft:fishing_rod"}));
