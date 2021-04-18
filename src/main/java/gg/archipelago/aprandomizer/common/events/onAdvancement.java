@@ -6,6 +6,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,8 +28,9 @@ public class onAdvancement {
         AdvancementManager am = APRandomizer.getAdvancementManager();
         if(!am.hasAdvancement(id)) {
             LOGGER.info("{} has gotten the advancement {}",player.getDisplayName().getString(),id);
-            APRandomizer.getServer().getPlayerList().broadcastMessage(new TranslationTextComponent("chat.type.advancement." + advancement.getDisplay().getFrame().getName(), player.getDisplayName(), advancement.getChatComponent()), ChatType.SYSTEM, Util.NIL_UUID);
             am.addAdvancement(am.getAdvancementID(id));
+            APRandomizer.getServer().getPlayerList().broadcastMessage(new TranslationTextComponent("chat.type.advancement." + advancement.getDisplay().getFrame().getName(), player.getDisplayName(), advancement.getChatComponent()).append(new StringTextComponent(" ("+am.getFinishedAmount()+")")), ChatType.SYSTEM, Util.NIL_UUID);
+
             am.syncAdvancement(advancement);
         }
     }

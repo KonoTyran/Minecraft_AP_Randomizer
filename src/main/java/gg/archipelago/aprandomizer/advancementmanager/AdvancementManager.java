@@ -155,4 +155,8 @@ public class AdvancementManager {
             }
         }
     }
+
+    public int getFinishedAmount() {
+        return earnedAdvancements.size();
+    }
 }

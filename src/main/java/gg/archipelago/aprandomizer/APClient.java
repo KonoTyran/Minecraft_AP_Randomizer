@@ -53,7 +53,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onPrint(String print) {
-        if (!print.startsWith(getAlias())) {
+        if (!print.startsWith(getAlias()+":")) {
             Utils.sendMessageToAll(print);
         }
     }
@@ -84,9 +84,8 @@ public class APClient extends gg.archipelago.APClient.APClient {
         String itemName = getDataPackage().getItem(item);
         ITextComponent textItem = new StringTextComponent(itemName).withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)));
         Utils.sendTitle(server, new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
-        if(!APRandomizer.getRecipeManager().grantRecipe(item)) {
-            APRandomizer.getItemManager().giveItem(item);
-        }
+        APRandomizer.getRecipeManager().grantRecipe(item);
+        APRandomizer.getItemManager().giveItem(item);
     }
 
     @Override

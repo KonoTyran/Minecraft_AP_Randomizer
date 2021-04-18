@@ -29,10 +29,14 @@ public class ItemManager {
         put(45019, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SILK_TOUCH,1)));
         put(45020, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SHARPNESS,3)));
         put(45021, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.PIERCING,4)));
-        put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.MOB_LOOTING,2)));
+        put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.MOB_LOOTING,3)));
         put(45023, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.INFINITY_ARROWS,1)));
         put(45024, new ItemInfo(Items.DIAMOND_ORE, 4, null));
         put(45025, new ItemInfo(Items.IRON_ORE, 16, null));
+        put(45029, new ItemInfo(Items.ENDER_PEARL, 3, null));
+        put(45004, new ItemInfo(Items.LAPIS_LAZULI, 4, null));
+        put(45030, new ItemInfo(Items.LAPIS_LAZULI, 4, null));
+        put(45031, new ItemInfo(Items.COOKED_PORKCHOP, 16, null));
     }};
 
     private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>()

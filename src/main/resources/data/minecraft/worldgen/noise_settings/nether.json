@@ -37,12 +37,12 @@
       },
       "minecraft:fortress": {
         "spacing": 10,
-        "separation": 3,
+        "separation": 5,
         "salt": 30084232
       },
       "minecraft:bastion_remnant": {
-        "spacing": 10,
-        "separation": 3,
+        "spacing": 15,
+        "separation": 8,
         "salt": 30084232
       },
       "minecraft:swamp_hut": {
