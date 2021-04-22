@@ -29,6 +29,7 @@ public class APRandomizer
     static private AdvancementManager advancementManager;
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
+    static private final int[] logicVersion = {0, 2};
 
     public APRandomizer() {
         // Register ourselves for server and other game events we are interested in
@@ -53,6 +54,10 @@ public class APRandomizer
 
     public static ItemManager getItemManager() {
         return itemManager;
+    }
+
+    public static int[] getLogicVersion() {
+        return logicVersion;
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

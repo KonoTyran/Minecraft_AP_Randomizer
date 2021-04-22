@@ -25,16 +25,26 @@ public class APClient extends gg.archipelago.APClient.APClient {
     }
 
     @Override
-    public boolean onConnectResult(ConnectionResultEvent event) {
+    public void onConnectResult(ConnectionResultEvent event) {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
-
+            SlotData slotData = event.getSlotData(SlotData.class);
+            if (slotData.logic_version[0] >= APRandomizer.getLogicVersion()[0]) {
+                if(slotData.logic_version[1] > APRandomizer.getLogicVersion()[1]) {
+                    event.setCanceled(true);
+                    Utils.sendMessageToAll("AP server expects a newer mod version, please update your APRandomizer Mod.");
+                }
+            } else {
+                if(slotData.logic_version[1] < APRandomizer.getLogicVersion()[1]) {
+                    Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
+                }
+            }
         }
         else if (event.getResult() == ConnectionResult.InvalidPassword) {
             Utils.sendMessageToAll("Invalid Password.");
         }
         else if (event.getResult() == ConnectionResult.IncompatibleVersion) {
-            Utils.sendMessageToAll("Minecraft Randomizer Client Outdated.");
+            Utils.sendMessageToAll("Server Expects a different APRandomizer mod version.");
         }
         else if (event.getResult() == ConnectionResult.InvalidSlot) {
             Utils.sendMessageToAll("Invalid Slot Name. (this is case sensitive)");
@@ -42,8 +52,6 @@ public class APClient extends gg.archipelago.APClient.APClient {
         else if (event.getResult() == ConnectionResult.SlotAlreadyTaken) {
             Utils.sendMessageToAll("Room Slot has all ready been taken.");
         }
-
-        return false;
     }
 
     @Override
