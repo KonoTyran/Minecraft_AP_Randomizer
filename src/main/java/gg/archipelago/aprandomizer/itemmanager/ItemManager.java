@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,21 +23,24 @@ public class ItemManager {
 
     private final HashMap<Integer, ItemInfo> itemData = new HashMap<Integer, ItemInfo>()
     {{
-        put(45015, new ItemInfo(Items.NETHERITE_SCRAP, 8, null));
-        put(45016, new ItemInfo(Items.EMERALD, 8, null));
-        put(45017, new ItemInfo(Items.EMERALD, 4, null));
+        put(45015, new ItemInfo(Items.NETHERITE_SCRAP, 8));
+        put(45016, new ItemInfo(Items.EMERALD, 8));
+        put(45017, new ItemInfo(Items.EMERALD, 4));
         put(45018, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.CHANNELING,1)));
         put(45019, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SILK_TOUCH,1)));
         put(45020, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SHARPNESS,3)));
         put(45021, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.PIERCING,4)));
         put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.MOB_LOOTING,3)));
         put(45023, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.INFINITY_ARROWS,1)));
-        put(45024, new ItemInfo(Items.DIAMOND_ORE, 4, null));
-        put(45025, new ItemInfo(Items.IRON_ORE, 16, null));
-        put(45029, new ItemInfo(Items.ENDER_PEARL, 3, null));
-        put(45004, new ItemInfo(Items.LAPIS_LAZULI, 4, null));
-        put(45030, new ItemInfo(Items.LAPIS_LAZULI, 4, null));
-        put(45031, new ItemInfo(Items.COOKED_PORKCHOP, 16, null));
+        put(45024, new ItemInfo(Items.DIAMOND_ORE, 4));
+        put(45025, new ItemInfo(Items.IRON_ORE, 16));
+        put(45029, new ItemInfo(Items.ENDER_PEARL, 3));
+        put(45004, new ItemInfo(Items.LAPIS_LAZULI, 4));
+        put(45030, new ItemInfo(Items.LAPIS_LAZULI, 4));
+        put(45031, new ItemInfo(Items.COOKED_PORKCHOP, 16));
+        put(45032, new ItemInfo(Items.GOLD_ORE, 8));
+        put(45033, new ItemInfo(Items.ROTTEN_FLESH, 8));
+        put(45034, new ItemInfo(Items.ARROW, 1,"The Arrow"));
     }};
 
     private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>()
@@ -51,6 +55,9 @@ public class ItemManager {
         ItemStack iStack = new ItemStack(iInfo.item,iInfo.amount);
         if (iInfo.enchant != null) {
             EnchantedBookItem.addEnchantment(iStack, iInfo.enchant);
+        }
+        if(iInfo.name != null) {
+            iStack.setHoverName(new StringTextComponent(iInfo.name));
         }
         return iStack;
     }

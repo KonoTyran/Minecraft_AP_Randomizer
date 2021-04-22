@@ -1,14 +1,14 @@
 {
-  "parent": "minecraft:story/hot_topic",
+  "parent": "minecraft:husbandry/plant_seed",
   "display": {
     "icon": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:bread"
     },
     "title": {
-      "translate": "advancements.story.smelt_iron.title"
+      "text": "Bake Bread"
     },
     "description": {
-      "translate": "advancements.story.smelt_iron.description"
+      "text": "Turn wheat into bread"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,12 +16,12 @@
     "hidden": false
   },
   "criteria": {
-    "iron": {
+    "get_bread": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:bread"
           }
         ]
       }
@@ -29,7 +29,7 @@
   },
   "requirements": [
     [
-      "iron"
+      "get_bread"
     ]
   ]
 }

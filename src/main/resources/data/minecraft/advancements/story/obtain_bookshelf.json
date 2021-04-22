@@ -1,14 +1,14 @@
 {
-  "parent": "minecraft:story/hot_topic",
+  "parent": "minecraft:story/enchant_item",
   "display": {
     "icon": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:bookshelf"
     },
     "title": {
-      "translate": "advancements.story.smelt_iron.title"
+      "text": "Librarian"
     },
     "description": {
-      "translate": "advancements.story.smelt_iron.description"
+      "text": "Build some bookshelves to improve your enchantment table"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,12 +16,12 @@
     "hidden": false
   },
   "criteria": {
-    "iron": {
+    "get_bookshelf": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:bookshelf"
           }
         ]
       }
@@ -29,7 +29,7 @@
   },
   "requirements": [
     [
-      "iron"
+      "get_bookshelf"
     ]
   ]
 }

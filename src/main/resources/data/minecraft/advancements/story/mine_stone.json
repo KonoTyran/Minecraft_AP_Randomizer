@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:story/root",
+  "parent": "minecraft:story/get_pickaxe",
   "display": {
     "icon": {
       "item": "minecraft:wooden_pickaxe",

@@ -1,14 +1,14 @@
 {
-  "parent": "minecraft:story/hot_topic",
+  "parent": "minecraft:story/mine_stone",
   "display": {
     "icon": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:furnace"
     },
     "title": {
-      "translate": "advancements.story.smelt_iron.title"
+      "text": "Hot Topic"
     },
     "description": {
-      "translate": "advancements.story.smelt_iron.description"
+      "text": "Construct a furnace out of eight cobblestone blocks."
     },
     "frame": "task",
     "show_toast": true,
@@ -16,12 +16,12 @@
     "hidden": false
   },
   "criteria": {
-    "iron": {
+    "get_furnace": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:furnace"
           }
         ]
       }
@@ -29,7 +29,7 @@
   },
   "requirements": [
     [
-      "iron"
+      "get_furnace"
     ]
   ]
 }

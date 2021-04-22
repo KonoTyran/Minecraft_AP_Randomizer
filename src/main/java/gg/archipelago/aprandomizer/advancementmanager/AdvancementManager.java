@@ -93,6 +93,18 @@ public class AdvancementManager {
         put("minecraft:story/enter_the_end",42077);
         put("minecraft:husbandry/breed_an_animal",42078);
         put("minecraft:husbandry/complete_catalogue",42079);
+        put("minecraft:story/get_wood",42080);
+        put("minecraft:story/get_pickaxe",42081);
+        put("minecraft:story/hot_topic",42082);
+        put("minecraft:husbandry/bake_bread",42083);
+        put("minecraft:husbandry/the_lie",42084);
+        put("minecraft:adventure/ride_minecart",42085);
+        put("minecraft:adventure/craft_sword",42086);
+        put("minecraft:husbandry/cow_tipper",42087);
+        put("minecraft:husbandry/ride_pig",42088);
+        put("minecraft:story/overkill",42089);
+        put("minecraft:story/obtain_bookshelf",42090);
+        put("minecraft:husbandry/overpowered",42091);
     }};
 
     private Set<Integer> earnedAdvancements = new HashSet<>();

@@ -1,14 +1,14 @@
 {
-  "parent": "minecraft:story/hot_topic",
+  "parent": "minecraft:story/get_wood",
   "display": {
     "icon": {
-      "item": "minecraft:iron_ingot"
+      "item": "minecraft:wooden_pickaxe"
     },
     "title": {
-      "translate": "advancements.story.smelt_iron.title"
+      "text": "Time to Mine!"
     },
     "description": {
-      "translate": "advancements.story.smelt_iron.description"
+      "text": "Use planks and sticks to make a pickaxe"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,12 +16,12 @@
     "hidden": false
   },
   "criteria": {
-    "iron": {
+    "get_pick": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "item": "minecraft:iron_ingot"
+            "item": "minecraft:wooden_pickaxe"
           }
         ]
       }
@@ -29,7 +29,7 @@
   },
   "requirements": [
     [
-      "iron"
+      "get_pick"
     ]
   ]
 }
