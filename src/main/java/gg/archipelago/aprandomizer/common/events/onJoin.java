@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,10 +18,13 @@ public class onJoin {
 
     @SubscribeEvent
     static void onPlayerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
+        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        //player.getCapability()
+
         APRandomizer.getAdvancementManager().syncAllAdvancements();
         Set<IRecipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
         Set<IRecipe<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();
-        event.getPlayer().awardRecipes(granted);
-        event.getPlayer().resetRecipes(restricted);
+        player.awardRecipes(granted);
+        player.resetRecipes(restricted);
     }
 }

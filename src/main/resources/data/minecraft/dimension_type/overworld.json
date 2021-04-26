@@ -9,7 +9,7 @@
   "ultrawarm": false,
   "natural": true,
   "coordinate_scale": 1.0,
-  "piglin_safe": false,
+  "piglin_safe": true,
   "has_skylight": true,
   "has_ceiling": false
 }

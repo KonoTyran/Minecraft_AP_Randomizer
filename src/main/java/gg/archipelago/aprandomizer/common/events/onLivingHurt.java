@@ -33,17 +33,18 @@ public class onLivingHurt {
     static void onLivingHurtEvent(LivingHurtEvent event) {
         LivingEntity entity = event.getEntityLiving();
         if (entity.getEntity().getEntity() instanceof PigEntity) {
-            if (entity.getPassengers().get(0) instanceof ServerPlayerEntity) {
-                if(event.getSource().msgId.equals("fall")) {
-                    ServerPlayerEntity player = (ServerPlayerEntity)entity.getPassengers().get(0);
-                    Advancement advancement = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft:husbandry/ride_pig"));
-                    AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
-                    if (!ap.isDone()) {
-                        for(String s : ap.getRemainingCriteria()) {
-                            player.getAdvancements().award(advancement, s);
+            if(entity.getPassengers().size() >0 ) {
+                if (entity.getPassengers().get(0) instanceof ServerPlayerEntity) {
+                    if (event.getSource().msgId.equals("fall")) {
+                        ServerPlayerEntity player = (ServerPlayerEntity) entity.getPassengers().get(0);
+                        Advancement advancement = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft:husbandry/ride_pig"));
+                        AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
+                        if (!ap.isDone()) {
+                            for (String s : ap.getRemainingCriteria()) {
+                                player.getAdvancements().award(advancement, s);
+                            }
                         }
                     }
-
                 }
             }
         }

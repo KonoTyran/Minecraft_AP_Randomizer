@@ -31,8 +31,8 @@
         "salt": 14357921
       },
       "minecraft:endcity": {
-        "spacing": 10,
-        "separation": 5,
+        "spacing": 24,
+        "separation": 15,
         "salt": 10387313
       },
       "minecraft:igloo": {
@@ -41,13 +41,13 @@
         "salt": 14357618
       },
       "minecraft:fortress": {
-        "spacing": 10,
-        "separation": 5,
+        "spacing": 24,
+        "separation": 15,
         "salt": 30084232
       },
       "minecraft:bastion_remnant": {
-        "spacing": 10,
-        "separation": 1,
+        "spacing": 24,
+        "separation": 15,
         "salt": 30084232
       },
       "minecraft:swamp_hut": {
@@ -61,8 +61,8 @@
         "salt": 10387313
       },
       "minecraft:pillager_outpost": {
-        "spacing": 15,
-        "separation": 8,
+        "spacing": 9,
+        "separation": 4,
         "salt": 165745296
       },
       "minecraft:ocean_ruin": {

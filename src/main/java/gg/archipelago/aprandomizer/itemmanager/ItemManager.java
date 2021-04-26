@@ -15,6 +15,7 @@ import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ItemManager {
@@ -50,6 +51,8 @@ public class ItemManager {
         put(45028, 50);
     }};
 
+    private ArrayList<Integer> receivedItems = new ArrayList<>();
+
     private ItemStack buildNewItemStack(int itemID) {
         ItemInfo iInfo = itemData.get(itemID);
         ItemStack iStack = new ItemStack(iInfo.item,iInfo.amount);
@@ -62,36 +65,49 @@ public class ItemManager {
         return iStack;
     }
 
+    public void giveAllToPlayer(ServerPlayerEntity player) {
+        for (Integer receivedItem : receivedItems) {
+            giveItem(receivedItem,player);
+        }
+    }
 
-    public void giveItem(int itemID) {
+    public void setReceivedItems (ArrayList<Integer> items) {
+        this.receivedItems = items;
+    }
+
+    public void giveItem(int itemID, ServerPlayerEntity player) {
+        receivedItems.add(itemID);
         if(itemData.containsKey(itemID)) {
-            for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                ItemStack itemstack = buildNewItemStack(itemID);
-                boolean flag = serverplayerentity.inventory.add(itemstack);
-                if (flag && itemstack.isEmpty()) {
-                    itemstack.setCount(1);
-                    ItemEntity itementity1 = serverplayerentity.drop(itemstack, false);
-                    if (itementity1 != null) {
-                        itementity1.makeFakeItem();
-                    }
-
-                    serverplayerentity.level.playSound(null, serverplayerentity.getX(), serverplayerentity.getY(), serverplayerentity.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((serverplayerentity.getRandom().nextFloat() - serverplayerentity.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                    serverplayerentity.inventoryMenu.broadcastChanges();
+            ItemStack itemstack = buildNewItemStack(itemID);
+            boolean flag = player.inventory.add(itemstack);
+            if (flag && itemstack.isEmpty()) {
+                itemstack.setCount(1);
+                ItemEntity itementity1 = player.drop(itemstack, false);
+                if (itementity1 != null) {
+                    itementity1.makeFakeItem();
                 }
-                else {
-                    ItemEntity itementity = serverplayerentity.drop(itemstack, false);
-                    if (itementity != null) {
-                        itementity.setNoPickUpDelay();
-                        itementity.setOwner(serverplayerentity.getUUID());
-                    }
+
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                player.inventoryMenu.broadcastChanges();
+            }
+            else {
+                ItemEntity itementity = player.drop(itemstack, false);
+                if (itementity != null) {
+                    itementity.setNoPickUpDelay();
+                    itementity.setOwner(player.getUUID());
                 }
             }
         }
         else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
-            for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                player.giveExperiencePoints(xpValue);
-            }
+            player.giveExperiencePoints(xpValue);
+        }
+    }
+
+
+    public void giveItem(int itemID) {
+        for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
+            giveItem(itemID, serverplayerentity);
         }
     }
 }

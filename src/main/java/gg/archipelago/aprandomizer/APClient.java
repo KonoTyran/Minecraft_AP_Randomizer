@@ -33,11 +33,16 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 if(slotData.logic_version[1] > APRandomizer.getLogicVersion()[1]) {
                     event.setCanceled(true);
                     Utils.sendMessageToAll("AP server expects a newer mod version, please update your APRandomizer Mod.");
+                    return;
                 }
-            } else {
-                if(slotData.logic_version[1] < APRandomizer.getLogicVersion()[1]) {
+                else if(slotData.logic_version[1] < APRandomizer.getLogicVersion()[1]) {
                     Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
                 }
+            } else {
+                Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
+            }
+            for (Integer receivedItem : this.getItemManager().getReceivedItems()) {
+                APRandomizer.getRecipeManager().grantRecipe(receivedItem);
             }
         }
         else if (event.getResult() == ConnectionResult.InvalidPassword) {
@@ -94,10 +99,5 @@ public class APClient extends gg.archipelago.APClient.APClient {
         Utils.sendTitle(server, new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
         APRandomizer.getRecipeManager().grantRecipe(item);
         APRandomizer.getItemManager().giveItem(item);
-    }
-
-    @Override
-    public void receiveItems(int item) {
-
     }
 }
