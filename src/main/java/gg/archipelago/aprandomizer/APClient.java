@@ -29,13 +29,13 @@ public class APClient extends gg.archipelago.APClient.APClient {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
             SlotData slotData = event.getSlotData(SlotData.class);
-            if (slotData.logic_version[0] >= APRandomizer.getLogicVersion()[0]) {
-                if(slotData.logic_version[1] > APRandomizer.getLogicVersion()[1]) {
+            if (slotData.client_version[0] >= APRandomizer.getClientVersion()[0]) {
+                if(slotData.client_version[1] > APRandomizer.getClientVersion()[1]) {
                     event.setCanceled(true);
                     Utils.sendMessageToAll("AP server expects a newer mod version, please update your APRandomizer Mod.");
                     return;
                 }
-                else if(slotData.logic_version[1] < APRandomizer.getLogicVersion()[1]) {
+                else if(slotData.client_version[1] < APRandomizer.getClientVersion()[1]) {
                     Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
                 }
             } else {

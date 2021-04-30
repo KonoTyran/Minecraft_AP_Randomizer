@@ -36,8 +36,8 @@
         "salt": 14357618
       },
       "minecraft:fortress": {
-        "spacing": 10,
-        "separation": 5,
+        "spacing": 15,
+        "separation": 8,
         "salt": 30084232
       },
       "minecraft:bastion_remnant": {
@@ -56,7 +56,7 @@
         "salt": 10387313
       },
       "minecraft:pillager_outpost": {
-        "spacing": 32,
+        "spacing": 15,
         "separation": 8,
         "salt": 165745296
       },
@@ -71,7 +71,7 @@
         "salt": 0
       },
       "minecraft:village": {
-        "spacing": 32,
+        "spacing": 15,
         "separation": 8,
         "salt": 10387312
       },

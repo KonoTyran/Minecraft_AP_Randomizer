@@ -1,9 +1,11 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.aprandomizer.APMCData;
+import gg.archipelago.aprandomizer.APConfiguredStructures;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.APStructures;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.StructureFeatures;
+import net.minecraft.world.gen.feature.structure.*;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -17,18 +19,23 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class onBiomeLoad {
-
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
     static void biomeLoad(BiomeLoadingEvent event) {
         APMCData data = APRandomizer.getApmcData();
+        if(data == null) {
+            LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
+            return;
+        }
         List<Supplier<StructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
         List<Supplier<StructureFeature<?, ?>>> toadd = new ArrayList<>();
         Iterator<Supplier<StructureFeature<?, ?>>> iterator = event.getGeneration().getStructures().iterator();
+
         while(iterator.hasNext()) {
             Supplier<StructureFeature<?, ?>> structure = iterator.next();
+            //LOGGER.info("found {} in {}",structure.get().feature.getFeatureName(),event.getName().getPath());
             if(structure.get().feature.equals(StructureFeatures.VILLAGE_PLAINS.feature)) {
                 String struct1 = data.structures.get("Overworld Structure 1");
                 String struct2 = data.structures.get("Overworld Structure 2");
@@ -80,7 +87,7 @@ public class onBiomeLoad {
 
                 switch (struct1) {
                     case "Village":
-                        toadd.add(() -> StructureFeatures.VILLAGE_PLAINS);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
                         toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
@@ -100,7 +107,7 @@ public class onBiomeLoad {
 
                 switch (struct2) {
                     case "Village":
-                        toadd.add(() -> StructureFeatures.VILLAGE_PLAINS);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
                         toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);

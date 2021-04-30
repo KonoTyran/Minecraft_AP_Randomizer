@@ -1,0 +1,15 @@
+{
+  "name": "aprandomizer:village/nether/town_centers",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 50,
+      "element": {
+        "location": "aprandomizer:village/nether/town_centers/nether_fountain_01",
+        "processors": "minecraft:empty",
+        "projection": "rigid",
+        "element_type": "minecraft:single_pool_element"
+      }
+    }
+  ]
+}

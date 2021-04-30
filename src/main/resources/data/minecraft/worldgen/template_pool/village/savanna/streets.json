@@ -7,7 +7,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/corner_01",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -16,7 +16,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/corner_03",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -25,7 +25,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_02",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -34,7 +34,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_04",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -43,7 +43,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_05",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -52,7 +52,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_06",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -61,7 +61,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_08",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -70,7 +70,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_09",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -79,7 +79,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_10",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -88,7 +88,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/straight_11",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -97,7 +97,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_02",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -106,7 +106,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_03",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -115,7 +115,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_04",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -124,7 +124,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_05",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -133,7 +133,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_06",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -142,7 +142,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/crossroad_07",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -151,7 +151,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/split_01",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -160,7 +160,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/split_02",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -169,7 +169,7 @@
       "element": {
         "location": "minecraft:village/savanna/streets/turn_01",
         "processors": "minecraft:street_savanna",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     }

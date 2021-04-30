@@ -7,7 +7,7 @@
       "element": {
         "location": "minecraft:village/plains/terminators/terminator_01",
         "processors": "minecraft:street_snowy_or_taiga",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -16,7 +16,7 @@
       "element": {
         "location": "minecraft:village/plains/terminators/terminator_02",
         "processors": "minecraft:street_snowy_or_taiga",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -25,7 +25,7 @@
       "element": {
         "location": "minecraft:village/plains/terminators/terminator_03",
         "processors": "minecraft:street_snowy_or_taiga",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
@@ -34,7 +34,7 @@
       "element": {
         "location": "minecraft:village/plains/terminators/terminator_04",
         "processors": "minecraft:street_snowy_or_taiga",
-        "projection": "terrain_matching",
+        "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     }

@@ -1,22 +1,25 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
-import gg.archipelago.APClient.SaveData;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
+import gg.archipelago.aprandomizer.common.events.StructureEvents;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.StructureFeatures;
+import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,16 +28,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
-import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/mods.toml file
-@Mod("aprandomizer")
+@Mod(APRandomizer.MODID)
 public class APRandomizer
 {
     // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
+    public static final String MODID = "aprandomizer";
 
     //store our APClient
     static private APClient apClient;
@@ -45,11 +47,21 @@ public class APRandomizer
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
     static private APMCData apmcData;
-    static private final int[] logicVersion = {0, 2};
+    static private final int[] clientVersion = {0, 3};
 
     public APRandomizer() {
+
+        // For registration and init stuff.
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+        modEventBus.addListener(this::setup);
+
         // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
+        IEventBus forgeBus = MinecraftForge.EVENT_BUS;
+        forgeBus.register(this);
+        forgeBus.addListener(EventPriority.NORMAL, StructureEvents::addDimensionalSpacing);
+        forgeBus.addListener(EventPriority.HIGH, StructureEvents::onBiomeLoad);
+
         Gson gson = new Gson();
         try {
             Path path = Paths.get("./APData/");
@@ -59,7 +71,7 @@ public class APRandomizer
             String json = new String(Base64.getDecoder().decode(b64));
             apmcData = gson.fromJson(json, APMCData.class);
 
-            LOGGER.info(apmcData.structures.toString());
+            //LOGGER.info(apmcData.structures.toString());
 
         } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException e) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
@@ -90,19 +102,45 @@ public class APRandomizer
         return itemManager;
     }
 
-    public static int[] getLogicVersion() {
-        return logicVersion;
+    public static int[] getClientVersion() {
+        return clientVersion;
     }
 
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         if (apmcData == null) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
-            event.getServer().close();
+            //event.getServer().close();
+            return;
         }
+
+
+        // todo figure out how to erase world and gen with this seed....
+        if(event.getServer().getWorldData().worldGenSettings().seed() != apmcData.world_seed) {
+            //event.getServer().getWorldPath(new FolderName(event.getServer().getWorldData().getLevelName()));
+
+        }
+
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
+    /**
+     * Here, setupStructures will be ran after registration of all structures are finished.
+     * This is important to be done here so that the Deferred Registry has already ran and
+     * registered/created our structure for us.
+     *
+     * Once after that structure instance is made, we then can now do the rest of the setup
+     * that requires a structure instance such as setting the structure spacing, creating the
+     * configured structure instance, and more.
+     */
+    public void setup(final FMLCommonSetupEvent event)
+    {
+        event.enqueueWork(() -> {
+            APStructures.setupStructures();
+            APConfiguredStructures.registerConfiguredStructures();
+        });
+    }
+
+
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
 

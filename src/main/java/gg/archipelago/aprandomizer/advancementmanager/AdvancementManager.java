@@ -1,5 +1,6 @@
 package gg.archipelago.aprandomizer.advancementmanager;
 
+import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -132,6 +133,10 @@ public class AdvancementManager {
     public void addAdvancement(int id) {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
+        //check if ID is free the end advancement ID 42005
+        if (id == 42005) {
+            APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
+        }
     }
 
     public void resendAdvancements() {

@@ -1,20 +1,20 @@
 {
-  "name": "minecraft:village/desert/terminators",
+  "name": "aprandomizer:village/nether/zombie/villagers",
   "fallback": "minecraft:empty",
   "elements": [
     {
       "weight": 1,
       "element": {
-        "location": "minecraft:village/desert/terminators/terminator_01",
+        "location": "aprandomizer:village/nether/zombie/villagers/nitwit",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"
       }
     },
     {
-      "weight": 1,
+      "weight": 10,
       "element": {
-        "location": "minecraft:village/desert/terminators/terminator_02",
+        "location": "aprandomizer:village/nether/zombie/villagers/unemployed",
         "processors": "minecraft:empty",
         "projection": "rigid",
         "element_type": "minecraft:legacy_single_pool_element"

@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer;
+package gg.archipelago.aprandomizer.APStorage;
 
 import com.google.gson.annotations.SerializedName;
 
