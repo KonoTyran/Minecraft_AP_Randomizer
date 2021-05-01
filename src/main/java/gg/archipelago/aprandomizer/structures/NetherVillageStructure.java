@@ -51,7 +51,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
      */
     @Override
     public GenerationStage.Decoration step() {
-        return GenerationStage.Decoration.SURFACE_STRUCTURES;
+        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     /**
@@ -89,8 +89,6 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
             int y = seaLevel + this.random.nextInt(chunkGenerator.getGenDepth() - 2 - seaLevel);
 
 
-
-
             /*
              * If you are doing Nether structures, you'll probably want to spawn your structure on top of ledges.
              * Best way to do that is to use getBaseColumn to grab a column of blocks at the structure's x/z position.
@@ -115,7 +113,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
              * structure will spawn at terrain height instead. Set that parameter to false to
              * force the structure to spawn at blockpos's Y value instead. You got options here!
              */
-            BlockPos blockpos = new BlockPos(x, 0, z);
+            BlockPos blockpos = new BlockPos(x, y, z);
 
             // All a structure has to do is call this method to turn it into a jigsaw based structure!
             JigsawManager.addPieces(
@@ -134,7 +132,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
                             // Our structure is only 1 piece outward and isn't recursive so any value of 1 or more doesn't change anything.
                             // However, I recommend you keep this a decent value like 10 so people can use datapacks to add additional pieces to your structure easily.
                             // But don't make it too large for recursive structures like villages or you'll crash server due to hundreds of pieces attempting to generate!
-                            10),
+                            6),
                     AbstractVillagePiece::new,
                     chunkGenerator,
                     templateManagerIn,
@@ -164,20 +162,11 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
             //
             // By lifting the house up by 1 and lowering the bounding box, the land at bottom of house will now be
             // flush with the surrounding terrain without blocking off the doorstep.
-            this.pieces.forEach(piece -> piece.move(0, 1, 0));
-            this.pieces.forEach(piece -> piece.getBoundingBox().y0 -= 1);
+            //this.pieces.forEach(piece -> piece.move(0, 0, 0));
 
 
             // Sets the bounds of the structure once you are finished.
             this.calculateBoundingBox();
-
-
-            // I use to debug and quickly find out if the structure is spawning or not and where it is.
-            // This is returning the coordinates of the center starting piece.
-            APRandomizer.LOGGER.log(Level.INFO,"Nether Village at " +
-                    this.pieces.get(0).getBoundingBox().x0 + " " +
-                    this.pieces.get(0).getBoundingBox().y0 + " " +
-                    this.pieces.get(0).getBoundingBox().z0);
 
         }
 

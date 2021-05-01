@@ -53,8 +53,8 @@ public class APStructures {
     public static void setupStructures() {
         setupMapSpacingAndLand(
                 VILLAGE_NETHER.get(), /* The instance of the structure */
-                new StructureSeparationSettings(10 /* average distance apart in chunks between spawn attempts */,
-                        5 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
+                new StructureSeparationSettings(16 /* average distance apart in chunks between spawn attempts */,
+                        8 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
                         549266487 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
                 true);
 

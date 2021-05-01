@@ -1,6 +1,5 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.aprandomizer.APConfiguredStructures;
 import gg.archipelago.aprandomizer.APStructures;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.FlatChunkGenerator;
@@ -8,9 +7,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,8 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.HashMap;
 import java.util.Map;
 
+@Mod.EventBusSubscriber
 public class StructureEvents {
 
+    @SubscribeEvent(priority = EventPriority.NORMAL)
     static public void addDimensionalSpacing(WorldEvent.Load event) {
         ServerWorld serverWorld = (ServerWorld)event.getWorld();
 
@@ -46,9 +45,12 @@ public class StructureEvents {
         serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
     }
 
+
+/*    @SubscribeEvent(priority = EventPriority.HIGH)
     static public void onBiomeLoad(BiomeLoadingEvent event) {
-        //event.getGeneration().getStructures().add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
-    }
+        event.getGeneration().getStructures().add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
+    }*/
+
 
 
 }

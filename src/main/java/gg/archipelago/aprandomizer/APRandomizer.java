@@ -59,8 +59,6 @@ public class APRandomizer
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.register(this);
-        forgeBus.addListener(EventPriority.NORMAL, StructureEvents::addDimensionalSpacing);
-        forgeBus.addListener(EventPriority.HIGH, StructureEvents::onBiomeLoad);
 
         Gson gson = new Gson();
         try {
