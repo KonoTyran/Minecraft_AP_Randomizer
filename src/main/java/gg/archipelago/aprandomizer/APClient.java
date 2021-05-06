@@ -4,6 +4,7 @@ import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.ConnectionResult;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.util.text.Color;
 import net.minecraft.server.MinecraftServer;
@@ -29,6 +30,11 @@ public class APClient extends gg.archipelago.APClient.APClient {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
             SlotData slotData = event.getSlotData(SlotData.class);
+            APMCData data = APRandomizer.getApmcData();
+            if(!event.getSeedName().equals(data.seed_name)){
+                Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
+                event.setCanceled(true);
+            }
             if (slotData.client_version[0] >= APRandomizer.getClientVersion()[0]) {
                 if(slotData.client_version[1] > APRandomizer.getClientVersion()[1]) {
                     event.setCanceled(true);

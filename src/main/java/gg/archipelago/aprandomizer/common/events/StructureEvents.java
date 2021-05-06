@@ -1,5 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
+import gg.archipelago.aprandomizer.APConfiguredStructures;
 import gg.archipelago.aprandomizer.APStructures;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.FlatChunkGenerator;
@@ -7,6 +8,7 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,13 +44,15 @@ public class StructureEvents {
          */
         Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkSource().generator.getSettings().structureConfig());
         tempMap.putIfAbsent(APStructures.VILLAGE_NETHER.get(), DimensionStructuresSettings.DEFAULTS.get(APStructures.VILLAGE_NETHER.get()));
+        tempMap.putIfAbsent(APStructures.END_CITY_NETHER.get(), DimensionStructuresSettings.DEFAULTS.get(APStructures.END_CITY_NETHER.get()));
+        tempMap.putIfAbsent(APStructures.PILLAGER_OUTPOST_NETHER.get(), DimensionStructuresSettings.DEFAULTS.get(APStructures.PILLAGER_OUTPOST_NETHER.get()));
         serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
     }
 
 
 /*    @SubscribeEvent(priority = EventPriority.HIGH)
     static public void onBiomeLoad(BiomeLoadingEvent event) {
-        event.getGeneration().getStructures().add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
+        event.getGeneration().getStructures().add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
     }*/
 
 

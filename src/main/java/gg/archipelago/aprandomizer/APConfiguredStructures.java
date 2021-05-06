@@ -12,6 +12,8 @@ public class APConfiguredStructures {
          * Static instance of our structure so we can reference it and add it to biomes easily.
          */
         public static StructureFeature<?, ?> CONFIGURED_VILLAGE_NETHER = APStructures.VILLAGE_NETHER.get().configured(IFeatureConfig.NONE);
+        public static StructureFeature<?, ?> CONFIGURED_END_CITY_NETHER = APStructures.END_CITY_NETHER.get().configured(IFeatureConfig.NONE);
+        public static StructureFeature<?, ?> CONFIGURED_PILLAGER_OUTPOST_NETHER = APStructures.PILLAGER_OUTPOST_NETHER.get().configured(IFeatureConfig.NONE);
 
         /**
          * Registers the configured structure which is what gets added to the biomes.
@@ -23,6 +25,8 @@ public class APConfiguredStructures {
         public static void registerConfiguredStructures() {
             Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
             Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "configured_village_nether"), CONFIGURED_VILLAGE_NETHER);
+            Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "configured_end_city_nether"), CONFIGURED_END_CITY_NETHER);
+            Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "configured_pillager_outpost_nether"), CONFIGURED_PILLAGER_OUTPOST_NETHER);
 
             /* Ok so, this part may be hard to grasp but basically, just add your structure to this to
              * prevent any sort of crash or issue with other mod's custom ChunkGenerators. If they use
@@ -40,5 +44,7 @@ public class APConfiguredStructures {
              * Requires AccessTransformer ( see resources/META-INF/accesstransformer.cfg )
              */
             FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.VILLAGE_NETHER.get(), CONFIGURED_VILLAGE_NETHER);
+            FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.END_CITY_NETHER.get(), CONFIGURED_END_CITY_NETHER);
+            FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.PILLAGER_OUTPOST_NETHER.get(), CONFIGURED_PILLAGER_OUTPOST_NETHER);
         }
     }

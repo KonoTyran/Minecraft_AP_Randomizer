@@ -3,14 +3,12 @@ package gg.archipelago.aprandomizer;
 import com.google.gson.Gson;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
-import gg.archipelago.aprandomizer.common.events.StructureEvents;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
-import net.minecraft.world.storage.FolderName;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -68,11 +66,17 @@ public class APRandomizer
             String b64 = Files.readAllLines(files[0].toPath()).get(0);
             String json = new String(Base64.getDecoder().decode(b64));
             apmcData = gson.fromJson(json, APMCData.class);
-
+            if(!Arrays.equals(apmcData.client_version,clientVersion)) {
+                apmcData.state = APMCData.State.INVALID_VERSION;
+            }
             //LOGGER.info(apmcData.structures.toString());
 
         } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException e) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
+            if(apmcData == null) {
+                apmcData = new APMCData();
+                apmcData.state = APMCData.State.MISSING;
+            }
         }
     }
 
@@ -151,6 +155,7 @@ public class APRandomizer
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);
+        server.setDifficulty(Difficulty.NORMAL,true);
     }
 
     @SubscribeEvent

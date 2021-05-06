@@ -25,10 +25,8 @@ public class onBiomeLoad {
     @SubscribeEvent
     static void biomeLoad(BiomeLoadingEvent event) {
         APMCData data = APRandomizer.getApmcData();
-        if(data == null) {
-            LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
+        if(data == null)
             return;
-        }
         List<Supplier<StructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
         List<Supplier<StructureFeature<?, ?>>> toadd = new ArrayList<>();
         Iterator<Supplier<StructureFeature<?, ?>>> iterator = event.getGeneration().getStructures().iterator();
@@ -90,10 +88,10 @@ public class onBiomeLoad {
                         toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
-                        toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_PILLAGER_OUTPOST_NETHER);
                         break;
                     case "End City":
-                        toadd.add(() -> StructureFeatures.END_CITY);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
                         break;
                 }
             }
@@ -110,10 +108,10 @@ public class onBiomeLoad {
                         toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
-                        toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_PILLAGER_OUTPOST_NETHER);
                         break;
                     case "End City":
-                        toadd.add(() -> StructureFeatures.END_CITY);
+                        toadd.add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
                         break;
                 }
             }

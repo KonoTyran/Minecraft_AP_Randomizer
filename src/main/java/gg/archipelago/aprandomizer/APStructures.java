@@ -2,6 +2,8 @@ package gg.archipelago.aprandomizer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import gg.archipelago.aprandomizer.structures.NetherEndCityStructure;
+import gg.archipelago.aprandomizer.structures.NetherPillagerOutpostStructure;
 import gg.archipelago.aprandomizer.structures.NetherVillageStructure;
 import net.minecraft.util.registry.WorldGenRegistries;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
@@ -44,6 +46,8 @@ public class APStructures {
      *   So it is best to keep your structure names the same as long as you can instead of changing them frequently.
      */
     public static final RegistryObject<Structure<NoFeatureConfig>> VILLAGE_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("village_nether", () -> (new NetherVillageStructure(NoFeatureConfig.CODEC)));
+    public static final RegistryObject<Structure<NoFeatureConfig>> END_CITY_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("end_city_nether", () -> (new NetherEndCityStructure(NoFeatureConfig.CODEC)));
+    public static final RegistryObject<Structure<NoFeatureConfig>> PILLAGER_OUTPOST_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("pillager_outpost_nether", () -> (new NetherPillagerOutpostStructure(NoFeatureConfig.CODEC)));
 
 
     /**
@@ -51,11 +55,28 @@ public class APStructures {
      * See the comments in below for more details.
      */
     public static void setupStructures() {
+        //setup spacing for our nether village
         setupMapSpacingAndLand(
                 VILLAGE_NETHER.get(), /* The instance of the structure */
                 new StructureSeparationSettings(16 /* average distance apart in chunks between spawn attempts */,
                         8 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
                         549266487 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
+                true);
+
+        //setup spacing for our nether end city.
+        setupMapSpacingAndLand(
+                END_CITY_NETHER.get(), /* The instance of the structure */
+                new StructureSeparationSettings(20 /* average distance apart in chunks between spawn attempts */,
+                        10 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
+                        92464638 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
+                true);
+
+        //spacing and stuffs for our pillager outpost!
+        setupMapSpacingAndLand(
+                PILLAGER_OUTPOST_NETHER.get(), /* The instance of the structure */
+                new StructureSeparationSettings(20 /* average distance apart in chunks between spawn attempts */,
+                        10 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
+                        531125487 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
                 true);
 
 

@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -29,35 +30,38 @@ public class ConnectCommand {
                 .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
                 //take the first argument as a string and name it "Address"
                 .then(Commands.argument("Address", StringArgumentType.string())
-                        .then(Commands.argument("Name", StringArgumentType.string())
+                        .executes(context -> connectToAPServer(
+                                context,
+                                StringArgumentType.getString(context,"Address"),
+                                null
+                        ))
+                        .then(Commands.argument("Password", StringArgumentType.string())
                                 .executes(context -> connectToAPServer(
                                         context,
                                         StringArgumentType.getString(context,"Address"),
-                                        StringArgumentType.getString(context,"Name"),
-                                        null
+                                        StringArgumentType.getString(context,"Password")
                                 ))
-                                .then(Commands.argument("Password", StringArgumentType.string())
-                                        .executes(context -> connectToAPServer(
-                                                context,
-                                                StringArgumentType.getString(context,"Address"),
-                                                StringArgumentType.getString(context,"Name"),
-                                                StringArgumentType.getString(context,"Password")
-                                        ))
-                                )
                         )
                 )
         );
 
     }
 
-    private static int connectToAPServer(CommandContext<CommandSource> commandContext, String address, String name, String password) {
-        CommandSource source = commandContext.getSource();
-        APClient apClient = APRandomizer.getAP();
+    private static int connectToAPServer(CommandContext<CommandSource> commandContext, String address, String password) {
+        APMCData data = APRandomizer.getApmcData();
+        if(data.state == APMCData.State.VALID) {
 
-        apClient.setName(name);
-        apClient.setPassword(password);
-        Utils.sendMessageToAll("Connecting to Archipelago server at " +address);
-        apClient.connect(address);
+            APClient apClient = APRandomizer.getAP();
+            apClient.setName(data.player_name);
+            apClient.setPassword(password);
+            Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
+            apClient.connect(address);
+        }
+        else if(data.state == APMCData.State.MISSING)
+            Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
+        else if(data.state == APMCData.State.INVALID_VERSION)
+            Utils.sendMessageToAll("APMC data file wrong version.");
+
         return 1;
     }
 
