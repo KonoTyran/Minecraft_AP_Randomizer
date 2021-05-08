@@ -102,4 +102,11 @@ public class RecipeData {
         }
         return null;
     }
+
+    //our reset here is simple just reset what tier it thinks our progressive recipes are at.
+    public void reset() {
+        progressiveRecipes.forEach((id , recipe) -> {
+            recipe.setCurrentTier(0);
+        });
+    }
 }

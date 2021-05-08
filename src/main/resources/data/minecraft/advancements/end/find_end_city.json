@@ -23,11 +23,20 @@
           "feature": "endcity"
         }
       }
+    },
+    "in_nether_city": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "location": {
+          "feature": "aprandomizer:end_city_nether"
+        }
+      }
     }
   },
   "requirements": [
     [
-      "in_city"
+      "in_city",
+      "in_nether_city"
     ]
   ]
 }

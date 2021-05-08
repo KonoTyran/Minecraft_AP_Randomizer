@@ -1,6 +1,8 @@
 package gg.archipelago.aprandomizer.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
+import gg.archipelago.aprandomizer.capability.PlayerData;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
@@ -12,6 +14,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,18 +68,19 @@ public class ItemManager {
         return iStack;
     }
 
-    public void giveAllToPlayer(ServerPlayerEntity player) {
-        for (Integer receivedItem : receivedItems) {
-            giveItem(receivedItem,player);
-        }
-    }
-
     public void setReceivedItems (ArrayList<Integer> items) {
         this.receivedItems = items;
     }
 
     public void giveItem(int itemID, ServerPlayerEntity player) {
-        receivedItems.add(itemID);
+
+        //update the player's index of received items for syncing later.
+        LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
+        if(loPlayerData.isPresent()) {
+            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
+            playerData.setIndex(receivedItems.size());
+        }
+
         if(itemData.containsKey(itemID)) {
             ItemStack itemstack = buildNewItemStack(itemID);
             boolean flag = player.inventory.add(itemstack);
@@ -105,9 +109,25 @@ public class ItemManager {
     }
 
 
-    public void giveItem(int itemID) {
+    public void giveItemToAll(int itemID) {
+        receivedItems.add(itemID);
         for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
             giveItem(itemID, serverplayerentity);
+        }
+    }
+
+    /***
+     fetches the index form the player's capability then makes sure they have all items after that index.
+     * @param player ServerPlayer to catch up
+     */
+    public void catchUpPlayer(ServerPlayerEntity player) {
+        LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
+        if(loPlayerData.isPresent()) {
+            PlayerData playerData= loPlayerData.orElseThrow(AssertionError::new);
+
+            for (int i = playerData.getIndex(); i < receivedItems.size(); i++) {
+                giveItem(receivedItems.get(i),player);
+            }
         }
     }
 }

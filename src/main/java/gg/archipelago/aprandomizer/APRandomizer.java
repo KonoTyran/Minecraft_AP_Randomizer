@@ -3,11 +3,15 @@ package gg.archipelago.aprandomizer;
 import com.google.gson.Gson;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
+import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -136,6 +140,8 @@ public class APRandomizer
      */
     public void setup(final FMLCommonSetupEvent event)
     {
+        CapabilityPlayerData.register();
+
         event.enqueueWork(() -> {
             APStructures.setupStructures();
             APConfiguredStructures.registerConfiguredStructures();
@@ -156,6 +162,12 @@ public class APRandomizer
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);
         server.setDifficulty(Difficulty.NORMAL,true);
+        ServerWorld theEnd = server.getLevel(World.END);
+        assert theEnd != null;
+        for (EnderDragonEntity dragon : theEnd.getDragons()) {
+            dragon.remove();
+        }
+
     }
 
     @SubscribeEvent

@@ -6,6 +6,7 @@ import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.Color;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
@@ -47,8 +48,17 @@ public class APClient extends gg.archipelago.APClient.APClient {
             } else {
                 Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
             }
-            for (Integer receivedItem : this.getItemManager().getReceivedItems()) {
-                APRandomizer.getRecipeManager().grantRecipe(receivedItem);
+
+            //give our item manager the list of received items to give to players as they log in.
+            APRandomizer.getItemManager().setReceivedItems(getItemManager().getReceivedItems());
+
+            //reset and catch up our global recipe list to be consistent with what we just got from the AP server
+            APRandomizer.getRecipeManager().resetRecipes();
+            APRandomizer.getRecipeManager().grantRecipeList(getItemManager().getReceivedItems());
+
+            //catch up all connected players to the list just received.
+            for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                APRandomizer.getItemManager().catchUpPlayer(player);
             }
         }
         else if (event.getResult() == ConnectionResult.InvalidPassword) {
@@ -103,7 +113,8 @@ public class APClient extends gg.archipelago.APClient.APClient {
         String itemName = getDataPackage().getItem(item);
         ITextComponent textItem = new StringTextComponent(itemName).withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)));
         Utils.sendTitle(server, new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
+
         APRandomizer.getRecipeManager().grantRecipe(item);
-        APRandomizer.getItemManager().giveItem(item);
+        APRandomizer.getItemManager().giveItemToAll(item);
     }
 }

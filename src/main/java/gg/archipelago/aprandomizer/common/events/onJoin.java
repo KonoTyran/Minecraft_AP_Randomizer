@@ -2,9 +2,12 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
+import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
+import gg.archipelago.aprandomizer.capability.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -30,7 +33,9 @@ public class onJoin {
         APRandomizer.getAdvancementManager().syncAllAdvancements();
         Set<IRecipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
         Set<IRecipe<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();
-        player.awardRecipes(granted);
         player.resetRecipes(restricted);
+        player.awardRecipes(granted);
+
+        APRandomizer.getItemManager().catchUpPlayer(player);
     }
 }
