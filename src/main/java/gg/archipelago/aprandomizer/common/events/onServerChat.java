@@ -19,10 +19,13 @@ public class onServerChat {
         ServerPlayerEntity player = event.getPlayer();
 
         String message = event.getMessage();
-        LOGGER.info("{} ({}): {}",player.getScoreboardName(),player.hasPermissions(1),message);
+        LOGGER.debug("{} ({}): {}",player.getScoreboardName(),player.hasPermissions(1),message);
 
         if(message.startsWith("!") && player.server.getProfilePermissions(player.getGameProfile())<1)
             return;
-        APRandomizer.getAP().sendChat(message);
+        else if (message.startsWith("!"))
+            APRandomizer.getAP().sendChat(message);
+        else
+            APRandomizer.getAP().sendChat("("+player.getDisplayName().getString()+") "+message);
     }
 }
