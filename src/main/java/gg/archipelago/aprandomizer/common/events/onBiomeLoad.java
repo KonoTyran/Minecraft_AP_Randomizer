@@ -25,7 +25,7 @@ public class onBiomeLoad {
     @SubscribeEvent
     static void biomeLoad(BiomeLoadingEvent event) {
         APMCData data = APRandomizer.getApmcData();
-        if(data == null)
+        if(data.state != APMCData.State.VALID)
             return;
         List<Supplier<StructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
         List<Supplier<StructureFeature<?, ?>>> toadd = new ArrayList<>();

@@ -22,6 +22,8 @@ public class StructureEvents {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     static public void addDimensionalSpacing(WorldEvent.Load event) {
+        if(!(event.getWorld() instanceof ServerWorld))
+            return;
         ServerWorld serverWorld = (ServerWorld)event.getWorld();
 
         /*
