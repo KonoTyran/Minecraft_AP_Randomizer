@@ -67,7 +67,7 @@ public class onAdvancement {
                     if(worldData.getDragonState() == WorldData.DRAGON_ASLEEP) {
                         Utils.PlaySoundToAll(SoundEvents.ENDER_DRAGON_AMBIENT);
                         Utils.sendMessageToAll("The Dragon has awoken.");
-                        Utils.sendTitle(new StringTextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(Color.fromRgb(java.awt.Color.ORANGE.getRGB()))),new StringTextComponent("has been awoken"),20,40,5);
+                        Utils.sendTitle(new StringTextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(Color.fromRgb(java.awt.Color.ORANGE.getRGB()))),new StringTextComponent("has been awoken"),40,120,40);
                         worldData.setDragonState(WorldData.DRAGON_SPAWNED);
                         Utils.SpawnDragon(end);
                     }
