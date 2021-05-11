@@ -115,16 +115,16 @@ public class Utils
     }
 
     public static void PlaySoundToAll(SoundEvent sound) {
-        for (ServerWorld world : server.getAllLevels()) {
-            world.playSound(null,0,0,0, sound, SoundCategory.MASTER,9999999,1);
+        for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+            player.playNotifySound(sound,SoundCategory.MASTER,1,1);
         }
     }
 
     public static void SpawnDragon(ServerWorld end) {
-        BlockPos portal = end.dragonFight.portalLocation;
         end.dragonFight.spawnExitPortal(false);
         end.dragonFight.findOrCreateDragon();
         end.dragonFight.dragonKilled = false;
+        end.dragonFight.previouslyKilled = false;
         end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
     }
 }

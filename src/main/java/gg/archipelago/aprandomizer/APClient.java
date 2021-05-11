@@ -124,5 +124,6 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
         APRandomizer.getRecipeManager().grantRecipe(item);
         APRandomizer.getItemManager().giveItemToAll(item);
+
     }
 }
