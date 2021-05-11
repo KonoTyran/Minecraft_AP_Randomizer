@@ -6,8 +6,12 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.entity.player.ServerPlayerEntity;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+import static gg.archipelago.aprandomizer.APRandomizer.getAP;
 import static gg.archipelago.aprandomizer.APRandomizer.getServer;
 
 public class AdvancementManager {
@@ -134,9 +138,9 @@ public class AdvancementManager {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         //check if ID is free the end advancement ID 42005
-        if (id == 42005) {
+/*        if (id == 42005) {
             APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
-        }
+        }*/
     }
 
     public void resendAdvancements() {
@@ -175,5 +179,23 @@ public class AdvancementManager {
 
     public int getFinishedAmount() {
         return earnedAdvancements.size();
+    }
+
+    public int getRequiredAmount() {
+        if(getAP().getSlotData() == null)
+            return 0;
+        if (getAP().getSlotData().getAdvancement_goal() == 0)
+            return 30;
+        if (getAP().getSlotData().getAdvancement_goal() == 1)
+            return 50;
+        if (getAP().getSlotData().getAdvancement_goal() == 2)
+            return 70;
+
+        return 0;
+    }
+
+    public void setCheckedAdvancements(Set<Integer> checkedLocations) {
+        earnedAdvancements = checkedLocations;
+        syncAllAdvancements();
     }
 }

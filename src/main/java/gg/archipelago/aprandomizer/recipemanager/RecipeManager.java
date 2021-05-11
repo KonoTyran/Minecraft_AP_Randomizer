@@ -63,14 +63,12 @@ public class RecipeManager {
                 if(!recipeData.hasID(id))
                         return;
                 Set<IRecipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
-                for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                        player.awardRecipes(toGrant);
-                        granted.addAll(toGrant);
-                        restricted.removeAll(toGrant);
-                }
+
+                granted.addAll(toGrant);
+                restricted.removeAll(toGrant);
 
                 for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                        player.resetRecipes(restricted);
+                        //player.resetRecipes(restricted);
                         player.awardRecipes(granted);
                 }
         }

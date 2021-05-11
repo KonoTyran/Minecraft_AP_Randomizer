@@ -2,7 +2,8 @@ package gg.archipelago.aprandomizer.recipemanager;
 
 import net.minecraft.item.crafting.IRecipe;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class GroupRecipe implements Recipe {
     int id;

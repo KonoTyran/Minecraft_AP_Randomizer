@@ -4,7 +4,10 @@ import net.minecraft.item.crafting.IRecipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RecipeData {
 
@@ -67,7 +70,7 @@ public class RecipeData {
             for (String namespaceID : entry.getValue().namespaceIDs) {
                 LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(),namespaceID);
                 if (iRecipe.getId().toString().equals(namespaceID)) {
-                    LOGGER.debug("injected recipe {} into {},", iRecipe.getResultItem().getDisplayName().getString(),namespaceID);
+                    LOGGER.trace("injected recipe {} into {},", iRecipe.getResultItem().getDisplayName().getString(),namespaceID);
                     entry.getValue().addIRecipe(iRecipe);
                     return true;
                 }
@@ -79,7 +82,7 @@ public class RecipeData {
                 for (String s : namespaceIDs) {
                     LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(),s);
                     if (iRecipe.getId().toString().equals(s)) {
-                        LOGGER.debug("injected recipe {} into {} at tier {}", iRecipe.getResultItem().getDisplayName().getString(),s,i+1);
+                        LOGGER.trace("injected recipe {} into {} at tier {}", iRecipe.getResultItem().getDisplayName().getString(),s,i+1);
                         entry.getValue().addIRecipe(iRecipe, i);
                         return true;
                     }

@@ -3,16 +3,23 @@ package gg.archipelago.aprandomizer.common.Utils;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
-import gg.archipelago.APClient.Print.APPrintType;
 import gg.archipelago.APClient.Print.APPrintPart;
+import gg.archipelago.APClient.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
+import gg.archipelago.aprandomizer.capability.WorldData;
 import net.minecraft.command.CommandSource;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.STitlePacket;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
-import net.minecraft.util.text.Color;
+import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -87,7 +94,7 @@ public class Utils
         return message;
     }
 
-    public static void sendTitle(MinecraftServer server,ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
+    public static void sendTitle(ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
 
         TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
 
@@ -105,5 +112,19 @@ public class Utils
 
         TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitleMessage, STitlePacket.Type.ACTIONBAR);
 
+    }
+
+    public static void PlaySoundToAll(SoundEvent sound) {
+        for (ServerWorld world : server.getAllLevels()) {
+            world.playSound(null,0,0,0, sound, SoundCategory.MASTER,9999999,1);
+        }
+    }
+
+    public static void SpawnDragon(ServerWorld end) {
+        BlockPos portal = end.dragonFight.portalLocation;
+        end.dragonFight.spawnExitPortal(false);
+        end.dragonFight.findOrCreateDragon();
+        end.dragonFight.dragonKilled = false;
+        end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
     }
 }

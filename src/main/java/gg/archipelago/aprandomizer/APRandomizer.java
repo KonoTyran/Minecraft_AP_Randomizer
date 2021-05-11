@@ -4,13 +4,18 @@ import com.google.gson.Gson;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
+import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
-import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -30,7 +35,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Comparator;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -53,6 +60,7 @@ public class APRandomizer
 
     public APRandomizer() {
 
+        LOGGER.info("Minecraft Archipelago Randomizer initializing.");
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
@@ -65,6 +73,11 @@ public class APRandomizer
         Gson gson = new Gson();
         try {
             Path path = Paths.get("./APData/");
+            if(!Files.exists(path)) {
+                Files.createDirectories(path);
+                LOGGER.info("APData folder missing, creating.");
+            }
+
             File[] files = new File(path.toUri()).listFiles((d,name) -> name.endsWith(".apmc"));
             Arrays.sort(files, Comparator.comparingLong(File::lastModified));
             String b64 = Files.readAllLines(files[0].toPath()).get(0);
@@ -141,6 +154,7 @@ public class APRandomizer
     public void setup(final FMLCommonSetupEvent event)
     {
         CapabilityPlayerData.register();
+        CapabilityWorldData.register();
 
         event.enqueueWork(() -> {
             APStructures.setupStructures();
@@ -164,10 +178,29 @@ public class APRandomizer
         server.setDifficulty(Difficulty.NORMAL,true);
         ServerWorld theEnd = server.getLevel(World.END);
         assert theEnd != null;
-        for (EnderDragonEntity dragon : theEnd.getDragons()) {
-            dragon.remove();
-        }
 
+        //check to see if the chunk is loaded then fetch/generate if it is not.
+        if (!theEnd.hasChunk(0, 0)) { //Chunk is unloaded
+            IChunk chunk = theEnd.getChunk(0, 0, ChunkStatus.EMPTY, true);
+            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
+                chunk = theEnd.getChunk(0, 0, ChunkStatus.FULL);
+            }
+        }
+        //check if there is dragon data, if not create new stuff.
+        if(theEnd.dragonFight == null)
+            theEnd.dragonFight = new DragonFightManager(theEnd, server.getWorldData().worldGenSettings().seed(), server.getWorldData().endDragonFightData());
+        //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
+        for (int i = 0; i < 20; i++) {
+            theEnd.dragonFight.spawnNewGateway();
+        }
+        if(theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
+            //get the top block of 0,0 then spawn the portal there, the parameter is whether or not to make it an active portal
+            BlockPos pos = theEnd.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
+            theEnd.dragonFight.portalLocation = pos.below();
+        }
+        theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
+        theEnd.save(null,true,false);
+        //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
     }
 
     @SubscribeEvent

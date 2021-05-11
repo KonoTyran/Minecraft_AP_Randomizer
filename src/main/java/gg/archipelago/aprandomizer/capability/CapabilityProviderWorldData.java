@@ -9,10 +9,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CapabilityProviderPlayerData implements ICapabilitySerializable<INBT> {
+public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT> {
 
 
-    private PlayerData playerData = new PlayerData();
+    private WorldData worldData = new WorldData();
 
     /**
      * Asks the Provider if it has the given capability
@@ -26,8 +26,8 @@ public class CapabilityProviderPlayerData implements ICapabilitySerializable<INB
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        if (CapabilityPlayerData.CAPABILITY_PLAYER_DATA == capability) {
-            return (LazyOptional<T>)LazyOptional.of(()-> playerData);
+        if (CapabilityWorldData.CAPABILITY_WORLD_DATA == capability) {
+            return (LazyOptional<T>)LazyOptional.of(()-> worldData);
             // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
             //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
             // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
@@ -44,11 +44,11 @@ public class CapabilityProviderPlayerData implements ICapabilitySerializable<INB
 
     @Override
     public INBT serializeNBT() {
-        return CapabilityPlayerData.CAPABILITY_PLAYER_DATA.writeNBT(playerData, null);
+        return CapabilityWorldData.CAPABILITY_WORLD_DATA.writeNBT(worldData, null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        CapabilityPlayerData.CAPABILITY_PLAYER_DATA.readNBT(playerData,null,nbt);
+        CapabilityWorldData.CAPABILITY_WORLD_DATA.readNBT(worldData,null,nbt);
     }
 }

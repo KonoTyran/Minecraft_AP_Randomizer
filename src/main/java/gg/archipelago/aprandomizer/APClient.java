@@ -7,8 +7,8 @@ import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.Color;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -20,34 +20,42 @@ public class APClient extends gg.archipelago.APClient.APClient {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private SlotData slotData;
+
     private final MinecraftServer server;
     APClient(MinecraftServer server) {
         super("Minecraft");
         this.server = server;
     }
 
+    public SlotData getSlotData() {
+        return slotData;
+    }
+
     @Override
     public void onConnectResult(ConnectionResultEvent event) {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
-            SlotData slotData = event.getSlotData(SlotData.class);
+            slotData = event.getSlotData(SlotData.class);
             APMCData data = APRandomizer.getApmcData();
             if(!event.getSeedName().equals(data.seed_name)){
                 Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
                 event.setCanceled(true);
             }
-            if (slotData.client_version[0] >= APRandomizer.getClientVersion()[0]) {
-                if(slotData.client_version[1] > APRandomizer.getClientVersion()[1]) {
+            if (slotData.getClient_version()[0] >= APRandomizer.getClientVersion()[0]) {
+                if(slotData.getClient_version()[1] > APRandomizer.getClientVersion()[1]) {
                     event.setCanceled(true);
                     Utils.sendMessageToAll("AP server expects a newer mod version, please update your APRandomizer Mod.");
                     return;
                 }
-                else if(slotData.client_version[1] < APRandomizer.getClientVersion()[1]) {
+                else if(slotData.getClient_version()[1] < APRandomizer.getClientVersion()[1]) {
                     Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
                 }
             } else {
                 Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
             }
+
+            APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
             //give our item manager the list of received items to give to players as they log in.
             APRandomizer.getItemManager().setReceivedItems(getItemManager().getReceivedItems());
@@ -65,7 +73,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
             Utils.sendMessageToAll("Invalid Password.");
         }
         else if (event.getResult() == ConnectionResult.IncompatibleVersion) {
-            Utils.sendMessageToAll("Server Expects a different APRandomizer mod version.");
+            Utils.sendMessageToAll("Server Sent Incompatible Version Error.");
         }
         else if (event.getResult() == ConnectionResult.InvalidSlot) {
             Utils.sendMessageToAll("Invalid Slot Name. (this is case sensitive)");
@@ -112,7 +120,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
     public void onReceiveItem(int item, String sentFromLocation, String senderName) {
         String itemName = getDataPackage().getItem(item);
         ITextComponent textItem = new StringTextComponent(itemName).withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)));
-        Utils.sendTitle(server, new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
+        Utils.sendTitle(new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
 
         APRandomizer.getRecipeManager().grantRecipe(item);
         APRandomizer.getItemManager().giveItemToAll(item);

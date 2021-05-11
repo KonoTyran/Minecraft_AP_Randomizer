@@ -1,11 +1,10 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APConfiguredStructures;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStructures;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.*;
+import net.minecraft.world.gen.feature.structure.StructureFeatures;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -85,13 +84,13 @@ public class onBiomeLoad {
 
                 switch (struct1) {
                     case "Village":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
+                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_PILLAGER_OUTPOST_NETHER);
+                        toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
                         break;
                     case "End City":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
+                        toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                         break;
                 }
             }
@@ -105,13 +104,13 @@ public class onBiomeLoad {
 
                 switch (struct2) {
                     case "Village":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_VILLAGE_NETHER);
+                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_PILLAGER_OUTPOST_NETHER);
+                        toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
                         break;
                     case "End City":
-                        toadd.add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
+                        toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                         break;
                 }
             }
@@ -124,7 +123,7 @@ public class onBiomeLoad {
 
                 switch (struct1) {
                     case "Village":
-                        toadd.add(() -> StructureFeatures.VILLAGE_PLAINS);
+                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
                         break;
                     case "Pillager Outpost":
                         toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
