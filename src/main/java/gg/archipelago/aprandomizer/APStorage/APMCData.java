@@ -20,7 +20,7 @@ public class APMCData {
     public State state = State.VALID;
 
     public enum State {
-        VALID,MISSING,INVALID_VERSION
+        VALID,MISSING,INVALID_VERSION,INVALID_SEED
     }
 
 }

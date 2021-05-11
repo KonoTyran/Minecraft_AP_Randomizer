@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
@@ -28,6 +29,10 @@ public class onAdvancement {
 
     @SubscribeEvent
     static void onAdvancementEvent(AdvancementEvent event) {
+        //dont do any checking if the apmcdata file is not valid.
+        if(APRandomizer.getApmcData().state != APMCData.State.VALID)
+            return;
+
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         Advancement advancement = event.getAdvancement();
         String id = advancement.getId().toString();

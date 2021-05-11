@@ -5,6 +5,7 @@ import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
+import gg.archipelago.aprandomizer.capability.WorldData;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
 import net.minecraft.server.MinecraftServer;
@@ -20,6 +21,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
@@ -29,6 +31,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,8 +62,11 @@ public class APRandomizer
     static private final int[] clientVersion = {0, 3};
 
     public APRandomizer() {
+        if(ModList.get().getModContainerById(MODID).isPresent()) {
+            ArtifactVersion version = ModList.get().getModContainerById(MODID).get().getModInfo().getVersion();
+            LOGGER.info("Minecraft Archipelago v{}.{}.{} Randomizer initializing.",version.getMajorVersion(),version.getMinorVersion(),version.getBuildNumber());
+        }
 
-        LOGGER.info("Minecraft Archipelago Randomizer initializing.");
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
@@ -176,6 +182,21 @@ public class APRandomizer
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);
         server.setDifficulty(Difficulty.NORMAL,true);
+
+        //fetch saved world seed to make sure its the right one if not then throw error.
+        WorldData worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        if(apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {
+            if(worldData.getSeedName().isEmpty())
+                worldData.setSeedName(apmcData.seed_name);
+            else
+                apmcData.state = APMCData.State.INVALID_SEED;
+        }
+
+        //if no apmc file was found set our world data seed to invalid so it will force a regen of this blank world.
+        if(apmcData.state == APMCData.State.MISSING) {
+            worldData.setSeedName("Invalid");
+        }
+
         ServerWorld theEnd = server.getLevel(World.END);
         assert theEnd != null;
 
