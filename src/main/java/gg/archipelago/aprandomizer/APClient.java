@@ -58,11 +58,11 @@ public class APClient extends gg.archipelago.APClient.APClient {
             APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
             //give our item manager the list of received items to give to players as they log in.
-            APRandomizer.getItemManager().setReceivedItems(getItemManager().getReceivedItems());
+            APRandomizer.getItemManager().setReceivedItems(getItemManager().getReceivedItemIDs());
 
             //reset and catch up our global recipe list to be consistent with what we just got from the AP server
             APRandomizer.getRecipeManager().resetRecipes();
-            APRandomizer.getRecipeManager().grantRecipeList(getItemManager().getReceivedItems());
+            APRandomizer.getRecipeManager().grantRecipeList(getItemManager().getReceivedItemIDs());
 
             //catch up all connected players to the list just received.
             for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
