@@ -9,15 +9,12 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.STitlePacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;
@@ -50,7 +47,10 @@ public class Utils
     }
 
     public static void sendMessageToAll(ITextComponent message) {
-        server.getPlayerList().broadcastMessage(message,ChatType.SYSTEM, Util.NIL_UUID);
+        server.execute(() -> {
+            server.getPlayerList().broadcastMessage(message,ChatType.SYSTEM, Util.NIL_UUID);
+        });
+
     }
 
     public static void sendFancyMessageToAll(APPrint apPrint) {
@@ -95,29 +95,31 @@ public class Utils
     }
 
     public static void sendTitle(ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
+        server.execute(() -> {
+            TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
 
-        TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
 
-
-        TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitle, STitlePacket.Type.SUBTITLE);
-        TitleUtils.showTitle(server.getPlayerList().getPlayers(), title, STitlePacket.Type.TITLE);
-
+            TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitle, STitlePacket.Type.SUBTITLE);
+            TitleUtils.showTitle(server.getPlayerList().getPlayers(), title, STitlePacket.Type.TITLE);
+        });
     }
 
     public static void sendActionBar(String actionBarMessage, int fadeIn, int stay, int fadeOut) {
+        server.execute(() -> {
+            TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
 
-        TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
+            ITextComponent subTitleMessage = new StringTextComponent(actionBarMessage);
 
-        ITextComponent subTitleMessage = new StringTextComponent(actionBarMessage);
-
-        TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitleMessage, STitlePacket.Type.ACTIONBAR);
-
+            TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitleMessage, STitlePacket.Type.ACTIONBAR);
+        });
     }
 
     public static void PlaySoundToAll(SoundEvent sound) {
-        for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-            player.playNotifySound(sound,SoundCategory.MASTER,1,1);
-        }
+        server.execute(() -> {
+            for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
+                player.playNotifySound(sound, SoundCategory.MASTER, 1, 1);
+            }
+        });
     }
 
     public static void SpawnDragon(ServerWorld end) {

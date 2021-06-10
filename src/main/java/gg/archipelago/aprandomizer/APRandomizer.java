@@ -131,21 +131,24 @@ public class APRandomizer
         return clientVersion;
     }
 
+    private boolean deleteDirectory(File directoryToBeDeleted) {
+        File[] allContents = directoryToBeDeleted.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                if(!file.getName().equals("serverconfig")) {
+                    deleteDirectory(file);
+                }
+            }
+        }
+        return directoryToBeDeleted.delete();
+    }
+
     @SubscribeEvent
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
-        if (apmcData == null) {
-            LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
-            //event.getServer().close();
+        if (apmcData.state != APMCData.State.VALID) {
+            LOGGER.error("invalid APMC file");
             return;
         }
-
-
-        // todo figure out how to erase world and gen with this seed....
-        if(event.getServer().getWorldData().worldGenSettings().seed() != apmcData.world_seed) {
-            //event.getServer().getWorldPath(new FolderName(event.getServer().getWorldData().getLevelName()));
-
-        }
-
     }
 
     /**

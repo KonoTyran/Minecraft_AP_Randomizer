@@ -1,6 +1,5 @@
 package gg.archipelago.aprandomizer.advancementmanager;
 
-import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -182,16 +181,7 @@ public class AdvancementManager {
     }
 
     public int getRequiredAmount() {
-        if(getAP().getSlotData() == null)
-            return 0;
-        if (getAP().getSlotData().getAdvancement_goal() == 0)
-            return 30;
-        if (getAP().getSlotData().getAdvancement_goal() == 1)
-            return 50;
-        if (getAP().getSlotData().getAdvancement_goal() == 2)
-            return 70;
-
-        return 0;
+        return getAP().getSlotData().getAdvancement_goal();
     }
 
     public void setCheckedAdvancements(Set<Integer> checkedLocations) {

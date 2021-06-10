@@ -1,7 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.APClient.ClientStatus;
-import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
@@ -22,7 +21,7 @@ public class onPlayerClone
                 event.getOriginal().level.dimension().equals(World.END)
                 && !event.isWasDeath()
                 && event.getPlayer().level.dimension().equals(World.OVERWORLD)
-                && APRandomizer.getAdvancementManager().hasAdvancement(42005)
+                && APRandomizer.getAdvancementManager().getFinishedAmount() >= APRandomizer.getAdvancementManager().getRequiredAmount()
         ) {
             if(APRandomizer.getAP().isConnected()) {
                 APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
