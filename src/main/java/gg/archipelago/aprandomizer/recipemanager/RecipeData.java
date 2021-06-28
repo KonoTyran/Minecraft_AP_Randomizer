@@ -26,8 +26,8 @@ public class RecipeData {
         put(45007 , new GroupRecipe(45007, "Bed",new String[]{"minecraft:black_bed","minecraft:blue_bed","minecraft:brown_bed","minecraft:cyan_bed","minecraft:gray_bed","minecraft:green_bed","minecraft:light_blue_bed","minecraft:light_gray_bed","minecraft:lime_bed","minecraft:magenta_bed","minecraft:orange_bed","minecraft:pink_bed","minecraft:purple_bed","minecraft:red_bed","minecraft:white_bed","minecraft:yellow_bed"}));
         put(45008 , new GroupRecipe(45008, "Bottles",new String[]{"minecraft:glass_bottle"}));
         put(45009 , new GroupRecipe(45009, "Shield",new String[]{"minecraft:shield"}));
-        put(45010 , new GroupRecipe(45010, "Fishing Rod",new String[]{"minecraft:fishing_rod"}));
-        put(45011 , new GroupRecipe(45011, "Campfire",new String[]{"minecraft:campfire"}));
+        put(45010 , new GroupRecipe(45010, "Fishing Rod",new String[]{"minecraft:fishing_rod", "minecraft:carrot_on_a_stick", "minecraft:warped_fungus_on_a_stick"}));
+        put(45011 , new GroupRecipe(45011, "Campfire",new String[]{"minecraft:campfire","minecraft:soul_campfire"}));
     }};
 
     HashMap<Integer, ProgressiveRecipe> progressiveRecipes = new HashMap<Integer, ProgressiveRecipe>(){{
