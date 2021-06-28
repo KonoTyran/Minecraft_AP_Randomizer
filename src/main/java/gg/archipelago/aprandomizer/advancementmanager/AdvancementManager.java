@@ -181,11 +181,14 @@ public class AdvancementManager {
     }
 
     public int getRequiredAmount() {
+        if(getAP().getSlotData() == null) {
+            return 0;
+        }
         return getAP().getSlotData().getAdvancement_goal();
     }
 
     public void setCheckedAdvancements(Set<Integer> checkedLocations) {
-        earnedAdvancements = checkedLocations;
+        earnedAdvancements.addAll(checkedLocations);
         syncAllAdvancements();
     }
 }

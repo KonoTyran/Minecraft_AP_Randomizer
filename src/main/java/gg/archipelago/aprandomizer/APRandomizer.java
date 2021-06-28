@@ -177,10 +177,10 @@ public class APRandomizer
 
         // do something when the server starts
         server = event.getServer();
-        apClient = new APClient(server);
         advancementManager = new AdvancementManager();
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
+        apClient = new APClient(server);
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);

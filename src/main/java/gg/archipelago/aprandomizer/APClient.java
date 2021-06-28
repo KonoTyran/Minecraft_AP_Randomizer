@@ -26,6 +26,14 @@ public class APClient extends gg.archipelago.APClient.APClient {
     APClient(MinecraftServer server) {
         super("Minecraft");
         this.server = server;
+        APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
+
+        //give our item manager the list of received items to give to players as they log in.
+        APRandomizer.getItemManager().setReceivedItems(getItemManager().getReceivedItemIDs());
+
+        //reset and catch up our global recipe list to be consistent with what we loaded from our save file.
+        APRandomizer.getRecipeManager().resetRecipes();
+        APRandomizer.getRecipeManager().grantRecipeList(getItemManager().getReceivedItemIDs());
     }
 
     public SlotData getSlotData() {
@@ -65,9 +73,12 @@ public class APClient extends gg.archipelago.APClient.APClient {
             APRandomizer.getRecipeManager().grantRecipeList(getItemManager().getReceivedItemIDs());
 
             //catch up all connected players to the list just received.
-            for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                APRandomizer.getItemManager().catchUpPlayer(player);
-            }
+            server.execute(() -> {
+                for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                    APRandomizer.getItemManager().catchUpPlayer(player);
+                }
+            });
+
         }
         else if (event.getResult() == ConnectionResult.InvalidPassword) {
             Utils.sendMessageToAll("Invalid Password.");
