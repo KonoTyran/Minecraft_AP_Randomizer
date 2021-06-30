@@ -30,14 +30,14 @@ public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
      * is time to create the pieces of the structure for generation.
      */
     @Override
-    public  IStartFactory<NoFeatureConfig> getStartFactory() {
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
         return NetherEndCityStructure.Start::new;
     }
 
     /**
-     *        : WARNING!!! DO NOT FORGET THIS METHOD!!!! :
+     * : WARNING!!! DO NOT FORGET THIS METHOD!!!! :
      * If you do not override step method, your structure WILL crash the biome as it is being parsed!
-     *
+     * <p>
      * Generation stage for when to generate the structure. there are 10 stages you can pick from!
      * This surface structure stage places the structure before plants and ores are generated.
      */

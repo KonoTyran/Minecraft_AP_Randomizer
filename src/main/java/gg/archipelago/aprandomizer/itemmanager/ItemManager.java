@@ -24,17 +24,16 @@ public class ItemManager {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final HashMap<Integer, ItemInfo> itemData = new HashMap<Integer, ItemInfo>()
-    {{
+    private final HashMap<Integer, ItemInfo> itemData = new HashMap<Integer, ItemInfo>() {{
         put(45015, new ItemInfo(Items.NETHERITE_SCRAP, 8));
         put(45016, new ItemInfo(Items.EMERALD, 8));
         put(45017, new ItemInfo(Items.EMERALD, 4));
-        put(45018, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.CHANNELING,1)));
-        put(45019, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SILK_TOUCH,1)));
-        put(45020, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SHARPNESS,3)));
-        put(45021, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.PIERCING,4)));
-        put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.MOB_LOOTING,3)));
-        put(45023, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.INFINITY_ARROWS,1)));
+        put(45018, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.CHANNELING, 1)));
+        put(45019, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SILK_TOUCH, 1)));
+        put(45020, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.SHARPNESS, 3)));
+        put(45021, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.PIERCING, 4)));
+        put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.MOB_LOOTING, 3)));
+        put(45023, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentData(Enchantments.INFINITY_ARROWS, 1)));
         put(45024, new ItemInfo(Items.DIAMOND_ORE, 4));
         put(45025, new ItemInfo(Items.IRON_ORE, 16));
         put(45029, new ItemInfo(Items.ENDER_PEARL, 3));
@@ -43,11 +42,10 @@ public class ItemManager {
         put(45031, new ItemInfo(Items.COOKED_PORKCHOP, 16));
         put(45032, new ItemInfo(Items.GOLD_ORE, 8));
         put(45033, new ItemInfo(Items.ROTTEN_FLESH, 8));
-        put(45034, new ItemInfo(Items.ARROW, 1,"The Arrow"));
+        put(45034, new ItemInfo(Items.ARROW, 1, "The Arrow"));
     }};
 
-    private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>()
-    {{
+    private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>() {{
         put(45026, 500);
         put(45027, 100);
         put(45028, 50);
@@ -57,17 +55,17 @@ public class ItemManager {
 
     private ItemStack buildNewItemStack(int itemID) {
         ItemInfo iInfo = itemData.get(itemID);
-        ItemStack iStack = new ItemStack(iInfo.item,iInfo.amount);
+        ItemStack iStack = new ItemStack(iInfo.item, iInfo.amount);
         if (iInfo.enchant != null) {
             EnchantedBookItem.addEnchantment(iStack, iInfo.enchant);
         }
-        if(iInfo.name != null) {
+        if (iInfo.name != null) {
             iStack.setHoverName(new StringTextComponent(iInfo.name));
         }
         return iStack;
     }
 
-    public void setReceivedItems (ArrayList<Integer> items) {
+    public void setReceivedItems(ArrayList<Integer> items) {
         this.receivedItems = items;
     }
 
@@ -75,12 +73,12 @@ public class ItemManager {
 
         //update the player's index of received items for syncing later.
         LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
-        if(loPlayerData.isPresent()) {
+        if (loPlayerData.isPresent()) {
             PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
             playerData.setIndex(receivedItems.size());
         }
 
-        if(itemData.containsKey(itemID)) {
+        if (itemData.containsKey(itemID)) {
             ItemStack itemstack = buildNewItemStack(itemID);
             boolean flag = player.inventory.add(itemstack);
             if (flag && itemstack.isEmpty()) {
@@ -92,16 +90,14 @@ public class ItemManager {
 
                 player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 player.inventoryMenu.broadcastChanges();
-            }
-            else {
+            } else {
                 ItemEntity itementity = player.drop(itemstack, false);
                 if (itementity != null) {
                     itementity.setNoPickUpDelay();
                     itementity.setOwner(player.getUUID());
                 }
             }
-        }
-        else if (xpData.containsKey(itemID)) {
+        } else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
             player.giveExperiencePoints(xpValue);
         }
@@ -121,11 +117,11 @@ public class ItemManager {
      */
     public void catchUpPlayer(ServerPlayerEntity player) {
         LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
-        if(loPlayerData.isPresent()) {
-            PlayerData playerData= loPlayerData.orElseThrow(AssertionError::new);
+        if (loPlayerData.isPresent()) {
+            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
 
             for (int i = playerData.getIndex(); i < receivedItems.size(); i++) {
-                giveItem(receivedItems.get(i),player);
+                giveItem(receivedItems.get(i), player);
             }
         }
     }

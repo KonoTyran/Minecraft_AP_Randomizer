@@ -27,7 +27,7 @@ public class onAdvancement {
     @SubscribeEvent
     static void onAdvancementEvent(AdvancementEvent event) {
         //dont do any checking if the apmcdata file is not valid.
-        if(APRandomizer.getApmcData().state != APMCData.State.VALID)
+        if (APRandomizer.getApmcData().state != APMCData.State.VALID)
             return;
 
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
@@ -35,13 +35,13 @@ public class onAdvancement {
         String id = advancement.getId().toString();
 
         AdvancementManager am = APRandomizer.getAdvancementManager();
-        if(!am.hasAdvancement(id)) {
-            LOGGER.debug("{} has gotten the advancement {}",player.getDisplayName().getString(),id);
+        if (!am.hasAdvancement(id)) {
+            LOGGER.debug("{} has gotten the advancement {}", player.getDisplayName().getString(), id);
             am.addAdvancement(am.getAdvancementID(id));
 
-            String remaining = String.format(" (%d)",am.getFinishedAmount());
-            if(am.getRequiredAmount() > 0)
-                remaining = String.format(" (%d / %d)",am.getFinishedAmount(),am.getRequiredAmount());
+            String remaining = String.format(" (%d)", am.getFinishedAmount());
+            if (am.getRequiredAmount() > 0)
+                remaining = String.format(" (%d / %d)", am.getFinishedAmount(), am.getRequiredAmount());
 
             APRandomizer.getServer().getPlayerList().broadcastMessage(
                     new TranslationTextComponent(
@@ -59,17 +59,17 @@ public class onAdvancement {
             );
 
             am.syncAdvancement(advancement);
-            if(am.getRequiredAmount() != 0) {
-                if(am.getFinishedAmount() >= am.getRequiredAmount()) {
+            if (am.getRequiredAmount() != 0) {
+                if (am.getFinishedAmount() >= am.getRequiredAmount()) {
                     ServerWorld end = event.getPlayer().getServer().getLevel(World.END);
                     assert end != null;
                     assert end.dragonFight != null;
                     WorldData worldData = end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
 
-                    if(worldData.getDragonState() == WorldData.DRAGON_ASLEEP) {
+                    if (worldData.getDragonState() == WorldData.DRAGON_ASLEEP) {
                         Utils.PlaySoundToAll(SoundEvents.ENDER_DRAGON_AMBIENT);
                         Utils.sendMessageToAll("The Dragon has awoken.");
-                        Utils.sendTitle(new StringTextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(Color.fromRgb(java.awt.Color.ORANGE.getRGB()))),new StringTextComponent("has been awoken"),40,120,40);
+                        Utils.sendTitleToAll(new StringTextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(Color.fromRgb(java.awt.Color.ORANGE.getRGB()))), new StringTextComponent("has been awoken"), 40, 120, 40);
                         worldData.setDragonState(WorldData.DRAGON_SPAWNED);
                         Utils.SpawnDragon(end);
                     }

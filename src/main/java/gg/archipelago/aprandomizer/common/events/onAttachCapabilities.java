@@ -20,7 +20,7 @@ public class onAttachCapabilities {
 
     @SubscribeEvent
     static void onAttachCapabilitiesToEntityEvent(AttachCapabilitiesEvent<Entity> event) {
-        if( event.getObject() instanceof ServerPlayerEntity ) {
+        if (event.getObject() instanceof ServerPlayerEntity) {
             event.addCapability(new ResourceLocation(APRandomizer.MODID + ":capability_provider_player_data"), new CapabilityProviderPlayerData());
         }
     }

@@ -37,14 +37,14 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
      * is time to create the pieces of the structure for generation.
      */
     @Override
-    public  IStartFactory<NoFeatureConfig> getStartFactory() {
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
         return NetherVillageStructure.Start::new;
     }
 
     /**
-     *        : WARNING!!! DO NOT FORGET THIS METHOD!!!! :
+     * : WARNING!!! DO NOT FORGET THIS METHOD!!!! :
      * If you do not override step method, your structure WILL crash the biome as it is being parsed!
-     *
+     * <p>
      * Generation stage for when to generate the structure. there are 10 stages you can pick from!
      * This surface structure stage places the structure before plants and ores are generated.
      */
@@ -60,6 +60,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
     private static final List<MobSpawnInfo.Spawners> STRUCTURE_CREATURES = ImmutableList.of(
             new MobSpawnInfo.Spawners(EntityType.CAT, 30, 10, 15)
     );
+
     @Override
     public List<MobSpawnInfo.Spawners> getDefaultCreatureSpawnList() {
         return STRUCTURE_CREATURES;
@@ -97,7 +98,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
              */
             IBlockReader iblockreader = chunkGenerator.getBaseColumn(x, z);
 
-            for(BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(x, y, z); y > seaLevel; --y) {
+            for (BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(x, y, z); y > seaLevel; --y) {
                 BlockState blockstate = iblockreader.getBlockState(blockpos$mutable);
                 blockpos$mutable.move(Direction.DOWN);
                 BlockState blockstate1 = iblockreader.getBlockState(blockpos$mutable);

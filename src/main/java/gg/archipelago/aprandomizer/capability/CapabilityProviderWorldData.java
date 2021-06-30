@@ -16,18 +16,19 @@ public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT
 
     /**
      * Asks the Provider if it has the given capability
+     *
      * @param capability<T> capability to be checked for
-     * @param facing the side of the provider being checked (null = no particular side)
-     * @param <T> The interface instance that is used
+     * @param facing        the side of the provider being checked (null = no particular side)
+     * @param <T>           The interface instance that is used
      * @return a lazy-initialisation supplier of the interface instance that is used to access this capability
-     *         In this case, we don't actually use lazy initialisation because the instance is very quick to create.
-     *         See CapabilityProviderFlowerBag for an example of lazy initialisation
+     * In this case, we don't actually use lazy initialisation because the instance is very quick to create.
+     * See CapabilityProviderFlowerBag for an example of lazy initialisation
      */
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         if (CapabilityWorldData.CAPABILITY_WORLD_DATA == capability) {
-            return (LazyOptional<T>)LazyOptional.of(()-> worldData);
+            return (LazyOptional<T>) LazyOptional.of(() -> worldData);
             // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
             //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
             // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
@@ -49,6 +50,6 @@ public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        CapabilityWorldData.CAPABILITY_WORLD_DATA.readNBT(worldData,null,nbt);
+        CapabilityWorldData.CAPABILITY_WORLD_DATA.readNBT(worldData, null, nbt);
     }
 }

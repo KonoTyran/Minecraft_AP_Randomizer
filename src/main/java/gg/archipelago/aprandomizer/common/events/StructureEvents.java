@@ -20,17 +20,17 @@ public class StructureEvents {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     static public void addDimensionalSpacing(WorldEvent.Load event) {
-        if(!(event.getWorld() instanceof ServerWorld))
+        if (!(event.getWorld() instanceof ServerWorld))
             return;
-        ServerWorld serverWorld = (ServerWorld)event.getWorld();
+        ServerWorld serverWorld = (ServerWorld) event.getWorld();
 
         /*
          * Prevent spawning our structure in Vanilla's superflat world as
          * people seem to want their superflat worlds free of modded structures.
          * Also that vanilla superflat is really tricky and buggy to work with in my experience.
          */
-        if(serverWorld.getChunkSource().getGenerator() instanceof FlatChunkGenerator &&
-                serverWorld.dimension().equals(World.OVERWORLD)){
+        if (serverWorld.getChunkSource().getGenerator() instanceof FlatChunkGenerator &&
+                serverWorld.dimension().equals(World.OVERWORLD)) {
             return;
         }
 
@@ -54,7 +54,6 @@ public class StructureEvents {
     static public void onBiomeLoad(BiomeLoadingEvent event) {
         event.getGeneration().getStructures().add(() -> APConfiguredStructures.CONFIGURED_END_CITY_NETHER);
     }*/
-
 
 
 }

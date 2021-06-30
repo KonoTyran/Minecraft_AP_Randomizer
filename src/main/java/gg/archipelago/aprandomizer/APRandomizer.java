@@ -44,8 +44,7 @@ import java.util.Comparator;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
-public class APRandomizer
-{
+public class APRandomizer {
     // Directly reference a log4j logger.
     public static final Logger LOGGER = LogManager.getLogger();
     public static final String MODID = "aprandomizer";
@@ -62,9 +61,9 @@ public class APRandomizer
     static private final int[] clientVersion = {0, 3};
 
     public APRandomizer() {
-        if(ModList.get().getModContainerById(MODID).isPresent()) {
+        if (ModList.get().getModContainerById(MODID).isPresent()) {
             ArtifactVersion version = ModList.get().getModContainerById(MODID).get().getModInfo().getVersion();
-            LOGGER.info("Minecraft Archipelago v{}.{}.{} Randomizer initializing.",version.getMajorVersion(),version.getMinorVersion(),version.getBuildNumber());
+            LOGGER.info("Minecraft Archipelago v{}.{}.{} Randomizer initializing.", version.getMajorVersion(), version.getMinorVersion(), version.getBuildNumber());
         }
 
         // For registration and init stuff.
@@ -79,24 +78,24 @@ public class APRandomizer
         Gson gson = new Gson();
         try {
             Path path = Paths.get("./APData/");
-            if(!Files.exists(path)) {
+            if (!Files.exists(path)) {
                 Files.createDirectories(path);
                 LOGGER.info("APData folder missing, creating.");
             }
 
-            File[] files = new File(path.toUri()).listFiles((d,name) -> name.endsWith(".apmc"));
+            File[] files = new File(path.toUri()).listFiles((d, name) -> name.endsWith(".apmc"));
             Arrays.sort(files, Comparator.comparingLong(File::lastModified));
             String b64 = Files.readAllLines(files[0].toPath()).get(0);
             String json = new String(Base64.getDecoder().decode(b64));
             apmcData = gson.fromJson(json, APMCData.class);
-            if(!Arrays.equals(apmcData.client_version,clientVersion)) {
+            if (!Arrays.equals(apmcData.client_version, clientVersion)) {
                 apmcData.state = APMCData.State.INVALID_VERSION;
             }
             //LOGGER.info(apmcData.structures.toString());
 
         } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException e) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
-            if(apmcData == null) {
+            if (apmcData == null) {
                 apmcData = new APMCData();
                 apmcData.state = APMCData.State.MISSING;
             }
@@ -135,7 +134,7 @@ public class APRandomizer
         File[] allContents = directoryToBeDeleted.listFiles();
         if (allContents != null) {
             for (File file : allContents) {
-                if(!file.getName().equals("serverconfig")) {
+                if (!file.getName().equals("serverconfig")) {
                     deleteDirectory(file);
                 }
             }
@@ -155,13 +154,12 @@ public class APRandomizer
      * Here, setupStructures will be ran after registration of all structures are finished.
      * This is important to be done here so that the Deferred Registry has already ran and
      * registered/created our structure for us.
-     *
+     * <p>
      * Once after that structure instance is made, we then can now do the rest of the setup
      * that requires a structure instance such as setting the structure spacing, creating the
      * configured structure instance, and more.
      */
-    public void setup(final FMLCommonSetupEvent event)
-    {
+    public void setup(final FMLCommonSetupEvent event) {
         CapabilityPlayerData.register();
         CapabilityWorldData.register();
 
@@ -182,21 +180,21 @@ public class APRandomizer
         itemManager = new ItemManager();
         apClient = new APClient(server);
 
-        server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true,server);
-        server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true,server);
-        server.setDifficulty(Difficulty.NORMAL,true);
+        server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true, server);
+        server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
+        server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch saved world seed to make sure its the right one if not then throw error.
         WorldData worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
-        if(apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {
-            if(worldData.getSeedName().isEmpty())
+        if (apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {
+            if (worldData.getSeedName().isEmpty())
                 worldData.setSeedName(apmcData.seed_name);
             else
                 apmcData.state = APMCData.State.INVALID_SEED;
         }
 
         //if no apmc file was found set our world data seed to invalid so it will force a regen of this blank world.
-        if(apmcData.state == APMCData.State.MISSING) {
+        if (apmcData.state == APMCData.State.MISSING) {
             worldData.setSeedName("Invalid");
         }
 
@@ -211,19 +209,19 @@ public class APRandomizer
             }
         }
         //check if there is dragon data, if not create new stuff.
-        if(theEnd.dragonFight == null)
+        if (theEnd.dragonFight == null)
             theEnd.dragonFight = new DragonFightManager(theEnd, server.getWorldData().worldGenSettings().seed(), server.getWorldData().endDragonFightData());
         //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
         for (int i = 0; i < 20; i++) {
             theEnd.dragonFight.spawnNewGateway();
         }
-        if(theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
+        if (theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
             //get the top block of 0,0 then spawn the portal there, the parameter is whether or not to make it an active portal
             BlockPos pos = theEnd.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
             theEnd.dragonFight.portalLocation = pos.below();
         }
         theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
-        theEnd.save(null,true,false);
+        theEnd.save(null, true, false);
         //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
     }
 
@@ -231,6 +229,7 @@ public class APRandomizer
     public void onServerStopping(FMLServerStoppingEvent event) {
         apClient.close();
     }
+
     @SubscribeEvent
     public void onServerStopped(FMLServerStoppedEvent event) {
         apClient.close();

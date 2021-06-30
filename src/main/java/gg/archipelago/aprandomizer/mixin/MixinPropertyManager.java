@@ -19,7 +19,7 @@ public abstract class MixinPropertyManager {
     @Inject(method = "loadFromFile(Ljava/nio/file/Path;)Ljava/util/Properties;", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void onLoadFromFile(Path p_218969_0_, CallbackInfoReturnable<Properties> cir, Properties properties) {
         LogManager.getLogger().info("Attempting to Inject Seed");
-        properties.setProperty("level-seed", ""+APRandomizer.getApmcData().world_seed);
+        properties.setProperty("level-seed", "" + APRandomizer.getApmcData().world_seed);
 
     }
 }

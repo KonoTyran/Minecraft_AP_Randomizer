@@ -39,7 +39,7 @@ public class PlayerData {
         public void readNBT(Capability<PlayerData> capability, PlayerData instance, Direction side, INBT nbt) {
             int index = 0;
             if (nbt.getType() == IntNBT.TYPE) {
-                index = ((IntNBT)nbt).getAsInt();
+                index = ((IntNBT) nbt).getAsInt();
             }
             instance.setIndex(index);
         }

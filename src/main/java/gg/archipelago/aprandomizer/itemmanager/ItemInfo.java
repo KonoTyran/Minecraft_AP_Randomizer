@@ -10,7 +10,7 @@ public class ItemInfo {
     int amount;
     EnchantmentData enchant;
 
-    public ItemInfo(Item item, int amount, EnchantmentData enchant,String name) {
+    public ItemInfo(Item item, int amount, EnchantmentData enchant, String name) {
         this.item = item;
         this.amount = amount;
         this.enchant = enchant;
@@ -18,14 +18,14 @@ public class ItemInfo {
     }
 
     public ItemInfo(Item item, int amount, EnchantmentData enchant) {
-        this(item,amount,enchant,null);
+        this(item, amount, enchant, null);
     }
 
     public ItemInfo(Item item, int amount) {
-        this(item,amount,null,null);
+        this(item, amount, null, null);
     }
 
     public ItemInfo(Item item, int amount, String name) {
-        this(item,amount,null, name);
+        this(item, amount, null, name);
     }
 }

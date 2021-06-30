@@ -1,6 +1,5 @@
 package gg.archipelago.aprandomizer.mixin;
 
-import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.raid.Raid;
@@ -17,7 +16,8 @@ public abstract class MixinRaid {
     @Shadow
     private ServerWorld level;
 
-    @Shadow public abstract BlockPos getCenter();
+    @Shadow
+    public abstract BlockPos getCenter();
 
     @Inject(method = "findRandomSpawnPos(II)Lnet/minecraft/util/math/BlockPos;", at = @At(value = "HEAD"), cancellable = true)
     protected void onFindRandomSpawnPos(int p_221298_1_, int p_221298_2_, CallbackInfoReturnable<BlockPos> cir) {

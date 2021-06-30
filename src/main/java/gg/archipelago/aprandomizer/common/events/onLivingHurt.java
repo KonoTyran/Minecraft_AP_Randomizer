@@ -22,7 +22,7 @@ public class onLivingHurt {
     static void onLivingHurtEvent(LivingHurtEvent event) {
         LivingEntity entity = event.getEntityLiving();
         if (entity.getEntity().getEntity() instanceof PigEntity) {
-            if(entity.getPassengers().size() >0 ) {
+            if (entity.getPassengers().size() > 0) {
                 if (entity.getPassengers().get(0) instanceof ServerPlayerEntity) {
                     if (event.getSource().msgId.equals("fall")) {
                         ServerPlayerEntity player = (ServerPlayerEntity) entity.getPassengers().get(0);
@@ -37,14 +37,14 @@ public class onLivingHurt {
                 }
             }
         }
-        Entity e =event.getSource().getEntity();
+        Entity e = event.getSource().getEntity();
         if (e instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity)e;
+            ServerPlayerEntity player = (ServerPlayerEntity) e;
             if (event.getAmount() >= 18) {
                 Advancement a = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft:story/overkill"));
                 AdvancementProgress ap = player.getAdvancements().getOrStartProgress(a);
                 if (!ap.isDone()) {
-                    for(String s : ap.getRemainingCriteria()) {
+                    for (String s : ap.getRemainingCriteria()) {
                         player.getAdvancements().award(a, s);
                     }
                 }

@@ -28,16 +28,15 @@ public class APInfoDump {
 
         dispatcher.register(
                 Commands.literal("ap") //base slash command is "connect"
-                //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
-                .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
-                //take the first argument as a string and name it "Address"
-                .then(Commands.argument("infodump", StringArgumentType.string())
-                        .executes(APInfoDump::infoDump)
-                )
+                        //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
+                        .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
+                        //take the first argument as a string and name it "Address"
+                        .then(Commands.argument("infodump", StringArgumentType.string())
+                                .executes(APInfoDump::infoDump)
+                        )
         );
 
     }
-
 
 
     private static int infoDump(CommandContext<CommandSource> source) {
@@ -51,13 +50,13 @@ public class APInfoDump {
             Iterator<Advancement> itr = advancements.iterator();
             while (itr.hasNext()) {
                 Advancement advancement = itr.next();
-                if(advancement.getId().getPath().startsWith("recipes/")) {
+                if (advancement.getId().getPath().startsWith("recipes/")) {
                     itr.remove();
                 }
 
 
                 //advancement.getDisplay().getTitle().toString();
-                fileOut.write(String.format("%d,%s\n",i++,advancement.getDisplay().getTitle().getString()).getBytes());
+                fileOut.write(String.format("%d,%s\n", i++, advancement.getDisplay().getTitle().getString()).getBytes());
             }
 
             fileOut.close();

@@ -20,15 +20,13 @@ import net.minecraft.world.server.ServerWorld;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Utils
-{
+public class Utils {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
     /**
-     *
      * @param source command source to send the message.
      * @param Message Message to send
-     *                send a message to whoever ran the command.
+     * send a message to whoever ran the command.
      */
 
     private static MinecraftServer server = APRandomizer.getServer();
@@ -48,7 +46,7 @@ public class Utils
 
     public static void sendMessageToAll(ITextComponent message) {
         server.execute(() -> {
-            server.getPlayerList().broadcastMessage(message,ChatType.SYSTEM, Util.NIL_UUID);
+            server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
         });
 
     }
@@ -58,7 +56,7 @@ public class Utils
         ITextComponent message = Utils.apPrintToTextComponent(apPrint);
         LOGGER.trace("found " + apPrint.parts.length + " parts");
 
-        server.getPlayerList().broadcastMessage(message,ChatType.SYSTEM, Util.NIL_UUID);
+        server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
 
     }
 
@@ -66,23 +64,19 @@ public class Utils
         StringTextComponent message = new StringTextComponent("");
         for (int i = 0; apPrint.parts.length > i; ++i) {
             APPrintPart part = apPrint.parts[i];
-            LOGGER.trace("part["+i+"]: " + part.text + ", "+part.color+", "+part.type);
+            LOGGER.trace("part[" + i + "]: " + part.text + ", " + part.color + ", " + part.type);
             Style style = Style.EMPTY;
             if (part.color == null) {
                 if (APRandomizer.getAP().getMyName().equals(part.text)) {
                     style = Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)).withBold(true);
-                }
-                else if (part.type == APPrintType.playerID) {
+                } else if (part.type == APPrintType.playerID) {
                     style = Style.EMPTY.withColor(Color.fromRgb(APPrintColor.yellow.value));
-                }
-                else if (part.type == APPrintType.locationID) {
+                } else if (part.type == APPrintType.locationID) {
                     style = Style.EMPTY.withColor(Color.fromRgb(APPrintColor.green.value));
-                }
-                else if (part.type == APPrintType.itemID) {
+                } else if (part.type == APPrintType.itemID) {
                     style = Style.EMPTY.withColor(Color.fromRgb(APPrintColor.cyan.value));
                 }
-            }
-            else if (part.color == APPrintColor.underline)
+            } else if (part.color == APPrintColor.underline)
                 style = Style.EMPTY.withUnderlined(true);
             else if (part.color == APPrintColor.bold)
                 style = Style.EMPTY.withBold(true);
@@ -94,13 +88,9 @@ public class Utils
         return message;
     }
 
-    public static void sendTitle(ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
+    public static void sendTitleToAll(ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
         server.execute(() -> {
-            TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
-
-
-            TitleUtils.showTitle(server.getPlayerList().getPlayers(), subTitle, STitlePacket.Type.SUBTITLE);
-            TitleUtils.showTitle(server.getPlayerList().getPlayers(), title, STitlePacket.Type.TITLE);
+            TitleQueue.queueTitle(new QueuedTitle(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut, subTitle, title));
         });
     }
 

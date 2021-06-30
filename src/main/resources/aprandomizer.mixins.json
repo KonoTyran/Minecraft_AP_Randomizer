@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "aprandomizer.refmap.json",
   "mixins": [
-    "MixinRaid",
-    "MixinPropertyManager"
+    "MixinPropertyManager",
+    "MixinRaid"
   ],
   "minVersion": "0.8"
 }

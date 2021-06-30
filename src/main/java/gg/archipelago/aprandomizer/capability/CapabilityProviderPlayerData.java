@@ -16,18 +16,19 @@ public class CapabilityProviderPlayerData implements ICapabilitySerializable<INB
 
     /**
      * Asks the Provider if it has the given capability
+     *
      * @param capability<T> capability to be checked for
-     * @param facing the side of the provider being checked (null = no particular side)
-     * @param <T> The interface instance that is used
+     * @param facing        the side of the provider being checked (null = no particular side)
+     * @param <T>           The interface instance that is used
      * @return a lazy-initialisation supplier of the interface instance that is used to access this capability
-     *         In this case, we don't actually use lazy initialisation because the instance is very quick to create.
-     *         See CapabilityProviderFlowerBag for an example of lazy initialisation
+     * In this case, we don't actually use lazy initialisation because the instance is very quick to create.
+     * See CapabilityProviderFlowerBag for an example of lazy initialisation
      */
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
         if (CapabilityPlayerData.CAPABILITY_PLAYER_DATA == capability) {
-            return (LazyOptional<T>)LazyOptional.of(()-> playerData);
+            return (LazyOptional<T>) LazyOptional.of(() -> playerData);
             // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
             //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
             // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
@@ -49,6 +50,6 @@ public class CapabilityProviderPlayerData implements ICapabilitySerializable<INB
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        CapabilityPlayerData.CAPABILITY_PLAYER_DATA.readNBT(playerData,null,nbt);
+        CapabilityPlayerData.CAPABILITY_PLAYER_DATA.readNBT(playerData, null, nbt);
     }
 }

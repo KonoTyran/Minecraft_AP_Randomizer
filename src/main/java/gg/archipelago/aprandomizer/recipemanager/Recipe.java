@@ -6,6 +6,6 @@ import java.util.Set;
 
 public interface Recipe {
 
-    public Set<IRecipe<?>> getGrantedRecipes();
+    Set<IRecipe<?>> getGrantedRecipes();
 
 }

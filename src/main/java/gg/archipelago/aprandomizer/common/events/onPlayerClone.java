@@ -12,18 +12,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class onPlayerClone
-{
+public class onPlayerClone {
     @SubscribeEvent
-    public static void onPlayerCloneEvent (PlayerEvent.Clone event) {
+    public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
         //check if this dimension transition is the cause of entering the end portal.
-        if(
+        if (
                 event.getOriginal().level.dimension().equals(World.END)
-                && !event.isWasDeath()
-                && event.getPlayer().level.dimension().equals(World.OVERWORLD)
-                && APRandomizer.getAdvancementManager().getFinishedAmount() >= APRandomizer.getAdvancementManager().getRequiredAmount()
+                        && !event.isWasDeath()
+                        && event.getPlayer().level.dimension().equals(World.OVERWORLD)
+                        && APRandomizer.getAdvancementManager().getFinishedAmount() >= APRandomizer.getAdvancementManager().getRequiredAmount()
         ) {
-            if(APRandomizer.getAP().isConnected()) {
+            if (APRandomizer.getAP().isConnected()) {
                 APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
             }
         }

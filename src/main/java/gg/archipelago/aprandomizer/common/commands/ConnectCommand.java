@@ -27,40 +27,40 @@ public class ConnectCommand {
 
         dispatcher.register(
                 Commands.literal("connect") //base slash command is "connect"
-                //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
-                .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
-                //take the first argument as a string and name it "Address"
-                .then(Commands.argument("Address", StringArgumentType.string())
-                        .executes(context -> connectToAPServer(
-                                context,
-                                StringArgumentType.getString(context,"Address"),
-                                38281,
-                                null
-                        ))
-                        .then(Commands.argument("Port", IntegerArgumentType.integer())
+                        //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
+                        .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
+                        //take the first argument as a string and name it "Address"
+                        .then(Commands.argument("Address", StringArgumentType.string())
                                 .executes(context -> connectToAPServer(
                                         context,
-                                        StringArgumentType.getString(context,"Address"),
-                                        IntegerArgumentType.getInteger(context,"Port"),
+                                        StringArgumentType.getString(context, "Address"),
+                                        38281,
                                         null
                                 ))
-                                .then(Commands.argument("Password", StringArgumentType.string())
+                                .then(Commands.argument("Port", IntegerArgumentType.integer())
                                         .executes(context -> connectToAPServer(
                                                 context,
-                                                StringArgumentType.getString(context,"Address"),
-                                                IntegerArgumentType.getInteger(context,"Port"),
-                                                StringArgumentType.getString(context,"Password")
+                                                StringArgumentType.getString(context, "Address"),
+                                                IntegerArgumentType.getInteger(context, "Port"),
+                                                null
                                         ))
+                                        .then(Commands.argument("Password", StringArgumentType.string())
+                                                .executes(context -> connectToAPServer(
+                                                        context,
+                                                        StringArgumentType.getString(context, "Address"),
+                                                        IntegerArgumentType.getInteger(context, "Port"),
+                                                        StringArgumentType.getString(context, "Password")
+                                                ))
+                                        )
                                 )
                         )
-                )
         );
 
     }
 
     private static int connectToAPServer(CommandContext<CommandSource> commandContext, String hostname, int port, String password) {
         APMCData data = APRandomizer.getApmcData();
-        if(data.state == APMCData.State.VALID) {
+        if (data.state == APMCData.State.VALID) {
 
             APClient apClient = APRandomizer.getAP();
             apClient.setName(data.player_name);
@@ -68,12 +68,11 @@ public class ConnectCommand {
             String address = hostname.concat(":" + port);
             Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
             apClient.connect(address);
-        }
-        else if(data.state == APMCData.State.MISSING)
+        } else if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
-        else if(data.state == APMCData.State.INVALID_VERSION)
+        else if (data.state == APMCData.State.INVALID_VERSION)
             Utils.sendMessageToAll("APMC data file wrong version.");
-        else if(data.state == APMCData.State.INVALID_SEED)
+        else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Current Minecraft world has been used for a previous game. please stop server, delete the world and relaunch the server.");
 
         return 1;

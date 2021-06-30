@@ -19,18 +19,18 @@
     "ride_1km": {
       "trigger": "minecraft:tick",
       "conditions": {
-        "player" : [
+        "player": [
           {
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "player" : {
+              "player": {
                 "stats": [
                   {
                     "type": "minecraft:custom",
                     "stat": "minecraft:minecart_one_cm",
                     "value": {
-                      "min" : 100000
+                      "min": 100000
                     }
                   }
                 ]

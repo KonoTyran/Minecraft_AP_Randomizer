@@ -22,7 +22,7 @@ public class APStructures {
     /**
      * We are using the Deferred Registry system to register our structure as this is the preferred way on Forge.
      * This will handle registering the base structure for us at the correct time so we don't have to handle it ourselves.
-     *
+     * <p>
      * HOWEVER, do note that Deferred Registries only work for anything that is a Forge Registry. This means that
      * configured structures and configured features need to be registered directly to WorldGenRegistries as there
      * is no Deferred Registry system for them.
@@ -33,17 +33,17 @@ public class APStructures {
     /**
      * Registers the structure itself and sets what its path is. In this case, the
      * structure will have the resourcelocation of structure_tutorial:run_down_house.
-     *
+     * <p>
      * It is always a good idea to register your Structures so that other mods and datapacks can
      * use them too directly from the registries. It great for mod/datapacks compatibility.
-     *
+     * <p>
      * IMPORTANT: Once you have set the name for your structure below and distributed your mod,
-     *   changing the structure's registry name or removing the structure may cause log spam.
-     *   This log spam won't break your worlds as forge already fixed the Mojang bug of removed structures wrecking worlds.
-     *   https://github.com/MinecraftForge/MinecraftForge/commit/56e538e8a9f1b8e6ff847b9d2385484c48849b8d
-     *
-     *   However, users might not know that and think you are to blame for issues that doesn't exist.
-     *   So it is best to keep your structure names the same as long as you can instead of changing them frequently.
+     * changing the structure's registry name or removing the structure may cause log spam.
+     * This log spam won't break your worlds as forge already fixed the Mojang bug of removed structures wrecking worlds.
+     * https://github.com/MinecraftForge/MinecraftForge/commit/56e538e8a9f1b8e6ff847b9d2385484c48849b8d
+     * <p>
+     * However, users might not know that and think you are to blame for issues that doesn't exist.
+     * So it is best to keep your structure names the same as long as you can instead of changing them frequently.
      */
     public static final RegistryObject<Structure<NoFeatureConfig>> VILLAGE_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("village_nether", () -> (new NetherVillageStructure(NoFeatureConfig.CODEC)));
     public static final RegistryObject<Structure<NoFeatureConfig>> END_CITY_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("end_city_nether", () -> (new NetherEndCityStructure(NoFeatureConfig.CODEC)));
@@ -93,8 +93,7 @@ public class APStructures {
     public static <F extends Structure<?>> void setupMapSpacingAndLand(
             F structure,
             StructureSeparationSettings structureSeparationSettings,
-            boolean transformSurroundingLand)
-    {
+            boolean transformSurroundingLand) {
         /*
          * We need to add our structures into the map in Structure class
          * alongside vanilla structures or else it will cause errors.
@@ -114,7 +113,7 @@ public class APStructures {
          *
          * NOISE_AFFECTING_FEATURES requires AccessTransformer  (See resources/META-INF/accesstransformer.cfg)
          */
-        if(transformSurroundingLand){
+        if (transformSurroundingLand) {
             Structure.NOISE_AFFECTING_FEATURES =
                     ImmutableList.<Structure<?>>builder()
                             .addAll(Structure.NOISE_AFFECTING_FEATURES)
@@ -158,12 +157,11 @@ public class APStructures {
              *
              * structureConfig requires AccessTransformer  (See resources/META-INF/accesstransformer.cfg)
              */
-            if(structureMap instanceof ImmutableMap){
+            if (structureMap instanceof ImmutableMap) {
                 Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(structureMap);
                 tempMap.put(structure, structureSeparationSettings);
                 settings.getValue().structureSettings().structureConfig = tempMap;
-            }
-            else{
+            } else {
                 structureMap.put(structure, structureSeparationSettings);
             }
         });

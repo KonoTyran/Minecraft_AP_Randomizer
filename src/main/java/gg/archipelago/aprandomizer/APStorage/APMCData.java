@@ -9,7 +9,7 @@ public class APMCData {
     @SerializedName("world_seed")
     public long world_seed;
     @SerializedName("structures")
-    public HashMap<String,String> structures;
+    public HashMap<String, String> structures;
     @SerializedName("seed_name")
     public String seed_name;
     @SerializedName("player_name")
@@ -20,7 +20,7 @@ public class APMCData {
     public State state = State.VALID;
 
     public enum State {
-        VALID,MISSING,INVALID_VERSION,INVALID_SEED
+        VALID, MISSING, INVALID_VERSION, INVALID_SEED
     }
 
 }

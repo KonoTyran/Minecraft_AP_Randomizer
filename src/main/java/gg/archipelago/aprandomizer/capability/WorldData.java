@@ -48,7 +48,7 @@ public class WorldData {
 
         @Override
         public void readNBT(Capability<WorldData> capability, WorldData instance, Direction side, INBT nbt) {
-            if(nbt.getType() == CompoundNBT.TYPE) {
+            if (nbt.getType() == CompoundNBT.TYPE) {
                 CompoundNBT read = (CompoundNBT) nbt;
                 instance.setSeedName(read.getString("seedName"));
                 instance.setDragonState(read.getInt("dragonState"));

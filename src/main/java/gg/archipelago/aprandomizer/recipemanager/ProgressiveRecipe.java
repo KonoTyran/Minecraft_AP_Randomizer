@@ -38,9 +38,9 @@ public class ProgressiveRecipe implements Recipe {
     }
 
     public Set<IRecipe<?>> getTier(int tier) {
-        if(recipes.size() >= tier)
-            return recipes.get(tier-1);
-        return recipes.get(recipes.size()-1);
+        if (recipes.size() >= tier)
+            return recipes.get(tier - 1);
+        return recipes.get(recipes.size() - 1);
     }
 
 

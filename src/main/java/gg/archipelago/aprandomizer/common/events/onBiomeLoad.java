@@ -24,20 +24,20 @@ public class onBiomeLoad {
     @SubscribeEvent
     static void biomeLoad(BiomeLoadingEvent event) {
         APMCData data = APRandomizer.getApmcData();
-        if(data.state != APMCData.State.VALID)
+        if (data.state != APMCData.State.VALID)
             return;
         List<Supplier<StructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
         List<Supplier<StructureFeature<?, ?>>> toadd = new ArrayList<>();
         Iterator<Supplier<StructureFeature<?, ?>>> iterator = event.getGeneration().getStructures().iterator();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Supplier<StructureFeature<?, ?>> structure = iterator.next();
             //LOGGER.info("found {} in {}",structure.get().feature.getFeatureName(),event.getName().getPath());
-            if(structure.get().feature.equals(StructureFeatures.VILLAGE_PLAINS.feature)) {
+            if (structure.get().feature.equals(StructureFeatures.VILLAGE_PLAINS.feature)) {
                 String struct1 = data.structures.get("Overworld Structure 1");
                 String struct2 = data.structures.get("Overworld Structure 2");
 
-                if(!struct1.equals("Village") && !struct2.equals("Village")) {
+                if (!struct1.equals("Village") && !struct2.equals("Village")) {
                     iterator.remove();
                 }
 
@@ -53,12 +53,11 @@ public class onBiomeLoad {
                         break;
                 }
 
-            }
-            else if(structure.get().feature.equals(StructureFeatures.PILLAGER_OUTPOST.feature)) {
+            } else if (structure.get().feature.equals(StructureFeatures.PILLAGER_OUTPOST.feature)) {
                 String struct1 = data.structures.get("Overworld Structure 1");
                 String struct2 = data.structures.get("Overworld Structure 2");
 
-                if(!struct1.equals("Pillager Outpost") && !struct2.equals("Pillager Outpost")) {
+                if (!struct1.equals("Pillager Outpost") && !struct2.equals("Pillager Outpost")) {
                     iterator.remove();
                 }
 
@@ -73,12 +72,11 @@ public class onBiomeLoad {
                         toadd.add(() -> StructureFeatures.END_CITY);
                         break;
                 }
-            }
-            else if(structure.get().feature.equals(StructureFeatures.NETHER_BRIDGE.feature)) {
+            } else if (structure.get().feature.equals(StructureFeatures.NETHER_BRIDGE.feature)) {
                 String struct1 = data.structures.get("Nether Structure 1");
                 String struct2 = data.structures.get("Nether Structure 2");
 
-                if(!struct1.equals("Nether Fortress") && !struct2.equals("Nether Fortress")) {
+                if (!struct1.equals("Nether Fortress") && !struct2.equals("Nether Fortress")) {
                     iterator.remove();
                 }
 
@@ -93,12 +91,11 @@ public class onBiomeLoad {
                         toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                         break;
                 }
-            }
-            else if(structure.get().feature.equals(StructureFeatures.BASTION_REMNANT.feature)) {
+            } else if (structure.get().feature.equals(StructureFeatures.BASTION_REMNANT.feature)) {
                 String struct1 = data.structures.get("Nether Structure 1");
                 String struct2 = data.structures.get("Nether Structure 2");
 
-                if(!struct1.equals("Bastion Remnant") && !struct2.equals("Bastion Remnant")) {
+                if (!struct1.equals("Bastion Remnant") && !struct2.equals("Bastion Remnant")) {
                     iterator.remove();
                 }
 
@@ -113,11 +110,10 @@ public class onBiomeLoad {
                         toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                         break;
                 }
-            }
-            else if(structure.get().feature.equals(StructureFeatures.END_CITY.feature)) {
+            } else if (structure.get().feature.equals(StructureFeatures.END_CITY.feature)) {
                 String struct1 = data.structures.get("The End Structure");
 
-                if(!struct1.equals("End City")) {
+                if (!struct1.equals("End City")) {
                     iterator.remove();
                 }
 

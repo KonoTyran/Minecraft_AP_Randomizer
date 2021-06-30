@@ -22,11 +22,11 @@ public class onJoin {
     static void onPlayerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
         ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
         APMCData data = APRandomizer.getApmcData();
-        if(data.state == APMCData.State.MISSING)
+        if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
-        else if(data.state == APMCData.State.INVALID_VERSION)
+        else if (data.state == APMCData.State.INVALID_VERSION)
             Utils.sendMessageToAll("APMC data file wrong version.");
-        else if(data.state == APMCData.State.INVALID_SEED)
+        else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Current Minecraft world has been used for a previous game. please stop server, delete the world and relaunch the server.");
 
         APRandomizer.getAdvancementManager().syncAllAdvancements();
