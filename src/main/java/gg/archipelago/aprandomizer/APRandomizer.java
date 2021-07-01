@@ -178,7 +178,7 @@ public class APRandomizer {
         advancementManager = new AdvancementManager();
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
-        apClient = new APClient(server);
+
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true, server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
@@ -196,6 +196,10 @@ public class APRandomizer {
         //if no apmc file was found set our world data seed to invalid so it will force a regen of this blank world.
         if (apmcData.state == APMCData.State.MISSING) {
             worldData.setSeedName("Invalid");
+        }
+
+        if(apmcData.state == APMCData.State.VALID) {
+            apClient = new APClient(server);
         }
 
         ServerWorld theEnd = server.getLevel(World.END);
@@ -227,11 +231,13 @@ public class APRandomizer {
 
     @SubscribeEvent
     public void onServerStopping(FMLServerStoppingEvent event) {
-        apClient.close();
+        if(apClient != null)
+            apClient.close();
     }
 
     @SubscribeEvent
     public void onServerStopped(FMLServerStoppedEvent event) {
-        apClient.close();
+        if(apClient != null)
+            apClient.close();
     }
 }

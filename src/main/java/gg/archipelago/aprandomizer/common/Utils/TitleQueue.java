@@ -27,12 +27,10 @@ public class TitleQueue {
                     titleQueue.remove(0);
                     titleTime = title.getTicks();
                     title.sendTitle();
-                    APRandomizer.LOGGER.info("Sending next title in queue in ticks: {}", titleTime);
                 }
             }
             if (titleTime > 0) {
                 titleTime -= 1;
-                APRandomizer.LOGGER.info("titleTime: {}", titleTime);
             }
         }
     }

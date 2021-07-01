@@ -4,6 +4,8 @@ import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.ConnectionResult;
+import gg.archipelago.APClient.parts.DataPackage;
+import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -25,7 +27,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
     private final MinecraftServer server;
 
     APClient(MinecraftServer server) {
-        super("Minecraft");
+        super("Minecraft", APRandomizer.getApmcData().seed_name,APRandomizer.getApmcData().player_id);
         this.server = server;
         APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -103,9 +105,12 @@ public class APClient extends gg.archipelago.APClient.APClient {
     }
 
     @Override
-    public void onPrintJson(APPrint apPrint) {
-        LOGGER.trace("onPrintJson fired");
-        Utils.sendFancyMessageToAll(apPrint);
+    public void onPrintJson(APPrint apPrint, String type, int receiving, NetworkItem item) {
+
+        //don't print out messages if its an item send and the recipient is us.
+        if(type.equals("ItemSend") && receiving != getSlot()) {
+            Utils.sendFancyMessageToAll(apPrint);
+        }
     }
 
     @Override
@@ -127,10 +132,17 @@ public class APClient extends gg.archipelago.APClient.APClient {
     public void onReceiveItem(int item, String sentFromLocation, String senderName) {
         String itemName = getDataPackage().getItem(item);
         ITextComponent textItem = new StringTextComponent(itemName).withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)));
-        Utils.sendTitleToAll(new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value))), textItem, 10, 60, 10);
-
+        ITextComponent chatMessage = new StringTextComponent(
+                "Received ").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
+                .append(itemName).withStyle(Style.EMPTY.withColor(Color.parseColor("gold")))
+                .append(" from ").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
+                .append(senderName).withStyle(Style.EMPTY.withColor(Color.parseColor("gold")))
+                .append(" (").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
+                .append(sentFromLocation).withStyle(Style.EMPTY.withColor(Color.parseColor("blue")))
+                .append(")").withStyle(Style.EMPTY.withColor(Color.parseColor("red")));
+        ITextComponent title = new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value)));
+        Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
         APRandomizer.getRecipeManager().grantRecipe(item);
         APRandomizer.getItemManager().giveItemToAll(item);
-
     }
 }

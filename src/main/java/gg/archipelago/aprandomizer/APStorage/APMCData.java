@@ -14,6 +14,8 @@ public class APMCData {
     public String seed_name;
     @SerializedName("player_name")
     public String player_name;
+    @SerializedName("player_id")
+    public int player_id;
     @SerializedName("client_version")
     public int[] client_version;
 

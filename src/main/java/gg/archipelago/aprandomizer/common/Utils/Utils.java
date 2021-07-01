@@ -45,6 +45,7 @@ public class Utils {
     }
 
     public static void sendMessageToAll(ITextComponent message) {
+        //tell the server to send the message in a thread safe way.
         server.execute(() -> {
             server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
         });
@@ -52,11 +53,12 @@ public class Utils {
     }
 
     public static void sendFancyMessageToAll(APPrint apPrint) {
-        LOGGER.trace("in send fancy");
         ITextComponent message = Utils.apPrintToTextComponent(apPrint);
-        LOGGER.trace("found " + apPrint.parts.length + " parts");
 
-        server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
+        //tell the server to send the message in a thread safe way.
+        server.execute(() -> {
+            server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
+        });
 
     }
 
@@ -91,6 +93,12 @@ public class Utils {
     public static void sendTitleToAll(ITextComponent title, ITextComponent subTitle, int fadeIn, int stay, int fadeOut) {
         server.execute(() -> {
             TitleQueue.queueTitle(new QueuedTitle(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut, subTitle, title));
+        });
+    }
+
+    public static void sendTitleToAll(ITextComponent title, ITextComponent subTitle, ITextComponent chatMessage, int fadeIn, int stay, int fadeOut) {
+        server.execute(() -> {
+            TitleQueue.queueTitle(new QueuedTitle(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut, subTitle, title, chatMessage));
         });
     }
 

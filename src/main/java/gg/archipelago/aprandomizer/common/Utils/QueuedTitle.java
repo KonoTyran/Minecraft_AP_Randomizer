@@ -16,6 +16,7 @@ public class QueuedTitle {
     private final int fadeOut;
     private final ITextComponent subTitle;
     private final ITextComponent title;
+    private ITextComponent chatMessage = null;
 
     public QueuedTitle(List<ServerPlayerEntity> players, int fadeIn, int stay, int fadeOut, ITextComponent subTitle, ITextComponent title) {
         this.players = players;
@@ -25,14 +26,23 @@ public class QueuedTitle {
         this.subTitle = subTitle;
         this.title = title;
         this.ticks = fadeIn + stay + fadeOut + 20;
-        APRandomizer.LOGGER.info("new title queue '{}', for {} ticks", subTitle.getString(), ticks);
     }
+
+    public QueuedTitle(List<ServerPlayerEntity> players, int fadeIn, int stay, int fadeOut, ITextComponent subTitle, ITextComponent title,ITextComponent chatMessage) {
+        this(players,fadeIn,stay,fadeOut,subTitle,title);
+        this.chatMessage = chatMessage;
+
+    }
+
 
     public void sendTitle() {
         APRandomizer.getServer().execute(() -> {
             TitleUtils.setTimes(players, fadeIn, stay, fadeOut);
             TitleUtils.showTitle(players, subTitle, STitlePacket.Type.SUBTITLE);
             TitleUtils.showTitle(players, title, STitlePacket.Type.TITLE);
+            if(chatMessage != null) {
+                Utils.sendMessageToAll(chatMessage);
+            }
         });
     }
 
