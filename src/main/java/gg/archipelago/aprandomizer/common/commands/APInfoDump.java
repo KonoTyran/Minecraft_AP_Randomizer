@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.common.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
@@ -34,10 +35,17 @@ public class APInfoDump {
                         .then(Commands.argument("infodump", StringArgumentType.string())
                                 .executes(APInfoDump::infoDump)
                         )
+                        .then(Commands.argument("beetrap", StringArgumentType.string())
+                            .executes(APInfoDump::beeTrap)
+                )
         );
 
     }
 
+    private static int beeTrap(CommandContext<CommandSource> source) {
+        APRandomizer.getItemManager().giveItemToAll(45100);
+        return 1;
+    }
 
     private static int infoDump(CommandContext<CommandSource> source) {
         Collection<Advancement> advancements = source.getSource().getServer().getAdvancements().getAllAdvancements();

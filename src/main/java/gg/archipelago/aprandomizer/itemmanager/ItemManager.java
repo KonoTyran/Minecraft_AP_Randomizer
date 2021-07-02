@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.itemmanager;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
+import gg.archipelago.aprandomizer.itemmanager.traps.BeeTrap;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
@@ -49,6 +50,10 @@ public class ItemManager {
         put(45026, 500);
         put(45027, 100);
         put(45028, 50);
+    }};
+
+    private final HashMap<Integer, Trap> trapData = new HashMap<Integer, Trap>() {{
+        put(45100, new BeeTrap(3));
     }};
 
     private ArrayList<Integer> receivedItems = new ArrayList<>();
@@ -100,6 +105,8 @@ public class ItemManager {
         } else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
             player.giveExperiencePoints(xpValue);
+        } else if (trapData.containsKey(itemID)) {
+            trapData.get(itemID).trigger(player);
         }
     }
 

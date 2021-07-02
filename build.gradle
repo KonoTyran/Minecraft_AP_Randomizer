@@ -15,7 +15,7 @@ apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1.1'
+version = '0.1.2'
 group = 'gg.archipelago.aprandomizer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'aprandomizer'
 
@@ -157,6 +157,7 @@ dependencies {
 
     inJar project(':APClient')
     configurations.compile.extendsFrom(configurations.inJar)
+    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
