@@ -58,7 +58,7 @@ public class APRandomizer {
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
     static private APMCData apmcData;
-    static private final int[] clientVersion = {0, 3};
+    static private final int[] clientVersion = {0, 4};
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
