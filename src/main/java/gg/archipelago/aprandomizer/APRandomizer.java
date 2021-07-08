@@ -8,8 +8,13 @@ import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
 import gg.archipelago.aprandomizer.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
+import net.minecraft.server.CustomServerBossInfo;
+import net.minecraft.server.CustomServerBossInfoManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -59,6 +64,7 @@ public class APRandomizer {
     static private ItemManager itemManager;
     static private APMCData apmcData;
     static private final int[] clientVersion = {0, 4};
+    static private CustomServerBossInfo advBar;
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
@@ -128,6 +134,10 @@ public class APRandomizer {
 
     public static int[] getClientVersion() {
         return clientVersion;
+    }
+
+    public static CustomServerBossInfo getBossBar() {
+        return advBar;
     }
 
     private boolean deleteDirectory(File directoryToBeDeleted) {
@@ -227,6 +237,14 @@ public class APRandomizer {
         theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
         theEnd.save(null, true, false);
         //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
+
+        CustomServerBossInfoManager bossInfoManager = server.getCustomBossEvents();
+        advBar = bossInfoManager.create(new ResourceLocation(MODID,"advancementbar"), new StringTextComponent(String.format("Advancements (%d)",advancementManager.getFinishedAmount())));
+        advBar.setMax(100);
+        advBar.setColor(BossInfo.Color.PINK);
+        advBar.setOverlay(BossInfo.Overlay.NOTCHED_10);
+        advBar.setVisible(true);
+        advBar.setValue(advancementManager.getFinishedAmount());
     }
 
     @SubscribeEvent

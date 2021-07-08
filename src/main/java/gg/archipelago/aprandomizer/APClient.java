@@ -79,6 +79,9 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                     APRandomizer.getItemManager().catchUpPlayer(player);
                 }
+                APRandomizer.getBossBar().setMax(APRandomizer.getAdvancementManager().getRequiredAmount());
+                APRandomizer.getBossBar().setName(new StringTextComponent(String.format("Advancements (%d / %d)", APRandomizer.getAdvancementManager().getFinishedAmount(), APRandomizer.getAdvancementManager().getRequiredAmount())));
+                APRandomizer.getBossBar().setValue(APRandomizer.getAdvancementManager().getFinishedAmount());
             });
 
         } else if (event.getResult() == ConnectionResult.InvalidPassword) {

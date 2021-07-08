@@ -35,6 +35,8 @@ public class onJoin {
         player.resetRecipes(restricted);
         player.awardRecipes(granted);
 
+        APRandomizer.getBossBar().setPlayers(event.getPlayer().getServer().getPlayerList().getPlayers());
+
         APRandomizer.getItemManager().catchUpPlayer(player);
     }
 }

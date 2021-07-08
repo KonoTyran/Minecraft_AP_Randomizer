@@ -59,6 +59,8 @@ public class onAdvancement {
             );
 
             am.syncAdvancement(advancement);
+            APRandomizer.getBossBar().setValue(am.getFinishedAmount());
+            APRandomizer.getBossBar().setName(new StringTextComponent("Advancements ").append(new StringTextComponent(remaining)));
             if (am.getRequiredAmount() != 0) {
                 if (am.getFinishedAmount() >= am.getRequiredAmount()) {
                     ServerWorld end = event.getPlayer().getServer().getLevel(World.END);
