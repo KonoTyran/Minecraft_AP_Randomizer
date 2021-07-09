@@ -114,6 +114,9 @@ public class APClient extends gg.archipelago.APClient.APClient {
         if(type.equals("ItemSend") && receiving != getSlot()) {
             Utils.sendFancyMessageToAll(apPrint);
         }
+        else if(!type.equals("ItemSend")) {
+            Utils.sendFancyMessageToAll(apPrint);
+        }
     }
 
     @Override

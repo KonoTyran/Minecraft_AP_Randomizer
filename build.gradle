@@ -15,7 +15,7 @@ apply plugin: 'org.spongepowered.mixin'
 //apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1.2'
+version = '0.1.3'
 group = 'gg.archipelago.aprandomizer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'aprandomizer'
 
