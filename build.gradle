@@ -3,11 +3,15 @@ buildscript {
         maven { url = 'https://files.minecraftforge.net/maven' }
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
+}
+plugins {
+    id 'com.github.johnrengelman.shadow'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
@@ -127,7 +131,8 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 configurations {
-    inJar
+    shade
+    implementation.extendsFrom shade
 }
 
 dependencies {
@@ -155,9 +160,19 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    inJar project(':APClient')
-    configurations.compile.extendsFrom(configurations.inJar)
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+    shade project(path: ':APClient', configuration: 'shadow')
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
+}
+
+shadowJar {
+    classifier ''
+    configurations = [ project.configurations.shade ]
+    from new File(project.buildDir, "tmp/compileJava/aprandomizer.refmap.json")
+    finalizedBy 'reobfShadowJar'
+}
+
+reobf {
+    shadowJar {}
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
@@ -174,14 +189,11 @@ jar {
             "MixinConfigs": "aprandomizer.mixins.json"
         ])
     }
-    from {
-        configurations.inJar.collect { it.isDirectory() ? it : zipTree(it) }
-    }
 }
 
 // Example configuration to allow publishing using the maven-publish task
 // This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar') 
+jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 //publish.dependsOn('reobfJar')
 

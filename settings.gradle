@@ -1,2 +1,7 @@
+pluginManagement {
+    plugins {
+        id 'com.github.johnrengelman.shadow' version '6.0.0'
+    }
+}
 include ':APClient'
 project(":APClient").projectDir = file("../APClient")
