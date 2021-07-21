@@ -7,13 +7,13 @@ public class SlotData extends gg.archipelago.APClient.SlotData {
     private int include_postgame_advancements;
     private int advancement_goal;
     private long minecraft_world_seed;
-    private int[] client_version;
+    private int client_version;
 
     public int getInclude_hard_advancements() {
         return include_hard_advancements;
     }
 
-    public int[] getClient_version() {
+    public int getClient_version() {
         return client_version;
     }
 

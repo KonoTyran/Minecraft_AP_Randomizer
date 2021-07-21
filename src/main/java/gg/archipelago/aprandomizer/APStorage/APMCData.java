@@ -17,7 +17,9 @@ public class APMCData {
     @SerializedName("player_id")
     public int player_id;
     @SerializedName("client_version")
-    public int[] client_version;
+    public int client_version;
+    @SerializedName("race")
+    public boolean race = false;
 
     public State state = State.VALID;
 

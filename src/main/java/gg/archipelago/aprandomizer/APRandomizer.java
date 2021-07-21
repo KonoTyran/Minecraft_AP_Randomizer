@@ -63,8 +63,9 @@ public class APRandomizer {
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
     static private APMCData apmcData;
-    static private final int[] clientVersion = {0, 4};
+    static private final int clientVersion = 5;
     static private CustomServerBossInfo advBar;
+    static private boolean firstBoot = false;
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
@@ -90,16 +91,17 @@ public class APRandomizer {
             }
 
             File[] files = new File(path.toUri()).listFiles((d, name) -> name.endsWith(".apmc"));
+            assert files != null;
             Arrays.sort(files, Comparator.comparingLong(File::lastModified));
             String b64 = Files.readAllLines(files[0].toPath()).get(0);
             String json = new String(Base64.getDecoder().decode(b64));
             apmcData = gson.fromJson(json, APMCData.class);
-            if (!Arrays.equals(apmcData.client_version, clientVersion)) {
+            if (apmcData.client_version != clientVersion) {
                 apmcData.state = APMCData.State.INVALID_VERSION;
             }
             //LOGGER.info(apmcData.structures.toString());
 
-        } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException e) {
+        } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException | AssertionError e) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
             if (apmcData == null) {
                 apmcData = new APMCData();
@@ -132,12 +134,16 @@ public class APRandomizer {
         return itemManager;
     }
 
-    public static int[] getClientVersion() {
+    public static int getClientVersion() {
         return clientVersion;
     }
 
     public static CustomServerBossInfo getBossBar() {
         return advBar;
+    }
+
+    public static boolean isFirstBoot() {
+        return firstBoot;
     }
 
     private boolean deleteDirectory(File directoryToBeDeleted) {
@@ -156,7 +162,6 @@ public class APRandomizer {
     public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         if (apmcData.state != APMCData.State.VALID) {
             LOGGER.error("invalid APMC file");
-            return;
         }
     }
 
@@ -194,13 +199,20 @@ public class APRandomizer {
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
         server.setDifficulty(Difficulty.NORMAL, true);
 
-        //fetch saved world seed to make sure its the right one if not then throw error.
+        //fetch our custom world save data we attach to the worlds.
         WorldData worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+
+        //check if APMC data is present and if the seed matches what we expect
         if (apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {
-            if (worldData.getSeedName().isEmpty())
+            //check to see if our worlddata is empty if it is then save the aproom data.
+            if (worldData.getSeedName().isEmpty()) {
                 worldData.setSeedName(apmcData.seed_name);
-            else
+                //this is also our first boot so set this flag so we can do first boot stuff.
+            }
+            else {
                 apmcData.state = APMCData.State.INVALID_SEED;
+            }
+            firstBoot = worldData.getJailPlayers();
         }
 
         //if no apmc file was found set our world data seed to invalid so it will force a regen of this blank world.
@@ -210,6 +222,19 @@ public class APRandomizer {
 
         if(apmcData.state == APMCData.State.VALID) {
             apClient = new APClient(server);
+        }
+
+
+        //preload the nether so that fetching of structures works.
+        ServerWorld nether = server.getLevel(World.NETHER);
+        assert nether != null;
+
+        //check to see if the chunk is loaded then fetch/generate if it is not.
+        if (!nether.hasChunk(0, 0)) { //Chunk is unloaded
+            IChunk chunk = nether.getChunk(0, 0, ChunkStatus.EMPTY, true);
+            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
+                chunk = nether.getChunk(0, 0, ChunkStatus.FULL);
+            }
         }
 
         ServerWorld theEnd = server.getLevel(World.END);
@@ -245,6 +270,14 @@ public class APRandomizer {
         advBar.setOverlay(BossInfo.Overlay.NOTCHED_10);
         advBar.setVisible(true);
         advBar.setValue(advancementManager.getFinishedAmount());
+
+
+/*        if(firstBoot) {
+            ServerWorld overworld = server.getLevel(World.END);
+            BlockPos spawn = overworld.getSharedSpawnPos();
+            BlockPos platform = new BlockPos(spawn.getX(), 240, spawn.getZ());
+        }*/
+
     }
 
     @SubscribeEvent

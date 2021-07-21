@@ -15,7 +15,7 @@ import static gg.archipelago.aprandomizer.APRandomizer.getServer;
 
 public class AdvancementManager {
 
-    private HashMap<String, Integer> advancementData = new HashMap<String, Integer>() {{
+    private final HashMap<String, Integer> advancementData = new HashMap<String, Integer>() {{
         put("minecraft:nether/obtain_crying_obsidian", 42000);
         put("minecraft:nether/distract_piglin", 42001);
         put("minecraft:story/obtain_armor", 42002);
@@ -110,7 +110,7 @@ public class AdvancementManager {
         put("minecraft:husbandry/overpowered", 42091);
     }};
 
-    private Set<Integer> earnedAdvancements = new HashSet<>();
+    private final Set<Integer> earnedAdvancements = new HashSet<>();
 
 
     public AdvancementManager() {

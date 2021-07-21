@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT> {
 
 
-    private WorldData worldData = new WorldData();
+    private final WorldData worldData = new WorldData();
 
     /**
      * Asks the Provider if it has the given capability

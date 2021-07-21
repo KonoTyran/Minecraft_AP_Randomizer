@@ -13,6 +13,8 @@ public class WorldData {
 
     private int dragonState = DRAGON_ASLEEP;
 
+    private boolean jailPlayers = true;
+
     public static final int DRAGON_KILLED = 30;
     public static final int DRAGON_SPAWNED = 20;
     public static final int DRAGON_WAITING = 15;
@@ -34,6 +36,14 @@ public class WorldData {
         return dragonState;
     }
 
+    public boolean getJailPlayers() {
+        return jailPlayers;
+    }
+
+    public void setJailPlayers(boolean jailPlayers) {
+        this.jailPlayers = jailPlayers;
+    }
+
 
     public static class WorldDataStorage implements Capability.IStorage<WorldData> {
 
@@ -43,6 +53,7 @@ public class WorldData {
             CompoundNBT nbt = new CompoundNBT();
             nbt.putInt("dragonState", instance.dragonState);
             nbt.putString("seedName", instance.seedName);
+            nbt.putBoolean("jailPlayers", instance.jailPlayers);
             return nbt;
         }
 
@@ -52,6 +63,7 @@ public class WorldData {
                 CompoundNBT read = (CompoundNBT) nbt;
                 instance.setSeedName(read.getString("seedName"));
                 instance.setDragonState(read.getInt("dragonState"));
+                instance.setJailPlayers(read.getBoolean("jailPlayers"));
             }
         }
     }

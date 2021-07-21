@@ -1,8 +1,10 @@
 package gg.archipelago.aprandomizer.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.itemmanager.traps.BeeTrap;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantments;
@@ -11,15 +13,23 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ItemManager {
     // Directly reference a log4j logger.
@@ -44,6 +54,22 @@ public class ItemManager {
         put(45032, new ItemInfo(Items.GOLD_ORE, 8));
         put(45033, new ItemInfo(Items.ROTTEN_FLESH, 8));
         put(45034, new ItemInfo(Items.ARROW, 1, "The Arrow"));
+        put(45035, new ItemInfo(Items.ARROW, 32));
+        put(45036, new ItemInfo(Items.SADDLE, 1));
+        put(45037, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.VILLAGE), "Structure Compass (Village)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+        put(45038, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.PILLAGER_OUTPOST), "Structure Compass (Pillager Outpost)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+        put(45039, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.NETHER_BRIDGE), "Structure Compass (Nether Fortress)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+        put(45040, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.BASTION_REMNANT), "Structure Compass (Bastion Remnant)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+        put(45041, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.END_CITY), "Structure Compass (End City)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+    }};
+
+    private final HashMap<Integer,String> compasses = new HashMap<Integer,String>() {{
+        put(45037, Structure.VILLAGE.getFeatureName());
+        put(45038, Structure.PILLAGER_OUTPOST.getFeatureName());
+        put(45039, Structure.NETHER_BRIDGE.getFeatureName());
+        put(45040, Structure.BASTION_REMNANT.getFeatureName());
+        put(45041, Structure.END_CITY.getFeatureName());
+
     }};
 
     private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>() {{
@@ -58,6 +84,8 @@ public class ItemManager {
 
     private ArrayList<Integer> receivedItems = new ArrayList<>();
 
+    private final ArrayList<String> receivedCompasses = new ArrayList<>();
+
     private ItemStack buildNewItemStack(int itemID) {
         ItemInfo iInfo = itemData.get(itemID);
         ItemStack iStack = new ItemStack(iInfo.item, iInfo.amount);
@@ -67,11 +95,34 @@ public class ItemManager {
         if (iInfo.name != null) {
             iStack.setHoverName(new StringTextComponent(iInfo.name));
         }
+        if (iInfo.lore != null) {
+            CompoundNBT compoundnbt = iStack.getOrCreateTagElement("display");
+            ListNBT itemLoreLines = new ListNBT();
+            for (String s : iInfo.lore) {
+                StringNBT itemLore = StringNBT.valueOf(ITextComponent.Serializer.toJson(new StringTextComponent(s)));
+                itemLoreLines.add(itemLore);
+            }
+            compoundnbt.put("Lore",itemLoreLines);
+        }
+        if (iInfo.structure != null && iStack.getItem().equals(Items.COMPASS)) {
+            CompoundNBT nbt = iStack.getOrCreateTag();
+            nbt.put("structure", StringNBT.valueOf(iInfo.structure.getRegistryName().toString()));
+
+            BlockPos structureCords = APRandomizer.getServer().getLevel(Utils.getStructureWorld(iInfo.structure)).findNearestMapFeature(iInfo.structure, new BlockPos(0,0,0), 100, false);
+
+            Utils.addLodestoneTags(Utils.getStructureWorld(iInfo.structure),structureCords, iStack.getOrCreateTag());
+
+        }
         return iStack;
     }
 
     public void setReceivedItems(ArrayList<Integer> items) {
         this.receivedItems = items;
+        for (Integer item : items) {
+            if(compasses.containsKey(item) && !receivedCompasses.contains(compasses.get(item))) {
+                receivedCompasses.add(compasses.get(item));
+            }
+        }
     }
 
     public void giveItem(int itemID, ServerPlayerEntity player) {
@@ -113,9 +164,16 @@ public class ItemManager {
 
     public void giveItemToAll(int itemID) {
         receivedItems.add(itemID);
-        for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-            giveItem(itemID, serverplayerentity);
+        //check if this item is a structure compass, and we are not already tracking that one.
+        if(compasses.containsKey(itemID) && !receivedCompasses.contains(compasses.get(itemID))) {
+            receivedCompasses.add(compasses.get(itemID));
         }
+        APRandomizer.getServer().execute(() -> {
+            for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                giveItem(itemID, serverplayerentity);
+            }
+        });
+
     }
 
     /***
@@ -131,5 +189,9 @@ public class ItemManager {
                 giveItem(receivedItems.get(i), player);
             }
         }
+    }
+
+    public ArrayList<String> getCompasses() {
+        return receivedCompasses;
     }
 }

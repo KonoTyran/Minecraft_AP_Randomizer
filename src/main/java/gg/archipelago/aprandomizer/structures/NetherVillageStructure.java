@@ -14,6 +14,7 @@ import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationStage;
@@ -113,6 +114,13 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
              * structure will spawn at terrain height instead. Set that parameter to false to
              * force the structure to spawn at blockpos's Y value instead. You got options here!
              */
+
+            //force end citites to spawn at LEAST y=64 if they are in the end.
+            if( (biomeIn.getRegistryName().toString().equals(Biomes.END_HIGHLANDS.location().toString())
+                    || biomeIn.getRegistryName().toString().equals(Biomes.END_MIDLANDS.location().toString()))
+                    && y <= 50 ) {
+                y = 50;
+            }
             BlockPos blockpos = new BlockPos(x, y, z);
 
             // All a structure has to do is call this method to turn it into a jigsaw based structure!

@@ -18,7 +18,7 @@ public class RecipeManager {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //have a lookup of every advancement
-    private RecipeData recipeData;
+    private final RecipeData recipeData;
 
     private final Set<IRecipe<?>> initialRestricted = new HashSet<>();
     private final Set<IRecipe<?>> initialGranted = new HashSet<>();

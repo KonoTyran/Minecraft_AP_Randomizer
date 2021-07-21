@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class CapabilityProviderPlayerData implements ICapabilitySerializable<INBT> {
 
 
-    private PlayerData playerData = new PlayerData();
+    private final PlayerData playerData = new PlayerData();
 
     /**
      * Asks the Provider if it has the given capability

@@ -1,7 +1,6 @@
 package gg.archipelago.aprandomizer.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
@@ -28,15 +27,18 @@ public class APInfoDump {
     public static void Register(CommandDispatcher<CommandSource> dispatcher) {
 
         dispatcher.register(
-                Commands.literal("ap") //base slash command is "connect"
-                        //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
-                        .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
-                        //take the first argument as a string and name it "Address"
-                        .then(Commands.argument("infodump", StringArgumentType.string())
-                                .executes(APInfoDump::infoDump)
-                        )
-                        .then(Commands.argument("beetrap", StringArgumentType.string())
-                            .executes(APInfoDump::beeTrap)
+            Commands.literal("ap") //base slash command is "connect"
+                //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
+                .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
+                //take the first argument as a string and name it "Address"
+                .then(Commands.literal("infodump")
+                        .executes(APInfoDump::infoDump)
+                )
+                .then(Commands.literal("beetrap")
+                        .executes(APInfoDump::beeTrap)
+                )
+                .then(Commands.literal("compasses")
+                        .executes(APInfoDump::compasses)
                 )
         );
 
@@ -44,6 +46,15 @@ public class APInfoDump {
 
     private static int beeTrap(CommandContext<CommandSource> source) {
         APRandomizer.getItemManager().giveItemToAll(45100);
+        return 1;
+    }
+
+    private static int compasses(CommandContext<CommandSource> source) {
+        APRandomizer.getItemManager().giveItemToAll(45037);
+        APRandomizer.getItemManager().giveItemToAll(45038);
+        APRandomizer.getItemManager().giveItemToAll(45039);
+        APRandomizer.getItemManager().giveItemToAll(45040);
+        APRandomizer.getItemManager().giveItemToAll(45041);
         return 1;
     }
 

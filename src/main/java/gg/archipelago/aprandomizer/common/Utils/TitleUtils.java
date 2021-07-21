@@ -9,7 +9,7 @@ import java.util.Collection;
 public class TitleUtils {
 
     static void resetTitle(Collection<ServerPlayerEntity> players) {
-        STitlePacket stitlepacket = new STitlePacket(STitlePacket.Type.RESET, (ITextComponent) null);
+        STitlePacket stitlepacket = new STitlePacket(STitlePacket.Type.RESET, null);
 
         for (ServerPlayerEntity serverplayerentity : players) {
             serverplayerentity.connection.send(stitlepacket);

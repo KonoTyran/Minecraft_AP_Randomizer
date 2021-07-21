@@ -4,7 +4,6 @@ import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.ConnectionResult;
-import gg.archipelago.APClient.parts.DataPackage;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
@@ -53,16 +52,10 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
                 event.setCanceled(true);
             }
-            if (slotData.getClient_version()[0] >= APRandomizer.getClientVersion()[0]) {
-                if (slotData.getClient_version()[1] > APRandomizer.getClientVersion()[1]) {
+            if (slotData.getClient_version() != APRandomizer.getClientVersion()) {
                     event.setCanceled(true);
-                    Utils.sendMessageToAll("AP server expects a newer mod version, please update your APRandomizer Mod.");
+                    Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
                     return;
-                } else if (slotData.getClient_version()[1] < APRandomizer.getClientVersion()[1]) {
-                    Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
-                }
-            } else {
-                Utils.sendMessageToAll("the AP server is using out of date minecraft logic, things MAY break, and not all advancements may recognized.");
             }
 
             APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());

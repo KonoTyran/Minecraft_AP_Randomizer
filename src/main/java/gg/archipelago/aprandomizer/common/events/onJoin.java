@@ -25,7 +25,7 @@ public class onJoin {
         if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
         else if (data.state == APMCData.State.INVALID_VERSION)
-            Utils.sendMessageToAll("APMC data file wrong version.");
+            Utils.sendMessageToAll("APMC data file wrong version, expected " + APRandomizer.getClientVersion() + " got version " + data.client_version);
         else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Current Minecraft world has been used for a previous game. please stop server, delete the world and relaunch the server.");
 
