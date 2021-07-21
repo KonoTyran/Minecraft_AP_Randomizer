@@ -158,6 +158,8 @@ public class Utils {
 
         //fetch what structures are where from our APMC data.
         HashMap<String, String> structures = APRandomizer.getApmcData().structures;
+        if(structures == null)
+            return structure;
         String nStructure1 = structures.get("Nether Structure 1");
         String nStructure2 = structures.get("Nether Structure 2");
         String eStructure = structures.get("The End Structure");
