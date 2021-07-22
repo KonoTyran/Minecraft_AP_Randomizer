@@ -9,10 +9,7 @@ import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
+import net.minecraft.util.text.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -125,6 +122,8 @@ public class APClient extends gg.archipelago.APClient.APClient {
         } else {
             Utils.sendMessageToAll(reason);
         }
+        IFormattableTextComponent advBar = new StringTextComponent("Not connected to Archipelago").withStyle(Style.EMPTY.withColor(Color.parseColor("red")));
+        APRandomizer.getBossBar().setName(advBar.append(new StringTextComponent(" (" + APRandomizer.getAdvancementManager().getFinishedAmount() + ")")));
     }
 
     @Override

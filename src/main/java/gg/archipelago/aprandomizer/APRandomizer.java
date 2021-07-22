@@ -13,7 +13,9 @@ import net.minecraft.server.CustomServerBossInfoManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.GameRules;
@@ -22,6 +24,8 @@ import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.template.PlacementSettings;
+import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -38,6 +42,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +51,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
+import java.util.Random;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -65,7 +71,9 @@ public class APRandomizer {
     static private APMCData apmcData;
     static private final int clientVersion = 5;
     static private CustomServerBossInfo advBar;
-    static private boolean firstBoot = false;
+    static private boolean jailPlayers = true;
+    static private BlockPos jailCenter = BlockPos.ZERO;
+    static private WorldData worldData;
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
@@ -142,8 +150,21 @@ public class APRandomizer {
         return advBar;
     }
 
-    public static boolean isFirstBoot() {
-        return firstBoot;
+    public static boolean isJailPlayers() {
+        return jailPlayers;
+    }
+
+    public static void setJailPlayers(boolean jailPlayers) {
+        APRandomizer.jailPlayers = jailPlayers;
+        worldData.setJailPlayers(jailPlayers);
+    }
+
+    public static BlockPos getJailPosition() {
+        return jailCenter;
+    }
+
+    public static boolean isRace() {
+        return getApmcData().race;
     }
 
     private boolean deleteDirectory(File directoryToBeDeleted) {
@@ -200,7 +221,8 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        WorldData worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        jailPlayers = worldData.getJailPlayers();
 
         //check if APMC data is present and if the seed matches what we expect
         if (apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {
@@ -212,7 +234,6 @@ public class APRandomizer {
             else {
                 apmcData.state = APMCData.State.INVALID_SEED;
             }
-            firstBoot = worldData.getJailPlayers();
         }
 
         //if no apmc file was found set our world data seed to invalid so it will force a regen of this blank world.
@@ -264,7 +285,7 @@ public class APRandomizer {
         //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
 
         CustomServerBossInfoManager bossInfoManager = server.getCustomBossEvents();
-        advBar = bossInfoManager.create(new ResourceLocation(MODID,"advancementbar"), new StringTextComponent(String.format("Advancements (%d)",advancementManager.getFinishedAmount())));
+        advBar = bossInfoManager.create(new ResourceLocation(MODID,"advancementbar"), new StringTextComponent(String.format("Not connected to Archipelago (%d)",advancementManager.getFinishedAmount())).withStyle(Style.EMPTY.withColor(Color.parseColor("red"))));
         advBar.setMax(100);
         advBar.setColor(BossInfo.Color.PINK);
         advBar.setOverlay(BossInfo.Overlay.NOTCHED_10);
@@ -272,11 +293,25 @@ public class APRandomizer {
         advBar.setValue(advancementManager.getFinishedAmount());
 
 
-/*        if(firstBoot) {
-            ServerWorld overworld = server.getLevel(World.END);
+        if(jailPlayers) {
+            ServerWorld overworld = server.getLevel(World.OVERWORLD);
             BlockPos spawn = overworld.getSharedSpawnPos();
-            BlockPos platform = new BlockPos(spawn.getX(), 240, spawn.getZ());
-        }*/
+            BlockPos jailPos = new BlockPos(spawn.getX(), 240, spawn.getZ());
+            Template jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail"));
+            jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
+            jail.placeInWorld(overworld,jailPos,new PlacementSettings(),new Random());
+            server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
+            server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
+            server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);
+            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).value = 0;
+            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).onChanged(server);
+            server.getGameRules().getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false,server);
+            server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false,server);
+            server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false,server);
+            server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false,server);
+            overworld.setDayTime(0);
+
+        }
 
     }
 

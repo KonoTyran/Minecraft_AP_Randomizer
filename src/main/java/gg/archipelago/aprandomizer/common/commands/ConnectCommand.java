@@ -30,6 +30,24 @@ public class ConnectCommand {
                         //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
                         .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
                         //take the first argument as a string and name it "Address"
+                        .then(Commands.literal("archipelago.gg")
+                                .then(Commands.argument("Port", IntegerArgumentType.integer())
+                                        .executes(context -> connectToAPServer(
+                                                context,
+                                                "archipelago.gg",
+                                                IntegerArgumentType.getInteger(context, "Port"),
+                                                null
+                                        ))
+                                        .then(Commands.argument("Password", StringArgumentType.string())
+                                                .executes(context -> connectToAPServer(
+                                                        context,
+                                                        "archipelago.gg",
+                                                        IntegerArgumentType.getInteger(context, "Port"),
+                                                        StringArgumentType.getString(context, "Password")
+                                                ))
+                                        )
+                                )
+                        )
                         .then(Commands.argument("Address", StringArgumentType.string())
                                 .executes(context -> connectToAPServer(
                                         context,
