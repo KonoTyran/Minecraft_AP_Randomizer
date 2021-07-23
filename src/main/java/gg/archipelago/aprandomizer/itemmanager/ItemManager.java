@@ -61,6 +61,7 @@ public class ItemManager {
         put(45039, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.NETHER_BRIDGE), "Structure Compass (Nether Fortress)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
         put(45040, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.BASTION_REMNANT), "Structure Compass (Bastion Remnant)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
         put(45041, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(Structure.END_CITY), "Structure Compass (End City)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
+        put(45042, new ItemInfo(Items.SHULKER_BOX, 1));
     }};
 
     private final HashMap<Integer,String> compasses = new HashMap<Integer,String>() {{
