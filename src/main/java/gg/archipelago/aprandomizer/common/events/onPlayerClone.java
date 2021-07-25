@@ -5,6 +5,8 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -13,6 +15,15 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class onPlayerClone {
+
+    @SubscribeEvent
+    public static void onPlayerCloneEvent(PlayerEvent.PlayerRespawnEvent event) {
+        if (APRandomizer.isJailPlayers()) {
+            BlockPos jail = APRandomizer.getJailPosition();
+            event.getPlayer().teleportTo(jail.getX(), jail.getY(), jail.getZ());
+        }
+    }
+
     @SubscribeEvent
     public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
         //check if this dimension transition is the cause of entering the end portal.

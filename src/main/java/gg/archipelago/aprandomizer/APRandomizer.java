@@ -309,6 +309,9 @@ public class APRandomizer {
             server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false,server);
+            server.getGameRules().getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(true,server);
+            server.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).set(false,server);
+            server.getGameRules().getRule(GameRules.RULE_DOENTITYDROPS).set(false,server);
             overworld.setDayTime(0);
 
         }

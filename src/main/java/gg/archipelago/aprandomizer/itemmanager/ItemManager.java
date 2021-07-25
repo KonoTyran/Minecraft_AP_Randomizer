@@ -127,7 +127,10 @@ public class ItemManager {
     }
 
     public void giveItem(int itemID, ServerPlayerEntity player) {
-
+        if (APRandomizer.isJailPlayers()) {
+            //dont send items to players if game has not started.
+            return;
+        }
         //update the player's index of received items for syncing later.
         LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
         if (loPlayerData.isPresent()) {
@@ -169,6 +172,7 @@ public class ItemManager {
         if(compasses.containsKey(itemID) && !receivedCompasses.contains(compasses.get(itemID))) {
             receivedCompasses.add(compasses.get(itemID));
         }
+
         APRandomizer.getServer().execute(() -> {
             for (ServerPlayerEntity serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 giveItem(itemID, serverplayerentity);

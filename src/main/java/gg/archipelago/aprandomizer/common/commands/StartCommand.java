@@ -60,6 +60,9 @@ public class StartCommand {
         server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(true,server);
         server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(true,server);
+        server.getGameRules().getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(false,server);
+        server.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).set(true,server);
+        server.getGameRules().getRule(GameRules.RULE_DOENTITYDROPS).set(true,server);
         server.execute(() -> {
             for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
                 player.getFoodData().eat(20,20);
@@ -67,6 +70,7 @@ public class StartCommand {
                 player.inventory.clearContent();
                 BlockPos spawn = server.getLevel(World.OVERWORLD).getSharedSpawnPos();
                 player.teleportTo(spawn.getX(),spawn.getY(),spawn.getZ());
+                APRandomizer.getItemManager().catchUpPlayer(player);
             }
         });
         return 1;

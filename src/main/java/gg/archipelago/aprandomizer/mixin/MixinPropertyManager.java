@@ -25,10 +25,13 @@ public abstract class MixinPropertyManager {
 
         properties.setProperty("level-seed", "" + data.world_seed);
         properties.setProperty("spawn-protection", "0");
+        properties.setProperty("allow-flight", "true");
 
         if(data.race) {
             LogManager.getLogger().info("Archipelago race flag found enforcing view-distance of 10");
             properties.setProperty("view-distance", "10");
+            properties.setProperty("gamemode", "survival");
+            properties.setProperty("force-gamemode", "true");
         }
 
 

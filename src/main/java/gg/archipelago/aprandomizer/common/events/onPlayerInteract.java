@@ -31,6 +31,13 @@ public class onPlayerInteract {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
+    static void onPlayerBlockInteract(PlayerInteractEvent event) {
+        //stop all right click interactions if game has not started.
+        if(APRandomizer.isJailPlayers())
+            event.setCanceled(true);
+    }
+
+    @SubscribeEvent
     static void onPlayerBlockInteract(PlayerInteractEvent.RightClickBlock event) {
         if(!event.getItemStack().getItem().equals(Items.COMPASS) || !event.getItemStack().hasTag()) {
             return;
