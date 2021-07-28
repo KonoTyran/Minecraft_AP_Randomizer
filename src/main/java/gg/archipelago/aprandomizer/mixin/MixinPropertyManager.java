@@ -26,7 +26,7 @@ public abstract class MixinPropertyManager {
         properties.setProperty("level-seed", "" + data.world_seed);
         properties.setProperty("spawn-protection", "0");
         properties.setProperty("allow-flight", "true");
-        properties.setProperty("level-name","Archipelago-"+ data.seed_name);
+        properties.setProperty("level-name","Archipelago-"+ data.seed_name+"-P"+ data.player_id);
         properties.setProperty("level-type","default");
 
         if(data.race) {
