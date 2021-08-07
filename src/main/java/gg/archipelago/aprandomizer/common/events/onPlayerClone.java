@@ -31,7 +31,7 @@ public class onPlayerClone {
                 event.getOriginal().level.dimension().equals(World.END)
                         && !event.isWasDeath()
                         && event.getPlayer().level.dimension().equals(World.OVERWORLD)
-                        && APRandomizer.getAdvancementManager().getFinishedAmount() >= APRandomizer.getAdvancementManager().getRequiredAmount()
+                        && APRandomizer.getGoalManager().isDone()
         ) {
             if (APRandomizer.getAP().isConnected()) {
                 APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);

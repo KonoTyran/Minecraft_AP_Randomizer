@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.advancementmanager;
+package gg.archipelago.aprandomizer.managers.advancementmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import static gg.archipelago.aprandomizer.APRandomizer.getAP;
 import static gg.archipelago.aprandomizer.APRandomizer.getServer;
 
 public class AdvancementManager {
@@ -135,10 +134,7 @@ public class AdvancementManager {
     public void addAdvancement(int id) {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
-        //check if ID is free the end advancement ID 42005
-/*        if (id == 42005) {
-            APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
-        }*/
+        APRandomizer.getGoalManager().updateGoal();
     }
 
     public void resendAdvancements() {
@@ -162,28 +158,12 @@ public class AdvancementManager {
 
     public void syncAllAdvancements() {
         for (Advancement a : getServer().getAdvancements().getAllAdvancements()) {
-            if (hasAdvancement(a.getId().toString())) {
-                for (ServerPlayerEntity serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                    AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
-                    if (ap.isDone())
-                        continue;
-                    for (String remainingCriterion : ap.getRemainingCriteria()) {
-                        serverPlayerEntity.getAdvancements().award(a, remainingCriterion);
-                    }
-                }
-            }
+            syncAdvancement(a);
         }
     }
 
     public int getFinishedAmount() {
         return earnedAdvancements.size();
-    }
-
-    public int getRequiredAmount() {
-        if (getAP().getSlotData() == null) {
-            return 0;
-        }
-        return getAP().getSlotData().getAdvancement_goal();
     }
 
     public void setCheckedAdvancements(Set<Integer> checkedLocations) {

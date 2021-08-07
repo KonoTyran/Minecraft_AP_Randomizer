@@ -1,17 +1,26 @@
 package gg.archipelago.aprandomizer;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
+import gg.archipelago.APClient.events.ConnectionAttemptEvent;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
+import gg.archipelago.APClient.network.BouncedPacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class APClient extends gg.archipelago.APClient.APClient {
 
@@ -23,7 +32,10 @@ public class APClient extends gg.archipelago.APClient.APClient {
     private final MinecraftServer server;
 
     APClient(MinecraftServer server) {
-        super("Minecraft", APRandomizer.getApmcData().seed_name,APRandomizer.getApmcData().player_id);
+        super(APRandomizer.getApmcData().seed_name,APRandomizer.getApmcData().player_id);
+
+        this.setGame("Minecraft");
+        this.setTags(new String[]{"MC35"});
         this.server = server;
         APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -40,20 +52,24 @@ public class APClient extends gg.archipelago.APClient.APClient {
     }
 
     @Override
+    public void onAttemptConnection(ConnectionAttemptEvent event) {
+        SlotData temp = event.getSlotData(SlotData.class);
+        APMCData data = APRandomizer.getApmcData();
+        if (!event.getSeedName().equals(data.seed_name)) {
+            Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
+            event.setCanceled(true);
+        }
+        if (temp.getClient_version() != APRandomizer.getClientVersion()) {
+            event.setCanceled(true);
+            Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
+        }
+    }
+
+    @Override
     public void onConnectResult(ConnectionResultEvent event) {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
             slotData = event.getSlotData(SlotData.class);
-            APMCData data = APRandomizer.getApmcData();
-            if (!event.getSeedName().equals(data.seed_name)) {
-                Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
-                event.setCanceled(true);
-            }
-            if (slotData.getClient_version() != APRandomizer.getClientVersion()) {
-                    event.setCanceled(true);
-                    Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
-                    return;
-            }
 
             APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -69,9 +85,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                     APRandomizer.getItemManager().catchUpPlayer(player);
                 }
-                APRandomizer.getBossBar().setMax(APRandomizer.getAdvancementManager().getRequiredAmount());
-                APRandomizer.getBossBar().setName(new StringTextComponent(String.format("Advancements (%d / %d)", APRandomizer.getAdvancementManager().getFinishedAmount(), APRandomizer.getAdvancementManager().getRequiredAmount())));
-                APRandomizer.getBossBar().setValue(APRandomizer.getAdvancementManager().getFinishedAmount());
+                APRandomizer.getGoalManager().updateInfoBar();
             });
 
         } else if (event.getResult() == ConnectionResult.InvalidPassword) {
@@ -88,6 +102,36 @@ public class APClient extends gg.archipelago.APClient.APClient {
     @Override
     public void onJoinRoom() {
 
+    }
+
+    @Override
+    public void onBounced(BouncedPacket packet) {
+        if(packet.tags.contains("MC35") && APRandomizer.getAP().getSlotData().isMC35()) {
+            int sourceSlot = packet.getInt("source");
+            if(sourceSlot != APRandomizer.getAP().getSlot()) {
+                int randPlayer = ThreadLocalRandom.current().nextInt(server.getPlayerCount());
+                ServerPlayerEntity player = server.getPlayerList().getPlayers().get(randPlayer);
+                CompoundNBT eNBT = new CompoundNBT();
+                try {
+                    if(packet.containsKey("nbt"))
+                        eNBT = JsonToNBT.parseTag(packet.getString("nbt"));
+                } catch (CommandSyntaxException ignored) {}
+                eNBT.putString("id", packet.getString("enemy"));
+                Entity entity = EntityType.loadEntityRecursive(eNBT, player.level, (spawnEntity) -> {
+                    Vector3d pos = player.position();
+                    Vector3d offset = Utils.getRandomPosition(pos,10);
+                    spawnEntity.moveTo(offset.x, offset.y, offset.z, spawnEntity.yRot, spawnEntity.xRot);
+                    return spawnEntity;
+                });
+                if(entity != null) {
+                    if(entity instanceof LivingEntity) {
+                        ((LivingEntity)entity).heal(((LivingEntity) entity).getMaxHealth());
+                        ((LivingEntity)entity).setLastHurtByPlayer(player);
+                    }
+                    player.getLevel().addFreshEntity(entity);
+                }
+            }
+        }
     }
 
     @Override
@@ -122,8 +166,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
         } else {
             Utils.sendMessageToAll(reason);
         }
-        IFormattableTextComponent advBar = new StringTextComponent("Not connected to Archipelago").withStyle(Style.EMPTY.withColor(Color.parseColor("red")));
-        APRandomizer.getBossBar().setName(advBar.append(new StringTextComponent(" (" + APRandomizer.getAdvancementManager().getFinishedAmount() + ")")));
+        APRandomizer.getGoalManager().updateInfoBar();
     }
 
     @Override

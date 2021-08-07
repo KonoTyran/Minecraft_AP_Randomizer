@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.recipemanager;
+package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import net.minecraft.item.crafting.IRecipe;
 

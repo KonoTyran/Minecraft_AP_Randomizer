@@ -1,11 +1,10 @@
-package gg.archipelago.aprandomizer.itemmanager;
+package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.aprandomizer.itemmanager.traps.BeeTrap;
+import gg.archipelago.aprandomizer.managers.itemmanager.traps.BeeTrap;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.item.ItemEntity;
@@ -28,12 +27,12 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class ItemManager {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static final int DRAGON_EGG_SHARD = 45043;
 
     private final HashMap<Integer, ItemInfo> itemData = new HashMap<Integer, ItemInfo>() {{
         put(45015, new ItemInfo(Items.NETHERITE_SCRAP, 8));
@@ -124,6 +123,7 @@ public class ItemManager {
                 receivedCompasses.add(compasses.get(item));
             }
         }
+        APRandomizer.getGoalManager().updateGoal();
     }
 
     public void giveItem(int itemID, ServerPlayerEntity player) {
@@ -167,6 +167,7 @@ public class ItemManager {
 
 
     public void giveItemToAll(int itemID) {
+
         receivedItems.add(itemID);
         //check if this item is a structure compass, and we are not already tracking that one.
         if(compasses.containsKey(itemID) && !receivedCompasses.contains(compasses.get(itemID))) {
@@ -179,6 +180,7 @@ public class ItemManager {
             }
         });
 
+        APRandomizer.getGoalManager().updateGoal();
     }
 
     /***
@@ -198,5 +200,9 @@ public class ItemManager {
 
     public ArrayList<String> getCompasses() {
         return receivedCompasses;
+    }
+
+    public ArrayList<Integer> getAllItems() {
+        return receivedItems;
     }
 }

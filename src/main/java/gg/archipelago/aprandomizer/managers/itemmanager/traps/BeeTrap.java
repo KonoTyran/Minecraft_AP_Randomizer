@@ -1,7 +1,8 @@
-package gg.archipelago.aprandomizer.itemmanager.traps;
+package gg.archipelago.aprandomizer.managers.itemmanager.traps;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.itemmanager.Trap;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.managers.itemmanager.Trap;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -22,13 +23,7 @@ public class BeeTrap implements Trap {
             Vector3d pos = player.position();
             for (int i = 0; i < numberOfBees; i++) {
                 BeeEntity bee = EntityType.BEE.create(world);
-                double radius = 5;
-                double a = Math.random()*Math.PI*2;
-                double b= Math.random()*Math.PI/2;
-                double x = radius * Math.cos(a) * Math.sin(b) + pos.x;
-                double z = radius * Math.sin(a) * Math.sin(b) + pos.z;
-                double y = radius * Math.cos(b) + pos.y;
-                Vector3d offset = new Vector3d(x,y,z);
+                Vector3d offset = Utils.getRandomPosition(pos, 5);
                 bee.moveTo(offset);
                 bee.setPersistentAngerTarget(player.getUUID());
                 bee.setRemainingPersistentAngerTime(1200);

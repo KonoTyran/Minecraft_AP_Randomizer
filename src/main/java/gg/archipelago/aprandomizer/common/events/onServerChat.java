@@ -16,16 +16,18 @@ public class onServerChat {
 
     @SubscribeEvent
     static void onServerChatEvent(ServerChatEvent event) {
+        if(!APRandomizer.getAP().isConnected())
+            return;
         ServerPlayerEntity player = event.getPlayer();
 
         String message = event.getMessage();
         LOGGER.debug("{} ({}): {}", player.getScoreboardName(), player.hasPermissions(1), message);
 
-        if (message.startsWith("!") && player.server.getProfilePermissions(player.getGameProfile()) < 1)
-            return;
-        else if (message.startsWith("!"))
-            APRandomizer.getAP().sendChat(message);
-        else
-            APRandomizer.getAP().sendChat("(" + player.getDisplayName().getString() + ") " + message);
+        if (!message.startsWith("!") || player.server.getProfilePermissions(player.getGameProfile()) >= 1) {
+            if (message.startsWith("!"))
+                APRandomizer.getAP().sendChat(message);
+            else
+                APRandomizer.getAP().sendChat("(" + player.getDisplayName().getString() + ") " + message);
+        }
     }
 }

@@ -8,6 +8,8 @@ public class SlotData extends gg.archipelago.APClient.SlotData {
     private int advancement_goal;
     private long minecraft_world_seed;
     private int client_version;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final boolean MC35 = false;
 
     public int getInclude_hard_advancements() {
         return include_hard_advancements;
@@ -31,5 +33,9 @@ public class SlotData extends gg.archipelago.APClient.SlotData {
 
     public int getInclude_insane_advancements() {
         return include_insane_advancements;
+    }
+
+    public boolean isMC35() {
+        return MC35;
     }
 }

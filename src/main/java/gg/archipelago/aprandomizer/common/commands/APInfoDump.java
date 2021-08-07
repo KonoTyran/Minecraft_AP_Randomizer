@@ -2,6 +2,7 @@ package gg.archipelago.aprandomizer.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.command.CommandSource;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 @Mod.EventBusSubscriber
@@ -40,6 +42,9 @@ public class APInfoDump {
                 .then(Commands.literal("compasses")
                         .executes(APInfoDump::compasses)
                 )
+                .then(Commands.literal("bounce")
+                        .executes(APInfoDump::bounce)
+                )
         );
 
     }
@@ -55,6 +60,18 @@ public class APInfoDump {
         APRandomizer.getItemManager().giveItemToAll(45039);
         APRandomizer.getItemManager().giveItemToAll(45040);
         APRandomizer.getItemManager().giveItemToAll(45041);
+        return 1;
+    }
+
+    private static int bounce(CommandContext<CommandSource> source) {
+        BouncePacket packet = new BouncePacket();
+        packet.tags = new String[]{"MC35"};
+        packet.setData(new HashMap<String, Object>(){{
+            put("enemy", "minecraft:wither");
+            put("source", APRandomizer.getAP().getSlot());
+            put("nbt", "{NoAI:1}");
+        }});
+        APRandomizer.getAP().sendBounce(packet);
         return 1;
     }
 

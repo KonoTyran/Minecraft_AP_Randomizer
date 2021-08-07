@@ -21,6 +21,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -225,6 +226,15 @@ public class Utils {
             default:
                 return structure.getRegistryName().getPath().toLowerCase();
         }
+    }
+
+    public static Vector3d getRandomPosition(Vector3d pos, int radius) {
+        double a = Math.random()*Math.PI*2;
+        double b = Math.random()*Math.PI/2;
+        double x = radius * Math.cos(a) * Math.sin(b) + pos.x;
+        double z = radius * Math.sin(a) * Math.sin(b) + pos.z;
+        double y = radius * Math.cos(b) + pos.y;
+        return new Vector3d(x,y,z);
     }
 
     public static void addLodestoneTags(RegistryKey<World> worldRegistryKey, BlockPos blockPos, CompoundNBT nbt) {

@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.recipemanager;
+package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.entity.player.ServerPlayerEntity;

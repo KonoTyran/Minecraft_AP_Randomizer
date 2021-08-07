@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.itemmanager;
+package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.item.Item;

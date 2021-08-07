@@ -1,13 +1,15 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
+import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.advancementmanager.AdvancementManager;
+import gg.archipelago.aprandomizer.managers.GoalManager;
+import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
-import gg.archipelago.aprandomizer.itemmanager.ItemManager;
-import gg.archipelago.aprandomizer.recipemanager.RecipeManager;
+import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
+import gg.archipelago.aprandomizer.managers.recipemanager.RecipeManager;
 import net.minecraft.server.CustomServerBossInfo;
 import net.minecraft.server.CustomServerBossInfoManager;
 import net.minecraft.server.MinecraftServer;
@@ -67,9 +69,9 @@ public class APRandomizer {
     static private AdvancementManager advancementManager;
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
+    static private GoalManager goalManager;
     static private APMCData apmcData;
-    static private final int clientVersion = 5;
-    static private CustomServerBossInfo advBar;
+    static private final int clientVersion = 6;
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
@@ -107,7 +109,6 @@ public class APRandomizer {
                 apmcData.state = APMCData.State.INVALID_VERSION;
             }
             //LOGGER.info(apmcData.structures.toString());
-
         } catch (IOException | NullPointerException | ArrayIndexOutOfBoundsException | AssertionError e) {
             LOGGER.error("no .apmc file found. please place .apmc file in './APData/' folder.");
             if (apmcData == null) {
@@ -119,6 +120,10 @@ public class APRandomizer {
 
     public static APClient getAP() {
         return apClient;
+    }
+
+    public static boolean isConnected() {
+        return (apClient != null && apClient.isConnected());
     }
 
     public static AdvancementManager getAdvancementManager() {
@@ -145,9 +150,6 @@ public class APRandomizer {
         return clientVersion;
     }
 
-    public static CustomServerBossInfo getBossBar() {
-        return advBar;
-    }
 
     public static boolean isJailPlayers() {
         return jailPlayers;
@@ -164,6 +166,15 @@ public class APRandomizer {
 
     public static boolean isRace() {
         return getApmcData().race;
+    }
+
+    public static void sendBounce(BouncePacket packet) {
+        if(apClient != null)
+            apClient.sendBounce(packet);
+    }
+
+    public static GoalManager getGoalManager() {
+        return goalManager;
     }
 
     private boolean deleteDirectory(File directoryToBeDeleted) {
@@ -213,6 +224,7 @@ public class APRandomizer {
         advancementManager = new AdvancementManager();
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
+        goalManager = new GoalManager();
 
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true, server);
@@ -282,14 +294,6 @@ public class APRandomizer {
         theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
         theEnd.save(null, true, false);
         //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
-
-        CustomServerBossInfoManager bossInfoManager = server.getCustomBossEvents();
-        advBar = bossInfoManager.create(new ResourceLocation(MODID,"advancementbar"), new StringTextComponent(String.format("Not connected to Archipelago (%d)",advancementManager.getFinishedAmount())).withStyle(Style.EMPTY.withColor(Color.parseColor("red"))));
-        advBar.setMax(100);
-        advBar.setColor(BossInfo.Color.PINK);
-        advBar.setOverlay(BossInfo.Overlay.NOTCHED_10);
-        advBar.setVisible(true);
-        advBar.setValue(advancementManager.getFinishedAmount());
 
 
         if(jailPlayers) {

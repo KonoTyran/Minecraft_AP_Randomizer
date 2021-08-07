@@ -20,6 +20,12 @@ public class APMCData {
     public int client_version;
     @SerializedName("race")
     public boolean race = false;
+    @SerializedName("egg_shards_required")
+    public int egg_shards_required = -1;
+    @SerializedName("egg_shards_available")
+    public int egg_shards_available = -1;
+    @SerializedName("advancement_goal")
+    public int advancements_required = -1;
 
     public State state = State.VALID;
 
