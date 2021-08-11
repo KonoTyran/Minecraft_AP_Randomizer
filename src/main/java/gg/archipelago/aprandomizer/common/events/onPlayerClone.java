@@ -4,6 +4,7 @@ import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameType;
@@ -22,21 +23,13 @@ public class onPlayerClone {
             BlockPos jail = APRandomizer.getJailPosition();
             event.getPlayer().teleportTo(jail.getX(), jail.getY(), jail.getZ());
         }
+        if(event.isEndConquered() && APRandomizer.getGoalManager().isDone()) {
+            APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
+        }
     }
 
     @SubscribeEvent
     public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
-        //check if this dimension transition is the cause of entering the end portal.
-        if (
-                event.getOriginal().level.dimension().equals(World.END)
-                        && !event.isWasDeath()
-                        && event.getPlayer().level.dimension().equals(World.OVERWORLD)
-                        && APRandomizer.getGoalManager().isDone()
-        ) {
-            if (APRandomizer.getAP().isConnected()) {
-                APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
-            }
-        }
         PlayerEntity player = event.getOriginal();
         LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
         if (loPlayerData.isPresent()) {

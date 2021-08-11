@@ -216,6 +216,7 @@ public class APRandomizer {
     }
 
 
+    @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
     public void onServerStarting(FMLServerStartingEvent event) {
 
@@ -234,6 +235,8 @@ public class APRandomizer {
         //fetch our custom world save data we attach to the worlds.
         worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
+        advancementManager.setCheckedAdvancements(worldData.getLocations());
+
 
         //check if APMC data is present and if the seed matches what we expect
         if (apmcData.state == APMCData.State.VALID && !worldData.getSeedName().equals(apmcData.seed_name)) {

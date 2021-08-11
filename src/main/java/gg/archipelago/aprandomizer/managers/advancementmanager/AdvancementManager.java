@@ -1,15 +1,19 @@
 package gg.archipelago.aprandomizer.managers.advancementmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
+import gg.archipelago.aprandomizer.capability.WorldData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.World;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import static gg.archipelago.aprandomizer.APRandomizer.getAP;
 import static gg.archipelago.aprandomizer.APRandomizer.getServer;
 
 public class AdvancementManager {
@@ -135,6 +139,7 @@ public class AdvancementManager {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal();
+        APRandomizer.getServer().getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
     }
 
     public void resendAdvancements() {
@@ -168,6 +173,11 @@ public class AdvancementManager {
 
     public void setCheckedAdvancements(Set<Integer> checkedLocations) {
         earnedAdvancements.addAll(checkedLocations);
+        WorldData data = APRandomizer.getServer().getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        for (Integer checkedLocation : checkedLocations) {
+            data.addLocation(checkedLocation);
+        }
+
         syncAllAdvancements();
     }
 }

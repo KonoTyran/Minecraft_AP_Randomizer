@@ -134,6 +134,6 @@ public class GoalManager {
     }
 
     public boolean isDone() {
-        return advancementManager.getFinishedAmount() >= advancementsRequired && this.currentEggShards() > dragonEggShardsRequired;
+        return advancementManager.getFinishedAmount() >= advancementsRequired && this.currentEggShards() >= dragonEggShardsRequired;
     }
 }
