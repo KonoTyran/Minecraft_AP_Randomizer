@@ -1,19 +1,19 @@
 package gg.archipelago.aprandomizer;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
-import net.minecraft.world.gen.FlatGenerationSettings;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.StructureFeature;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
 
 public class APConfiguredStructures {
     /**
      * Static instance of our structure so we can reference it and add it to biomes easily.
      */
-    public static StructureFeature<?, ?> VILLAGE_NETHER = APStructures.VILLAGE_NETHER.get().configured(IFeatureConfig.NONE);
-    public static StructureFeature<?, ?> END_CITY_NETHER = APStructures.END_CITY_NETHER.get().configured(IFeatureConfig.NONE);
-    public static StructureFeature<?, ?> PILLAGER_OUTPOST_NETHER = APStructures.PILLAGER_OUTPOST_NETHER.get().configured(IFeatureConfig.NONE);
+    public static ConfiguredStructureFeature<?, ?> VILLAGE_NETHER = APStructures.VILLAGE_NETHER.get().configured(FeatureConfiguration.NONE);
+    public static ConfiguredStructureFeature<?, ?> END_CITY_NETHER = APStructures.END_CITY_NETHER.get().configured(FeatureConfiguration.NONE);
+    public static ConfiguredStructureFeature<?, ?> PILLAGER_OUTPOST_NETHER = APStructures.PILLAGER_OUTPOST_NETHER.get().configured(FeatureConfiguration.NONE);
 
     /**
      * Registers the configured structure which is what gets added to the biomes.
@@ -23,7 +23,7 @@ public class APConfiguredStructures {
      * But the best time to register configured features by code is honestly to do it in FMLCommonSetupEvent.
      */
     public static void registerConfiguredStructures() {
-        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
+        Registry<ConfiguredStructureFeature<?, ?>> registry = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE;
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "village_nether"), VILLAGE_NETHER);
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "end_city_nether"), END_CITY_NETHER);
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "pillager_outpost_nether"), PILLAGER_OUTPOST_NETHER);
@@ -43,8 +43,8 @@ public class APConfiguredStructures {
          *
          * Requires AccessTransformer ( see resources/META-INF/accesstransformer.cfg )
          */
-        FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.VILLAGE_NETHER.get(), VILLAGE_NETHER);
-        FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.END_CITY_NETHER.get(), END_CITY_NETHER);
-        FlatGenerationSettings.STRUCTURE_FEATURES.put(APStructures.PILLAGER_OUTPOST_NETHER.get(), PILLAGER_OUTPOST_NETHER);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.VILLAGE_NETHER.get(), VILLAGE_NETHER);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.END_CITY_NETHER.get(), END_CITY_NETHER);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.PILLAGER_OUTPOST_NETHER.get(), PILLAGER_OUTPOST_NETHER);
     }
 }

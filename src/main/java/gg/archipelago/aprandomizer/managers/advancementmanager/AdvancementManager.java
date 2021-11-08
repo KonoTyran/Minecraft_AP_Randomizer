@@ -5,20 +5,19 @@ import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import static gg.archipelago.aprandomizer.APRandomizer.getAP;
 import static gg.archipelago.aprandomizer.APRandomizer.getServer;
 
 public class AdvancementManager {
 
-    private final HashMap<String, Integer> advancementData = new HashMap<String, Integer>() {{
+    private final HashMap<String, Integer> advancementData = new HashMap<>() {{
         put("minecraft:nether/obtain_crying_obsidian", 42000);
         put("minecraft:nether/distract_piglin", 42001);
         put("minecraft:story/obtain_armor", 42002);
@@ -99,18 +98,18 @@ public class AdvancementManager {
         put("minecraft:story/enter_the_end", 42077);
         put("minecraft:husbandry/breed_an_animal", 42078);
         put("minecraft:husbandry/complete_catalogue", 42079);
-        put("minecraft:story/get_wood", 42080);
-        put("minecraft:story/get_pickaxe", 42081);
-        put("minecraft:story/hot_topic", 42082);
-        put("minecraft:husbandry/bake_bread", 42083);
-        put("minecraft:husbandry/the_lie", 42084);
-        put("minecraft:adventure/ride_minecart", 42085);
-        put("minecraft:adventure/craft_sword", 42086);
-        put("minecraft:husbandry/cow_tipper", 42087);
-        put("minecraft:husbandry/ride_pig", 42088);
-        put("minecraft:story/overkill", 42089);
-        put("minecraft:story/obtain_bookshelf", 42090);
-        put("minecraft:husbandry/overpowered", 42091);
+        put("aprandomizer:archipelago/get_wood", 42080);
+        put("aprandomizer:archipelago/get_pickaxe", 42081);
+        put("aprandomizer:archipelago/hot_topic", 42082);
+        put("aprandomizer:archipelago/bake_bread", 42083);
+        put("aprandomizer:archipelago/the_lie", 42084);
+        put("aprandomizer:archipelago/ride_minecart", 42085);
+        put("aprandomizer:archipelago/craft_sword", 42086);
+        put("aprandomizer:archipelago/cow_tipper", 42087);
+        put("aprandomizer:archipelago/ride_pig", 42088);
+        put("aprandomizer:archipelago/overkill", 42089);
+        put("aprandomizer:archipelago/obtain_bookshelf", 42090);
+        put("aprandomizer:archipelago/overpowered", 42091);
     }};
 
     private final Set<Integer> earnedAdvancements = new HashSet<>();
@@ -139,7 +138,7 @@ public class AdvancementManager {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal();
-        APRandomizer.getServer().getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
+        APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
     }
 
     public void resendAdvancements() {
@@ -150,7 +149,7 @@ public class AdvancementManager {
 
     public void syncAdvancement(Advancement a) {
         if (hasAdvancement(a.getId().toString())) {
-            for (ServerPlayerEntity serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
+            for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
                 if (ap.isDone())
                     continue;
@@ -173,7 +172,7 @@ public class AdvancementManager {
 
     public void setCheckedAdvancements(Set<Integer> checkedLocations) {
         earnedAdvancements.addAll(checkedLocations);
-        WorldData data = APRandomizer.getServer().getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData data = APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
         for (Integer checkedLocation : checkedLocations) {
             data.addLocation(checkedLocation);
         }

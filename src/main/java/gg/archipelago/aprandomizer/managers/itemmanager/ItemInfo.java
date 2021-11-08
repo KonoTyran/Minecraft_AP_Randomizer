@@ -1,8 +1,8 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
-import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.item.Item;
-import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 
 public class ItemInfo {
 
@@ -10,10 +10,10 @@ public class ItemInfo {
     String name;
     String[] lore;
     int amount;
-    EnchantmentData enchant;
-    Structure<?> structure;
+    EnchantmentInstance enchant;
+    StructureFeature<?> structure;
 
-    public ItemInfo(Item item, int amount, EnchantmentData enchant, Structure<?> structure, String name, String[] lore) {
+    public ItemInfo(Item item, int amount, EnchantmentInstance enchant, StructureFeature<?> structure, String name, String[] lore) {
         this.item = item;
         this.amount = amount;
         this.enchant = enchant;
@@ -22,7 +22,7 @@ public class ItemInfo {
         this.lore = lore;
     }
 
-    public ItemInfo(Item item, int amount, EnchantmentData enchant) {
+    public ItemInfo(Item item, int amount, EnchantmentInstance enchant) {
         this(item, amount, enchant, null, null, null);
     }
 
@@ -38,7 +38,7 @@ public class ItemInfo {
         this(item, amount, null, null, name, lore);
     }
 
-    public ItemInfo(Item item, int amount, Structure<?> structure, String name, String[] lore) {
+    public ItemInfo(Item item, int amount, StructureFeature<?> structure, String name, String[] lore) {
         this(item, amount, null, structure, name, lore);
     }
 }

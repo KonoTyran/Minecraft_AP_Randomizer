@@ -1,7 +1,8 @@
 package gg.archipelago.aprandomizer.capability;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -9,7 +10,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CapabilityProviderPlayerData implements ICapabilitySerializable<INBT> {
+public class CapabilityProviderPlayerData implements ICapabilitySerializable<Tag> {
 
 
     private final PlayerData playerData = new PlayerData();
@@ -44,12 +45,16 @@ public class CapabilityProviderPlayerData implements ICapabilitySerializable<INB
     }
 
     @Override
-    public INBT serializeNBT() {
-        return CapabilityPlayerData.CAPABILITY_PLAYER_DATA.writeNBT(playerData, null);
+    public Tag serializeNBT() {
+        return IntTag.valueOf(playerData.getIndex());
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
-        CapabilityPlayerData.CAPABILITY_PLAYER_DATA.readNBT(playerData, null, nbt);
+    public void deserializeNBT(Tag nbt) {
+        int index = 0;
+        if (nbt.getType() == IntTag.TYPE) {
+            index = ((IntTag) nbt).getAsInt();
+        }
+        playerData.setIndex(index);
     }
 }

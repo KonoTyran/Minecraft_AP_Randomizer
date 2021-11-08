@@ -2,19 +2,19 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -48,7 +48,7 @@ public class onPlayerInteract {
             event.setCanceled(true);
 
         event.getPlayer().getServer().execute(() -> {
-            event.getPlayer().inventory.setChanged();
+            event.getPlayer().getInventory().setChanged();
             event.getPlayer().inventoryMenu.broadcastChanges();
         });
     }
@@ -59,7 +59,7 @@ public class onPlayerInteract {
             return;
         if(event.getItemStack().getItem().equals(Items.COMPASS) && event.getItemStack().hasTag()) {
             ItemStack compass = event.getItemStack();
-            CompoundNBT nbt = compass.getOrCreateTag();
+            CompoundTag nbt = compass.getOrCreateTag();
             if(nbt.get("structure") == null)
                 return;
 
@@ -74,14 +74,14 @@ public class onPlayerInteract {
             String structureName = compasses.get(index);
 
             //update the nbt data with our new structure.
-            nbt.put("structure", StringNBT.valueOf(structureName));
+            nbt.put("structure", StringTag.valueOf(structureName));
 
             //get the actual structure data from forge, and make sure its changed to the AP one if needed.
-            Structure<?> structure = Utils.getCorrectStructure(ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName)));
+            StructureFeature<?> structure = Utils.getCorrectStructure(ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName)));
 
 
             //get our local custom structure if needed.
-            RegistryKey<World> world = Utils.getStructureWorld(structure);
+            ResourceKey<Level> world = Utils.getStructureWorld(structure);
 
             //locate the structure in the appropriate world.
             BlockPos structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structure,event.getEntity().blockPosition(), 100, false);
@@ -92,8 +92,8 @@ public class onPlayerInteract {
                 structurePos = new BlockPos(0,0,0);
 
             Utils.addLodestoneTags(world,structurePos,compass.getOrCreateTag());
-            Utils.sendActionBarToPlayer((ServerPlayerEntity)event.getPlayer(),String.format("Updated Compass (%s)",displayName),0,60,0);
-            compass.setHoverName(new StringTextComponent(String.format("Structure Compass (%s)", displayName)));
+            Utils.sendActionBarToPlayer((ServerPlayer)event.getPlayer(),String.format("Updated Compass (%s)",displayName),0,60,0);
+            compass.setHoverName(new TextComponent(String.format("Structure Compass (%s)", displayName)));
 
         }
     }

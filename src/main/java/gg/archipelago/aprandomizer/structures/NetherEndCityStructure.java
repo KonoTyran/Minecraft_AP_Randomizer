@@ -2,26 +2,29 @@ package gg.archipelago.aprandomizer.structures;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.EndCityPieces;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.structure.EndCityPieces;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
 
-public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
-    public NetherEndCityStructure(Codec<NoFeatureConfig> codec) {
+import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
+
+public class NetherEndCityStructure extends StructureFeature<NoneFeatureConfiguration> {
+    public NetherEndCityStructure(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
 
@@ -30,7 +33,7 @@ public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
      * is time to create the pieces of the structure for generation.
      */
     @Override
-    public IStartFactory<NoFeatureConfig> getStartFactory() {
+    public StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
         return NetherEndCityStructure.Start::new;
     }
 
@@ -42,20 +45,20 @@ public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
      * This surface structure stage places the structure before plants and ores are generated.
      */
     @Override
-    public GenerationStage.Decoration step() {
-        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
+    public GenerationStep.Decoration step() {
+        return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     /**
      * This method allow us to have naturally spawning mobs inside out structure
      * in our case here we want to add enderman to our end city
      */
-    private static final List<MobSpawnInfo.Spawners> STRUCTURE_MOBS = ImmutableList.of(
-            new MobSpawnInfo.Spawners(EntityType.ENDERMAN, 30, 10, 15)
+    private static final List<MobSpawnSettings.SpawnerData> STRUCTURE_MOBS = ImmutableList.of(
+            new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 30, 10, 15)
     );
 
     @Override
-    public List<MobSpawnInfo.Spawners> getDefaultSpawnList() {
+    public List<MobSpawnSettings.SpawnerData> getDefaultSpawnList() {
         return STRUCTURE_MOBS;
     }
 
@@ -63,18 +66,17 @@ public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
     /**
      * Handles calling up the structure's pieces class and height that structure will spawn at.
      */
-    public static class Start extends StructureStart<NoFeatureConfig> {
-        public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
-            super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
+    public static class Start extends StructureStart<NoneFeatureConfiguration> {
+        public Start(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
+            super(structureIn, chunkPos, referenceIn, seedIn);
         }
 
         @Override
-        public void generatePieces(DynamicRegistries dynamicRegistryManager, ChunkGenerator chunkGenerator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
+        public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager templateManagerIn, ChunkPos chunkPos, Biome biomeIn, NoneFeatureConfiguration config, LevelHeightAccessor levelHeightAccessor) {
 
-            ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
             // Turns the chunk coordinates into actual coordinates we can use. (random position within the chunk.)
-            int x = chunkpos.getMinBlockX() + this.random.nextInt(16);
-            int z = chunkpos.getMinBlockZ() + this.random.nextInt(16);
+            int x = chunkPos.getMinBlockX() + this.random.nextInt(16);
+            int z = chunkPos.getMinBlockZ() + this.random.nextInt(16);
 
             // get sea Level, or in our case lava level.
             int seaLevel = chunkGenerator.getSeaLevel();
@@ -89,10 +91,9 @@ public class NetherEndCityStructure extends Structure<NoFeatureConfig> {
             EndCityPieces.startHouseTower(templateManagerIn, blockpos, rotation, this.pieces, this.random);
             //APRandomizer.LOGGER.info("generating Nether End City at {}",blockpos.toString());
             // Sets the bounds of the structure once you are finished.
-            this.calculateBoundingBox();
+            this.createBoundingBox();
 
         }
 
     }
 }
-

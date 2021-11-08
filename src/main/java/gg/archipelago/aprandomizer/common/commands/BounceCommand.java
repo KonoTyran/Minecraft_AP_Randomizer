@@ -1,19 +1,15 @@
 package gg.archipelago.aprandomizer.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.APClient.network.BouncePacket;
-import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntitySummonArgument;
-import net.minecraft.command.arguments.NBTCompoundTagArgument;
-import net.minecraft.command.arguments.SuggestionProviders;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.CompoundTagArgument;
+import net.minecraft.commands.arguments.EntitySummonArgument;
+import net.minecraft.commands.synchronization.SuggestionProviders;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +25,7 @@ public class BounceCommand {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //build our command structure and submit it
-    public static void Register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void Register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(Commands.literal("bounce") //base slash command is "connect"
                 // first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
@@ -40,15 +36,15 @@ public class BounceCommand {
                         .executes(context ->
                                 bounceEntity(context.getSource(),
                                         EntitySummonArgument.getSummonableEntity(context, "entity"),
-                                        new CompoundNBT()
+                                        new CompoundTag()
                                 )
                         )
-                        .then(Commands.argument("nbt", NBTCompoundTagArgument.compoundTag())
+                        .then(Commands.argument("nbt", CompoundTagArgument.compoundTag())
                                 .executes(context ->
                                         bounceEntity(
                                                 context.getSource(),
                                                 EntitySummonArgument.getSummonableEntity(context,"entity"),
-                                                NBTCompoundTagArgument.getCompoundTag(context,"nbt")
+                                                CompoundTagArgument.getCompoundTag(context,"nbt")
                                         )
                                 )
                         )
@@ -59,7 +55,7 @@ public class BounceCommand {
 
     }
 
-    private static int bounceEntity(CommandSource commandSource, ResourceLocation entity, CompoundNBT nbt) {
+    private static int bounceEntity(CommandSourceStack commandSource, ResourceLocation entity, CompoundTag nbt) {
         BouncePacket packet = new BouncePacket();
         packet.tags = new String[]{"MC35"};
         packet.setData(new HashMap<String, Object>(){{

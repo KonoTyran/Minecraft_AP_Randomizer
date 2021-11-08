@@ -4,11 +4,8 @@ import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.PlayerData;
-import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameType;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -30,7 +27,7 @@ public class onPlayerClone {
 
     @SubscribeEvent
     public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
-        PlayerEntity player = event.getOriginal();
+        Player player = event.getOriginal();
         LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
         if (loPlayerData.isPresent()) {
             PlayerData originalPlayerData = loPlayerData.orElseThrow(AssertionError::new);

@@ -10,16 +10,22 @@ import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.*;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class APClient extends gg.archipelago.APClient.APClient {
@@ -82,7 +88,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
             //catch up all connected players to the list just received.
             server.execute(() -> {
-                for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                     APRandomizer.getItemManager().catchUpPlayer(player);
                 }
                 APRandomizer.getGoalManager().updateInfoBar();
@@ -110,17 +116,17 @@ public class APClient extends gg.archipelago.APClient.APClient {
             int sourceSlot = packet.getInt("source");
             if(sourceSlot != APRandomizer.getAP().getSlot()) {
                 int randPlayer = ThreadLocalRandom.current().nextInt(server.getPlayerCount());
-                ServerPlayerEntity player = server.getPlayerList().getPlayers().get(randPlayer);
-                CompoundNBT eNBT = new CompoundNBT();
+                ServerPlayer player = server.getPlayerList().getPlayers().get(randPlayer);
+                CompoundTag eNBT = new CompoundTag();
                 try {
                     if(packet.containsKey("nbt"))
-                        eNBT = JsonToNBT.parseTag(packet.getString("nbt"));
+                        eNBT = TagParser.parseTag(packet.getString("nbt"));
                 } catch (CommandSyntaxException ignored) {}
                 eNBT.putString("id", packet.getString("enemy"));
                 Entity entity = EntityType.loadEntityRecursive(eNBT, player.level, (spawnEntity) -> {
-                    Vector3d pos = player.position();
-                    Vector3d offset = Utils.getRandomPosition(pos,10);
-                    spawnEntity.moveTo(offset.x, offset.y, offset.z, spawnEntity.yRot, spawnEntity.xRot);
+                    Vec3 pos = player.position();
+                    Vec3 offset = Utils.getRandomPosition(pos,10);
+                    spawnEntity.moveTo(offset.x, offset.y, offset.z, spawnEntity.yRotO, spawnEntity.xRotO);
                     return spawnEntity;
                 });
                 if(entity != null) {
@@ -170,20 +176,22 @@ public class APClient extends gg.archipelago.APClient.APClient {
     }
 
     @Override
-    public void onReceiveItem(int item, String sentFromLocation, String senderName) {
-        String itemName = getDataPackage().getItem(item);
-        ITextComponent textItem = new StringTextComponent(itemName).withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.gold.value)));
-        ITextComponent chatMessage = new StringTextComponent(
-                "Received ").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
-                .append(itemName).withStyle(Style.EMPTY.withColor(Color.parseColor("gold")))
-                .append(" from ").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
-                .append(senderName).withStyle(Style.EMPTY.withColor(Color.parseColor("gold")))
-                .append(" (").withStyle(Style.EMPTY.withColor(Color.parseColor("red")))
-                .append(sentFromLocation).withStyle(Style.EMPTY.withColor(Color.parseColor("blue")))
-                .append(")").withStyle(Style.EMPTY.withColor(Color.parseColor("red")));
-        ITextComponent title = new StringTextComponent("Received").withStyle(Style.EMPTY.withColor(Color.fromRgb(APPrintColor.red.value)));
+    public void onReceiveItem(NetworkItem item) {
+        Component textItem = new TextComponent(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.value)));
+        Component chatMessage = new TextComponent(
+                "Received ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
+                .append(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("gold")))
+                .append(" from ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
+                .append(item.playerName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("gold")))
+                .append(" (").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
+                .append(item.locationName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("blue")))
+                .append(")").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")));
+        Component title = new TextComponent("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.value)));
         Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
-        APRandomizer.getRecipeManager().grantRecipe(item);
-        APRandomizer.getItemManager().giveItemToAll(item);
+        APRandomizer.getRecipeManager().grantRecipe(item.itemID);
+        APRandomizer.getItemManager().giveItemToAll(item.itemID);
     }
+
+    @Override
+    public void onLocationInfo(ArrayList<NetworkItem> arrayList) {}
 }

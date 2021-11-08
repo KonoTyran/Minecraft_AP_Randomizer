@@ -1,24 +1,23 @@
 package gg.archipelago.aprandomizer.common.Utils;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.STitlePacket;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.List;
 
 public class QueuedTitle {
 
     private final int ticks;
-    private final List<ServerPlayerEntity> players;
+    private final List<ServerPlayer> players;
     private final int fadeIn;
     private final int stay;
     private final int fadeOut;
-    private final ITextComponent subTitle;
-    private final ITextComponent title;
-    private ITextComponent chatMessage = null;
+    private final Component subTitle;
+    private final Component title;
+    private Component chatMessage = null;
 
-    public QueuedTitle(List<ServerPlayerEntity> players, int fadeIn, int stay, int fadeOut, ITextComponent subTitle, ITextComponent title) {
+    public QueuedTitle(List<ServerPlayer> players, int fadeIn, int stay, int fadeOut, Component subTitle, Component title) {
         this.players = players;
         this.fadeIn = fadeIn;
         this.stay = stay;
@@ -28,7 +27,7 @@ public class QueuedTitle {
         this.ticks = fadeIn + stay + fadeOut + 20;
     }
 
-    public QueuedTitle(List<ServerPlayerEntity> players, int fadeIn, int stay, int fadeOut, ITextComponent subTitle, ITextComponent title,ITextComponent chatMessage) {
+    public QueuedTitle(List<ServerPlayer> players, int fadeIn, int stay, int fadeOut, Component subTitle, Component title,Component chatMessage) {
         this(players,fadeIn,stay,fadeOut,subTitle,title);
         this.chatMessage = chatMessage;
 
@@ -38,8 +37,7 @@ public class QueuedTitle {
     public void sendTitle() {
         APRandomizer.getServer().execute(() -> {
             TitleUtils.setTimes(players, fadeIn, stay, fadeOut);
-            TitleUtils.showTitle(players, subTitle, STitlePacket.Type.SUBTITLE);
-            TitleUtils.showTitle(players, title, STitlePacket.Type.TITLE);
+            TitleUtils.showTitle(players, title, subTitle);
             if(chatMessage != null) {
                 Utils.sendMessageToAll(chatMessage);
             }

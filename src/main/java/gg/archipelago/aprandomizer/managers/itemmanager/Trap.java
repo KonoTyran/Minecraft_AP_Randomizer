@@ -1,8 +1,8 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public interface Trap {
 
-    void trigger(ServerPlayerEntity player);
+    void trigger(ServerPlayer player);
 }

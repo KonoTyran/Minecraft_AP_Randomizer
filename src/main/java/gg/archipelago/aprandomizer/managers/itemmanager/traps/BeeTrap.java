@@ -3,11 +3,11 @@ package gg.archipelago.aprandomizer.managers.itemmanager.traps;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.Trap;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.BeeEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.phys.Vec3;
 
 public class BeeTrap implements Trap {
 
@@ -17,13 +17,13 @@ public class BeeTrap implements Trap {
         this.numberOfBees = numberOfBees;
     }
     @Override
-    public void trigger(ServerPlayerEntity player) {
+    public void trigger(ServerPlayer player) {
         APRandomizer.getServer().execute(() -> {
-            ServerWorld world = player.getLevel();
-            Vector3d pos = player.position();
+            ServerLevel world = player.getLevel();
+            Vec3 pos = player.position();
             for (int i = 0; i < numberOfBees; i++) {
-                BeeEntity bee = EntityType.BEE.create(world);
-                Vector3d offset = Utils.getRandomPosition(pos, 5);
+                Bee bee = EntityType.BEE.create(world);
+                Vec3 offset = Utils.getRandomPosition(pos, 5);
                 bee.moveTo(offset);
                 bee.setPersistentAngerTarget(player.getUUID());
                 bee.setRemainingPersistentAngerTime(1200);

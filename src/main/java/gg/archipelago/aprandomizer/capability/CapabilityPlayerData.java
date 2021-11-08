@@ -1,17 +1,17 @@
 package gg.archipelago.aprandomizer.capability;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CapabilityPlayerData {
-    @CapabilityInject(PlayerData.class)
-    public static Capability<PlayerData> CAPABILITY_PLAYER_DATA = null;
+    public static Capability<PlayerData> CAPABILITY_PLAYER_DATA = CapabilityManager.get(new CapabilityToken<>(){});
 
-    public static void register() {
-        CapabilityManager.INSTANCE.register(
-                PlayerData.class,
-                new PlayerData.PlayerDataStorage(),
-                PlayerData::new);
+
+    @SubscribeEvent
+    public static void RegisterPlayerData(RegisterCapabilitiesEvent event) {
+        event.register(PlayerData.class);
     }
 }

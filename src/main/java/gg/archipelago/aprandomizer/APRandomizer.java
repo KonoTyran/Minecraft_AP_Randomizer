@@ -3,43 +3,36 @@ package gg.archipelago.aprandomizer;
 import com.google.gson.Gson;
 import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.managers.GoalManager;
-import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
-import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
+import gg.archipelago.aprandomizer.managers.GoalManager;
+import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.managers.recipemanager.RecipeManager;
-import net.minecraft.server.CustomServerBossInfo;
-import net.minecraft.server.CustomServerBossInfoManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.world.BossInfo;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.end.DragonFightManager;
-import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
@@ -206,9 +199,6 @@ public class APRandomizer {
      * configured structure instance, and more.
      */
     public void setup(final FMLCommonSetupEvent event) {
-        CapabilityPlayerData.register();
-        CapabilityWorldData.register();
-
         event.enqueueWork(() -> {
             APStructures.setupStructures();
             APConfiguredStructures.registerConfiguredStructures();
@@ -230,10 +220,11 @@ public class APRandomizer {
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true, server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
+        server.getGameRules().getRule(GameRules.RULE_ANNOUNCE_ADVANCEMENTS).set(false, server);
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = server.getLevel(World.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = server.getLevel(Level.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
         advancementManager.setCheckedAdvancements(worldData.getLocations());
 
@@ -261,37 +252,37 @@ public class APRandomizer {
 
 
         //preload the nether so that fetching of structures works.
-        ServerWorld nether = server.getLevel(World.NETHER);
+        ServerLevel nether = server.getLevel(Level.NETHER);
         assert nether != null;
 
         //check to see if the chunk is loaded then fetch/generate if it is not.
         if (!nether.hasChunk(0, 0)) { //Chunk is unloaded
-            IChunk chunk = nether.getChunk(0, 0, ChunkStatus.EMPTY, true);
+            ChunkAccess chunk = nether.getChunk(0, 0, ChunkStatus.EMPTY, true);
             if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
                 chunk = nether.getChunk(0, 0, ChunkStatus.FULL);
             }
         }
 
-        ServerWorld theEnd = server.getLevel(World.END);
+        ServerLevel theEnd = server.getLevel(Level.END);
         assert theEnd != null;
 
         //check to see if the chunk is loaded then fetch/generate if it is not.
         if (!theEnd.hasChunk(0, 0)) { //Chunk is unloaded
-            IChunk chunk = theEnd.getChunk(0, 0, ChunkStatus.EMPTY, true);
+            ChunkAccess chunk = theEnd.getChunk(0, 0, ChunkStatus.EMPTY, true);
             if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
                 chunk = theEnd.getChunk(0, 0, ChunkStatus.FULL);
             }
         }
         //check if there is dragon data, if not create new stuff.
         if (theEnd.dragonFight == null)
-            theEnd.dragonFight = new DragonFightManager(theEnd, server.getWorldData().worldGenSettings().seed(), server.getWorldData().endDragonFightData());
+            theEnd.dragonFight = new EndDragonFight(theEnd, server.getWorldData().worldGenSettings().seed(), server.getWorldData().endDragonFightData());
         //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
         for (int i = 0; i < 20; i++) {
             theEnd.dragonFight.spawnNewGateway();
         }
         if (theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
             //get the top block of 0,0 then spawn the portal there, the parameter is whether or not to make it an active portal
-            BlockPos pos = theEnd.getHeightmapPos(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
+            BlockPos pos = theEnd.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
             theEnd.dragonFight.portalLocation = pos.below();
         }
         theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
@@ -300,12 +291,12 @@ public class APRandomizer {
 
 
         if(jailPlayers) {
-            ServerWorld overworld = server.getLevel(World.OVERWORLD);
+            ServerLevel overworld = server.getLevel(Level.OVERWORLD);
             BlockPos spawn = overworld.getSharedSpawnPos();
             BlockPos jailPos = new BlockPos(spawn.getX(), 240, spawn.getZ());
-            Template jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail"));
+            StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
             jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
-            jail.placeInWorld(overworld,jailPos,new PlacementSettings(),new Random());
+            jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(),new Random(),2);
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);

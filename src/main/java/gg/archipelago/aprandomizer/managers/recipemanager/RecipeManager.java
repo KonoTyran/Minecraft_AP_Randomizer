@@ -1,8 +1,8 @@
 package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.crafting.Recipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,17 +20,17 @@ public class RecipeManager {
     //have a lookup of every advancement
     private final RecipeData recipeData;
 
-    private final Set<IRecipe<?>> initialRestricted = new HashSet<>();
-    private final Set<IRecipe<?>> initialGranted = new HashSet<>();
+    private final Set<Recipe<?>> initialRestricted = new HashSet<>();
+    private final Set<Recipe<?>> initialGranted = new HashSet<>();
 
-    private Set<IRecipe<?>> restricted = new HashSet<>();
-    private Set<IRecipe<?>> granted = new HashSet<>();
+    private Set<Recipe<?>> restricted = new HashSet<>();
+    private Set<Recipe<?>> granted = new HashSet<>();
 
 
     public RecipeManager() {
         recipeData = new RecipeData();
-        Collection<IRecipe<?>> recipeList = APRandomizer.getServer().getRecipeManager().getRecipes();
-        for (IRecipe<?> iRecipe : recipeList) {
+        Collection<Recipe<?>> recipeList = APRandomizer.getServer().getRecipeManager().getRecipes();
+        for (Recipe<?> iRecipe : recipeList) {
             if (recipeData.injectIRecipe(iRecipe)) {
                 initialRestricted.add(iRecipe);
             } else {
@@ -45,11 +45,11 @@ public class RecipeManager {
         for (Integer id : recipes) {
             if (!recipeData.hasID(id))
                 continue;
-            Set<IRecipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
+            Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
             granted.addAll(toGrant);
             restricted.removeAll(toGrant);
         }
-        for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
             player.resetRecipes(restricted);
             player.awardRecipes(granted);
 
@@ -60,22 +60,22 @@ public class RecipeManager {
     public void grantRecipe(int id) {
         if (!recipeData.hasID(id))
             return;
-        Set<IRecipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
+        Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
 
         granted.addAll(toGrant);
         restricted.removeAll(toGrant);
 
-        for (ServerPlayerEntity player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+        for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
             //player.resetRecipes(restricted);
             player.awardRecipes(granted);
         }
     }
 
-    public Set<IRecipe<?>> getRestrictedRecipes() {
+    public Set<Recipe<?>> getRestrictedRecipes() {
         return restricted;
     }
 
-    public Set<IRecipe<?>> getGrantedRecipes() {
+    public Set<Recipe<?>> getGrantedRecipes() {
         return granted;
     }
 

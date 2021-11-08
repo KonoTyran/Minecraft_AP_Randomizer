@@ -3,8 +3,8 @@ package gg.archipelago.aprandomizer.common.events;
 import gg.archipelago.aprandomizer.APConfiguredStructures;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import net.minecraft.world.gen.feature.StructureFeature;
-import net.minecraft.world.gen.feature.structure.StructureFeatures;
+import net.minecraft.data.worldgen.StructureFeatures;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,12 +26,12 @@ public class onBiomeLoad {
         APMCData data = APRandomizer.getApmcData();
         if (data.state != APMCData.State.VALID)
             return;
-        List<Supplier<StructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
-        List<Supplier<StructureFeature<?, ?>>> toadd = new ArrayList<>();
-        Iterator<Supplier<StructureFeature<?, ?>>> iterator = event.getGeneration().getStructures().iterator();
+        List<Supplier<ConfiguredStructureFeature<?, ?>>> structs = event.getGeneration().getStructures();
+        List<Supplier<ConfiguredStructureFeature<?, ?>>> toadd = new ArrayList<>();
+        Iterator<Supplier<ConfiguredStructureFeature<?, ?>>> iterator = event.getGeneration().getStructures().iterator();
 
         while (iterator.hasNext()) {
-            Supplier<StructureFeature<?, ?>> structure = iterator.next();
+            Supplier<ConfiguredStructureFeature<?, ?>> structure = iterator.next();
             //LOGGER.info("found {} in {}",structure.get().feature.getFeatureName(),event.getName().getPath());
             if (structure.get().feature.equals(StructureFeatures.VILLAGE_PLAINS.feature)) {
                 String struct1 = data.structures.get("Overworld Structure 1");

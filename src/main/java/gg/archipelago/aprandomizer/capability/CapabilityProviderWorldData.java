@@ -1,7 +1,8 @@
 package gg.archipelago.aprandomizer.capability;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -9,7 +10,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT> {
+public class CapabilityProviderWorldData implements ICapabilitySerializable<Tag> {
 
 
     private final WorldData worldData = new WorldData();
@@ -44,12 +45,21 @@ public class CapabilityProviderWorldData implements ICapabilitySerializable<INBT
     }
 
     @Override
-    public INBT serializeNBT() {
-        return CapabilityWorldData.CAPABILITY_WORLD_DATA.writeNBT(worldData, null);
+    public Tag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt("dragonState", worldData.getDragonState());
+        nbt.putString("seedName", worldData.getSeedName());
+        nbt.putBoolean("jailPlayers", worldData.getJailPlayers());
+        return nbt;
     }
 
     @Override
-    public void deserializeNBT(INBT nbt) {
-        CapabilityWorldData.CAPABILITY_WORLD_DATA.readNBT(worldData, null, nbt);
+    public void deserializeNBT(Tag nbt) {
+        if (nbt.getType() == CompoundTag.TYPE) {
+            CompoundTag read = (CompoundTag) nbt;
+            worldData.setSeedName(read.getString("seedName"));
+            worldData.setDragonState(read.getInt("dragonState"));
+            worldData.setJailPlayers(read.getBoolean("jailPlayers"));
+        }
     }
 }

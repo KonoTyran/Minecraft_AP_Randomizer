@@ -3,10 +3,11 @@ package gg.archipelago.aprandomizer.common.events;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
+import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.*;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,17 +25,17 @@ public class onAdvancement {
         if (APRandomizer.getApmcData().state != APMCData.State.VALID)
             return;
 
-        ServerPlayerEntity player = (ServerPlayerEntity) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getPlayer();
         Advancement advancement = event.getAdvancement();
         String id = advancement.getId().toString();
 
         AdvancementManager am = APRandomizer.getAdvancementManager();
-        if (!am.hasAdvancement(id)) {
+        //don't do anything if this advancement has already been had, or is not on our list of tracked advancements.
+        if (!am.hasAdvancement(id) && am.getAdvancementID(id) != 0) {
             LOGGER.debug("{} has gotten the advancement {}", player.getDisplayName().getString(), id);
             am.addAdvancement(am.getAdvancementID(id));
-
             APRandomizer.getServer().getPlayerList().broadcastMessage(
-                    new TranslationTextComponent(
+                    new TranslatableComponent(
                             "chat.type.advancement."
                                     + advancement.getDisplay().getFrame().getName(),
                             player.getDisplayName(),

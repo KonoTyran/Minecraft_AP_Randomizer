@@ -4,8 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -19,13 +19,10 @@ public class SyncCommand {
     private static final Logger LOGGER = LogManager.getLogger();
 
     //build our command structure and submit it
-    public static void Register(CommandDispatcher<CommandSource> dispatcher) {
+    public static void Register(CommandDispatcher<CommandSourceStack> dispatcher) {
 
         dispatcher.register(
-                Commands.literal("sync") //base slash command is "connect"
-                        //first make sure its NOT a dedicated server (aka single player or hosted via in game client, OR user has an op level of 1)
-                        .requires((CommandSource) -> (!CommandSource.getServer().isDedicatedServer() || CommandSource.hasPermission(1)))
-                        //take the first argument as a string and name it "Address"
+                Commands.literal("sync") //base slash command is "sync"
                         .executes(SyncCommand::sync)
 
         );
@@ -33,7 +30,7 @@ public class SyncCommand {
     }
 
 
-    private static int sync(CommandContext<CommandSource> source) {
+    private static int sync(CommandContext<CommandSourceStack> source) {
         if (APRandomizer.getAP().isConnected()) {
             Utils.sendMessageToAll("Re-syncing progress with Archipelago server.");
             APRandomizer.getAP().sync();

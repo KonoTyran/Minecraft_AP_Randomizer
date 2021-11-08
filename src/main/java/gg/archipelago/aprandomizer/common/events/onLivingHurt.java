@@ -2,16 +2,15 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.PigEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,7 +41,7 @@ public class onLivingHurt {
             packet.setData(new HashMap<String, Object>() {{
                 put("enemy", location.toString());
                 put("source", APRandomizer.getAP().getSlot());
-                CompoundNBT nbt = event.getEntity().saveWithoutId(new CompoundNBT());
+                CompoundTag nbt = event.getEntity().saveWithoutId(new CompoundTag());
                 nbt.remove("UUID");
                 nbt.remove("Motion");
                 nbt.remove("Health");
@@ -56,12 +55,12 @@ public class onLivingHurt {
     @SubscribeEvent
     static void onLivingHurtEvent(LivingHurtEvent event) {
         LivingEntity entity = event.getEntityLiving();
-        if (entity.getEntity().getEntity() instanceof PigEntity) {
+        if (entity instanceof Pig) {
             if (entity.getPassengers().size() > 0) {
-                if (entity.getPassengers().get(0) instanceof ServerPlayerEntity) {
+                if (entity.getPassengers().get(0) instanceof ServerPlayer) {
                     if (event.getSource().msgId.equals("fall")) {
-                        ServerPlayerEntity player = (ServerPlayerEntity) entity.getPassengers().get(0);
-                        Advancement advancement = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft:husbandry/ride_pig"));
+                        ServerPlayer player = (ServerPlayer) entity.getPassengers().get(0);
+                        Advancement advancement = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/ride_pig"));
                         AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
                         if (!ap.isDone()) {
                             for (String s : ap.getRemainingCriteria()) {
@@ -74,11 +73,11 @@ public class onLivingHurt {
         }
 
         Entity e = event.getSource().getEntity();
-        if (e instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) e;
+        if (e instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) e;
             //Utils.sendMessageToAll("damage type: "+ event.getSource().getMsgId());
             if (event.getAmount() >= 18 && !event.getSource().isExplosion() && !event.getSource().msgId.equals("fireball")) {
-                Advancement a = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("minecraft:story/overkill"));
+                Advancement a = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/overkill"));
                 AdvancementProgress ap = player.getAdvancements().getOrStartProgress(a);
                 if (!ap.isDone()) {
                     for (String s : ap.getRemainingCriteria()) {

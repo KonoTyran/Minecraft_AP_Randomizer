@@ -1,6 +1,6 @@
 package gg.archipelago.aprandomizer.managers.recipemanager;
 
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,7 +14,7 @@ public class RecipeData {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    HashMap<Integer, GroupRecipe> recipes = new HashMap<Integer, GroupRecipe>() {{
+    HashMap<Integer, GroupRecipe> recipes = new HashMap<>() {{
         put(45000, new GroupRecipe(45000, "Archery", new String[]{
                 "minecraft:bow",
                 "minecraft:arrow",
@@ -71,7 +71,7 @@ public class RecipeData {
         }));
     }};
 
-    HashMap<Integer, ProgressiveRecipe> progressiveRecipes = new HashMap<Integer, ProgressiveRecipe>() {{
+    HashMap<Integer, ProgressiveRecipe> progressiveRecipes = new HashMap<>() {{
         put(45012,
                 new ProgressiveRecipe(45012, "Progressive Weapons",
                         new ArrayList<>(
@@ -165,7 +165,7 @@ public class RecipeData {
         );
     }};
 
-    protected boolean injectIRecipe(IRecipe<?> iRecipe) {
+    protected boolean injectIRecipe(Recipe<?> iRecipe) {
         for (Map.Entry<Integer, GroupRecipe> entry : recipes.entrySet()) {
             for (String namespaceID : entry.getValue().namespaceIDs) {
                 LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(), namespaceID);
@@ -196,7 +196,7 @@ public class RecipeData {
         return recipes.containsKey(id) || progressiveRecipes.containsKey(id);
     }
 
-    public Recipe getID(int id) {
+    public APRecipe getID(int id) {
         if (recipes.containsKey(id)) {
             return recipes.get(id);
         } else if (progressiveRecipes.containsKey(id)) {
@@ -207,8 +207,6 @@ public class RecipeData {
 
     //our reset here is simple just reset what tier it thinks our progressive recipes are at.
     public void reset() {
-        progressiveRecipes.forEach((id, recipe) -> {
-            recipe.setCurrentTier(0);
-        });
+        progressiveRecipes.forEach((id, recipe) -> recipe.setCurrentTier(0));
     }
 }

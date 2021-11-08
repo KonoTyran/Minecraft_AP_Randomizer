@@ -3,33 +3,37 @@ package gg.archipelago.aprandomizer.structures;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import gg.archipelago.aprandomizer.APRandomizer;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.registry.DynamicRegistries;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.structure.AbstractVillagePiece;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.feature.structure.StructureStart;
-import net.minecraft.world.gen.feature.structure.VillageConfig;
-import net.minecraft.world.gen.feature.template.TemplateManager;
+import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.NoiseColumn;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.structures.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 
 import java.util.List;
 
-public class NetherVillageStructure extends Structure<NoFeatureConfig> {
-    public NetherVillageStructure(Codec<NoFeatureConfig> codec) {
+import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
+
+public class NetherVillageStructure extends StructureFeature<NoneFeatureConfiguration> {
+    public NetherVillageStructure(Codec<NoneFeatureConfiguration> codec) {
         super(codec);
     }
 
@@ -38,7 +42,7 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
      * is time to create the pieces of the structure for generation.
      */
     @Override
-    public IStartFactory<NoFeatureConfig> getStartFactory() {
+    public StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
         return NetherVillageStructure.Start::new;
     }
 
@@ -50,20 +54,20 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
      * This surface structure stage places the structure before plants and ores are generated.
      */
     @Override
-    public GenerationStage.Decoration step() {
-        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
+    public GenerationStep.Decoration step() {
+        return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     /**
      * This method allow us to have naturally spawning mobs inside out structure
      * in our case here we want to add cats to our village
      */
-    private static final List<MobSpawnInfo.Spawners> STRUCTURE_CREATURES = ImmutableList.of(
-            new MobSpawnInfo.Spawners(EntityType.CAT, 30, 10, 15)
+    private static final List<MobSpawnSettings.SpawnerData> STRUCTURE_CREATURES = ImmutableList.of(
+            new MobSpawnSettings.SpawnerData(EntityType.CAT, 30, 10, 15)
     );
 
     @Override
-    public List<MobSpawnInfo.Spawners> getDefaultCreatureSpawnList() {
+    public List<MobSpawnSettings.SpawnerData> getDefaultCreatureSpawnList() {
         return STRUCTURE_CREATURES;
     }
 
@@ -71,18 +75,16 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
     /**
      * Handles calling up the structure's pieces class and height that structure will spawn at.
      */
-    public static class Start extends StructureStart<NoFeatureConfig> {
-        public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
-            super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
+    public static class Start extends StructureStart<NoneFeatureConfiguration> {
+        public Start(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
+            super(structureIn, chunkPos, referenceIn, seedIn);
         }
 
         @Override
-        public void generatePieces(DynamicRegistries dynamicRegistryManager, ChunkGenerator chunkGenerator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
-
-            ChunkPos chunkpos = new ChunkPos(chunkX, chunkZ);
+        public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager templateManagerIn, ChunkPos chunkPos, Biome biomeIn, NoneFeatureConfiguration config, LevelHeightAccessor levelHeightAccessor) {
             // Turns the chunk coordinates into actual coordinates we can use. (random position within the chunk.)
-            int x = chunkpos.getMinBlockX() + this.random.nextInt(16);
-            int z = chunkpos.getMinBlockZ() + this.random.nextInt(16);
+            int x = chunkPos.getMinBlockX() + this.random.nextInt(16);
+            int z = chunkPos.getMinBlockZ() + this.random.nextInt(16);
 
             // get sea Level, or in our case lava level.
             int seaLevel = chunkGenerator.getSeaLevel();
@@ -97,13 +99,12 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
              * Make sure to set the final boolean in JigsawManager.addPieces to false so
              * that the structure spawns at blockpos's y value instead of placing the structure on the Bedrock roof!
              */
-            IBlockReader iblockreader = chunkGenerator.getBaseColumn(x, z);
-
-            for (BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable(x, y, z); y > seaLevel; --y) {
+            NoiseColumn iblockreader = chunkGenerator.getBaseColumn(chunkPos.x,chunkPos.z,levelHeightAccessor);
+            for (BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos(x, y, z); y > seaLevel; --y) {
                 BlockState blockstate = iblockreader.getBlockState(blockpos$mutable);
                 blockpos$mutable.move(Direction.DOWN);
                 BlockState blockstate1 = iblockreader.getBlockState(blockpos$mutable);
-                if (blockstate.isAir() && (!blockstate1.isAir() || blockstate1.isFaceSturdy(iblockreader, blockpos$mutable, Direction.UP))) {
+                if (blockstate.isAir() && (!blockstate1.isAir())) {
                     break;
                 }
             }
@@ -124,9 +125,9 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
             BlockPos blockpos = new BlockPos(x, y, z);
 
             // All a structure has to do is call this method to turn it into a jigsaw based structure!
-            JigsawManager.addPieces(
+            JigsawPlacement.addPieces(
                     dynamicRegistryManager,
-                    new VillageConfig(() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
+                    new JigsawConfiguration(() -> dynamicRegistryManager.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY)
                             // The path to the starting Template Pool JSON file to read.
                             //
                             // Note, this is "structure_tutorial:run_down_house/start_pool" which means
@@ -141,15 +142,16 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
                             // However, I recommend you keep this a decent value like 10 so people can use datapacks to add additional pieces to your structure easily.
                             // But don't make it too large for recursive structures like villages or you'll crash server due to hundreds of pieces attempting to generate!
                             6),
-                    AbstractVillagePiece::new,
+                    PoolElementStructurePiece::new,
                     chunkGenerator,
                     templateManagerIn,
                     blockpos, // Position of the structure. Y value is ignored if last parameter is set to true.
-                    this.pieces, // The list that will be populated with the jigsaw pieces after this method.
+                    this, // The list that will be populated with the jigsaw pieces after this method.
                     this.random,
                     true, // Special boundary adjustments for villages. It's... hard to explain. Keep this false and make your pieces not be partially intersecting.
                     // Either not intersecting or fully contained will make children pieces spawn just fine. It's easier that way.
-                    false);  // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
+                    false,
+                    levelHeightAccessor);  // Place at heightmap (top land). Set this to false for structure to be place at the passed in blockpos's Y value instead.
             // Definitely keep this false when placing structures in the nether as otherwise, heightmap placing will put the structure on the Bedrock roof.
 
 
@@ -174,9 +176,8 @@ public class NetherVillageStructure extends Structure<NoFeatureConfig> {
 
 
             // Sets the bounds of the structure once you are finished.
-            this.calculateBoundingBox();
+            this.createBoundingBox();
 
         }
-
     }
 }
