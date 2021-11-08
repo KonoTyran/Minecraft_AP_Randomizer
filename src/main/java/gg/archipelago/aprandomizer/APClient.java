@@ -6,6 +6,7 @@ import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionAttemptEvent;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.BouncedPacket;
+import gg.archipelago.APClient.network.ConnectUpdatePacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
@@ -25,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class APClient extends gg.archipelago.APClient.APClient {
@@ -41,7 +42,6 @@ public class APClient extends gg.archipelago.APClient.APClient {
         super(APRandomizer.getApmcData().seed_name,APRandomizer.getApmcData().player_id);
 
         this.setGame("Minecraft");
-        this.setTags(new String[]{"MC35"});
         this.server = server;
         APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -76,6 +76,18 @@ public class APClient extends gg.archipelago.APClient.APClient {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
             slotData = event.getSlotData(SlotData.class);
+
+            HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
+            if(slotData.MC35) {
+                tags.add("MC35");
+            }
+            if(slotData.deathlink) {
+                Utils.sendMessageToAll("Welcome to Death Link.");
+                tags.add("DeathLink");
+            }
+            if(!tags.isEmpty()) {
+                setTags(tags.toArray(String[]::new));
+            }
 
             APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -112,7 +124,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onBounced(BouncedPacket packet) {
-        if(packet.tags.contains("MC35") && APRandomizer.getAP().getSlotData().isMC35()) {
+        if(packet.tags.contains("MC35") && APRandomizer.getAP().getSlotData().MC35) {
             int sourceSlot = packet.getInt("source");
             if(sourceSlot != APRandomizer.getAP().getSlot()) {
                 int randPlayer = ThreadLocalRandom.current().nextInt(server.getPlayerCount());

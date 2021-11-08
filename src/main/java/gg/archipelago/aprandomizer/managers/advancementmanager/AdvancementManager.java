@@ -110,6 +110,17 @@ public class AdvancementManager {
         put("aprandomizer:archipelago/overkill", 42089);
         put("aprandomizer:archipelago/obtain_bookshelf", 42090);
         put("aprandomizer:archipelago/overpowered", 42091);
+        put("minecraft:husbandry/wax_on", 42092);
+        put("minecraft:husbandry/wax_off", 42093);
+        put("minecraft:husbandry/axolotl_in_a_bucket", 42094);
+        put("minecraft:husbandry/kill_axolotl_target", 42095);
+        put("minecraft:adventure/spyglass_at_parrot", 42096);
+        put("minecraft:adventure/spyglass_at_ghast", 42097);
+        put("minecraft:adventure/spyglass_at_dragon", 42098);
+        put("minecraft:adventure/lightning_rod_with_villager_no_fire", 42099);
+        put("minecraft:adventure/walk_on_powder_snow_with_leather_boots", 42100);
+        put("minecraft:husbandry/make_a_sign_glow", 42101);
+        put("minecraft:husbandry/ride_a_boat_with_a_goat", 42102);
     }};
 
     private final Set<Integer> earnedAdvancements = new HashSet<>();

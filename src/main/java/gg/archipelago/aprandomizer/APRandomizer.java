@@ -64,15 +64,14 @@ public class APRandomizer {
     static private ItemManager itemManager;
     static private GoalManager goalManager;
     static private APMCData apmcData;
-    static private final int clientVersion = 6;
+    static private final int clientVersion = 7;
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
-            ArtifactVersion version = ModList.get().getModContainerById(MODID).get().getModInfo().getVersion();
-            LOGGER.info("Minecraft Archipelago v{}.{}.{} Randomizer initializing.", version.getMajorVersion(), version.getMinorVersion(), version.getBuildNumber());
+            LOGGER.info("Minecraft Archipelago v0.2.0 Randomizer initializing.");
         }
 
         // For registration and init stuff.
@@ -168,18 +167,6 @@ public class APRandomizer {
 
     public static GoalManager getGoalManager() {
         return goalManager;
-    }
-
-    private boolean deleteDirectory(File directoryToBeDeleted) {
-        File[] allContents = directoryToBeDeleted.listFiles();
-        if (allContents != null) {
-            for (File file : allContents) {
-                if (!file.getName().equals("serverconfig")) {
-                    deleteDirectory(file);
-                }
-            }
-        }
-        return directoryToBeDeleted.delete();
     }
 
     @SubscribeEvent

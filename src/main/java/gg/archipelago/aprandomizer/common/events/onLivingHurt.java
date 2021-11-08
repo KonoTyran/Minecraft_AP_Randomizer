@@ -31,7 +31,7 @@ public class onLivingHurt {
         if(location == null)
             return;
 
-        if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().isMC35())
+        if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)
             return;
 
         Entity damageSource = event.getSource().getEntity();

@@ -1,5 +1,5 @@
 {
-  "parent": "aprandomizer:archipelago/root",
+  "parent": "aprandomizer:archipelago/get_wood",
   "display": {
     "icon": {
       "item": "minecraft:wooden_pickaxe"

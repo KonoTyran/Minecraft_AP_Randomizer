@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -64,6 +65,7 @@ public class StartCommand {
                 player.getFoodData().eat(20,20);
                 player.setHealth(20);
                 player.getInventory().clearContent();
+                player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
                 BlockPos spawn = server.getLevel(Level.OVERWORLD).getSharedSpawnPos();
                 player.teleportTo(spawn.getX(),spawn.getY(),spawn.getZ());
                 APRandomizer.getItemManager().catchUpPlayer(player);

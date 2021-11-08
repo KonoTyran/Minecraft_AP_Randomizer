@@ -1,28 +1,33 @@
 {
-  "parent": "aprandomizer:archipelago/enchant_item",
+  "parent": "aprandomizer:archipelago/bake_bread",
   "display": {
     "icon": {
-      "item": "minecraft:netherite_sword"
+      "item": "minecraft:enchanted_golden_apple"
     },
     "title": {
-      "text": "Overkill"
+      "text": "Overpowered"
     },
     "description": {
-      "text": "Deal nine hearts of damage in a single hit"
+      "text": "Eat a Notch apple"
     },
-    "frame": "goal",
-    "show_toast": true,
+    "frame": "task",
+    "show_toast": false,
     "announce_to_chat": false,
     "hidden": false
   },
   "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "consumed_item": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "item": "minecraft:enchanted_golden_apple"
+        }
+      }
     }
   },
   "requirements": [
     [
-      "impossible"
+      "consumed_item"
     ]
   ]
 }
