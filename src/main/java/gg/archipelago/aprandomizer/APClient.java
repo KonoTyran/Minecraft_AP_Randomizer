@@ -10,6 +10,7 @@ import gg.archipelago.APClient.network.ConnectUpdatePacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
+import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -22,6 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -124,6 +126,25 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onBounced(BouncedPacket packet) {
+        if(packet.tags.contains("DeathLink") && APRandomizer.getAP().getSlotData().deathlink) {
+            if(packet.getFloat("time") == APRandomizer.getLastDeathTimestamp())
+                return;
+            DeathLinkDamage deathLink = DeathLinkDamage.DEATH_LINK;
+            GameRules.BooleanValue showDeathMessages = APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
+            boolean showDeaths = showDeathMessages.get();
+            APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES).set(false,APRandomizer.getServer());
+            if(showDeaths) {
+                String cause = packet.getString("cause");
+                if(!cause.isEmpty())
+                    Utils.sendMessageToAll(packet.getString("cause"));
+                else
+                    Utils.sendMessageToAll("This Death brought to you by "+ packet.getString("source"));
+            }
+            for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                player.hurt(deathLink , Float.MAX_VALUE);
+            }
+            APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES).set(showDeaths,APRandomizer.getServer());
+        }
         if(packet.tags.contains("MC35") && APRandomizer.getAP().getSlotData().MC35) {
             int sourceSlot = packet.getInt("source");
             if(sourceSlot != APRandomizer.getAP().getSlot()) {
@@ -149,6 +170,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
                     player.getLevel().addFreshEntity(entity);
                 }
             }
+            return;
         }
     }
 

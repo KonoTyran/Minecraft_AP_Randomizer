@@ -68,6 +68,7 @@ public class APRandomizer {
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
+    static private long lastDeathTimestamp;
 
     public APRandomizer() {
         if (ModList.get().getModContainerById(MODID).isPresent()) {
@@ -167,6 +168,14 @@ public class APRandomizer {
 
     public static GoalManager getGoalManager() {
         return goalManager;
+    }
+
+    public static void setLastDeathTimestamp(long deathTime) {
+        lastDeathTimestamp = deathTime;
+    }
+
+    public static long getLastDeathTimestamp() {
+        return lastDeathTimestamp;
     }
 
     @SubscribeEvent

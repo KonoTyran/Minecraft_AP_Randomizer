@@ -35,7 +35,7 @@ public class onDeath {
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
 
-        //dont send deathlink if the cause of this dead was a deathlink
+        //dont send deathlink if the cause of this death was a deathlink
         if(event.getSource() instanceof DeathLinkDamage)
             return;
 
@@ -47,6 +47,7 @@ public class onDeath {
             put("time", deathTime);
             put("source",player.getDisplayName().getString());
         }});
+        APRandomizer.setLastDeathTimestamp(deathTime);
         APRandomizer.getAP().sendBounce(deathLinkPacket);
     }
 }
