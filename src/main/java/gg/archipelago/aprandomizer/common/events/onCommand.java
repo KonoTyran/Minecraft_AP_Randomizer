@@ -13,18 +13,18 @@ import java.util.ArrayList;
 public class onCommand {
 
     private static final ArrayList<String> allowedCommands = new ArrayList<>() {{
-        add("/connect");
-        add("/sync");
-        add("/start");
-        add("/stop");
-        add("/kick");
-        add("/ban");
-        add("/ban-ip");
-        add("/pardon");
-        add("/pardon-ip");
-        add("/whitelist");
-        add("/me");
-        add("/say");
+        add("connect");
+        add("sync");
+        add("start");
+        add("stop");
+        add("kick");
+        add("ban");
+        add("ban-ip");
+        add("pardon");
+        add("pardon-ip");
+        add("whitelist");
+        add("me");
+        add("say");
     }};
 
     @SubscribeEvent
@@ -35,7 +35,7 @@ public class onCommand {
         CommandSourceStack source = event.getParseResults().getContext().getSource();
         String command = event.getParseResults().getReader().getRead();
         for (String allowedCommand : allowedCommands)
-            if (command.startsWith(allowedCommand))
+            if (command.startsWith(allowedCommand) || command.startsWith("/"+allowedCommand))
                 return;
 
         event.setCanceled(true);
