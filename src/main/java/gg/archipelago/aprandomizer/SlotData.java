@@ -1,21 +1,42 @@
 package gg.archipelago.aprandomizer;
 
+import archipelagoClient.com.google.gson.JsonArray;
+import archipelagoClient.com.google.gson.JsonElement;
+import archipelagoClient.com.google.gson.JsonObject;
+import archipelagoClient.com.google.gson.JsonParser;
 import archipelagoClient.com.google.gson.annotations.SerializedName;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.ArrayList;
 
 public class SlotData extends gg.archipelago.APClient.SlotData {
 
-    private int include_hard_advancements;
-    private int include_insane_advancements;
-    private int include_postgame_advancements;
-    private int advancement_goal;
-    private long minecraft_world_seed;
-    private int client_version;
+    public int include_hard_advancements;
+    public int include_insane_advancements;
+    public int include_postgame_advancements;
+    public int advancement_goal;
+    public long minecraft_world_seed;
+    public int client_version;
 
     @SerializedName("MC35")
     public boolean MC35 = false;
 
-    @SerializedName("deathlink")
+    @SerializedName("death_link")
     public boolean deathlink = false;
+
+    @SerializedName("starting_items")
+    public String startingItems;
+
+    transient public ArrayList<ItemStack> startingItemStacks = new ArrayList<>();
 
     public int getInclude_hard_advancements() {
         return include_hard_advancements;
@@ -39,5 +60,39 @@ public class SlotData extends gg.archipelago.APClient.SlotData {
 
     public int getInclude_insane_advancements() {
         return include_insane_advancements;
+    }
+
+    public void parseStartingItems() {
+        JsonArray si = JsonParser.parseString(startingItems).getAsJsonArray();
+        for (JsonElement jsonItem : si) {
+            JsonObject object = jsonItem.getAsJsonObject();
+            String itemName = object.getAsJsonObject().get("item").getAsString();
+
+            int amount = object.has("amount") ? object.get("amount").getAsInt() : 1;
+
+            try {
+                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
+
+                //air is the default item returned if the resource name is invalid.
+                if(item == Items.AIR) {
+                    Utils.sendMessageToAll("No such item \"" + itemName + "\"");
+                    continue;
+                }
+
+                String nbtString = (object.has("nbt"))? object.get("nbt").getAsString() : "{}";
+                CompoundTag nbt = TagParser.parseTag(nbtString);
+
+
+                ItemStack iStack = new ItemStack(item,amount);
+                iStack.setTag(nbt);
+
+                startingItemStacks.add(iStack);
+
+            } catch (CommandSyntaxException e) {
+                Utils.sendMessageToAll("NBT error in starting item " + itemName);
+            } catch (ResourceLocationException e) {
+                Utils.sendMessageToAll("No such item \"" + itemName + "\"");
+            }
+        }
     }
 }

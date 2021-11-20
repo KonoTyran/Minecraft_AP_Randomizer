@@ -140,23 +140,7 @@ public class ItemManager {
 
         if (itemData.containsKey(itemID)) {
             ItemStack itemstack = buildNewItemStack(itemID);
-            boolean flag = player.getInventory().add(itemstack);
-            if (flag && itemstack.isEmpty()) {
-                itemstack.setCount(1);
-                ItemEntity itementity1 = player.drop(itemstack, false);
-                if (itementity1 != null) {
-                    itementity1.makeFakeItem();
-                }
-
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                player.inventoryMenu.broadcastChanges();
-            } else {
-                ItemEntity itementity = player.drop(itemstack, false);
-                if (itementity != null) {
-                    itementity.setNoPickUpDelay();
-                    itementity.setOwner(player.getUUID());
-                }
-            }
+            Utils.giveItemToPlayer(player, itemstack);
         } else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
             player.giveExperiencePoints(xpValue);

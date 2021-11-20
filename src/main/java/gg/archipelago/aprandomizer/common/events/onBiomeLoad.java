@@ -42,15 +42,9 @@ public class onBiomeLoad {
                 }
 
                 switch (struct1) {
-                    case "Nether Fortress":
-                        toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
-                        break;
-                    case "Bastion Remnant":
-                        toadd.add(() -> StructureFeatures.BASTION_REMNANT);
-                        break;
-                    case "End City":
-                        toadd.add(() -> StructureFeatures.END_CITY);
-                        break;
+                    case "Nether Fortress" -> toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
+                    case "Bastion Remnant" -> toadd.add(() -> StructureFeatures.BASTION_REMNANT);
+                    case "End City" -> toadd.add(() -> StructureFeatures.END_CITY);
                 }
 
             } else if (structure.get().feature.equals(StructureFeatures.PILLAGER_OUTPOST.feature)) {
@@ -62,15 +56,9 @@ public class onBiomeLoad {
                 }
 
                 switch (struct2) {
-                    case "Nether Fortress":
-                        toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
-                        break;
-                    case "Bastion Remnant":
-                        toadd.add(() -> StructureFeatures.BASTION_REMNANT);
-                        break;
-                    case "End City":
-                        toadd.add(() -> StructureFeatures.END_CITY);
-                        break;
+                    case "Nether Fortress" -> toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
+                    case "Bastion Remnant" -> toadd.add(() -> StructureFeatures.BASTION_REMNANT);
+                    case "End City" -> toadd.add(() -> StructureFeatures.END_CITY);
                 }
             } else if (structure.get().feature.equals(StructureFeatures.NETHER_BRIDGE.feature)) {
                 String struct1 = data.structures.get("Nether Structure 1");
@@ -81,15 +69,9 @@ public class onBiomeLoad {
                 }
 
                 switch (struct1) {
-                    case "Village":
-                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
-                        break;
-                    case "Pillager Outpost":
-                        toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
-                        break;
-                    case "End City":
-                        toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
-                        break;
+                    case "Village" -> toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
+                    case "Pillager Outpost" -> toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
+                    case "End City" -> toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                 }
             } else if (structure.get().feature.equals(StructureFeatures.BASTION_REMNANT.feature)) {
                 String struct1 = data.structures.get("Nether Structure 1");
@@ -100,15 +82,9 @@ public class onBiomeLoad {
                 }
 
                 switch (struct2) {
-                    case "Village":
-                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
-                        break;
-                    case "Pillager Outpost":
-                        toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
-                        break;
-                    case "End City":
-                        toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
-                        break;
+                    case "Village" -> toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
+                    case "Pillager Outpost" -> toadd.add(() -> APConfiguredStructures.PILLAGER_OUTPOST_NETHER);
+                    case "End City" -> toadd.add(() -> APConfiguredStructures.END_CITY_NETHER);
                 }
             } else if (structure.get().feature.equals(StructureFeatures.END_CITY.feature)) {
                 String struct1 = data.structures.get("The End Structure");
@@ -118,18 +94,10 @@ public class onBiomeLoad {
                 }
 
                 switch (struct1) {
-                    case "Village":
-                        toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
-                        break;
-                    case "Pillager Outpost":
-                        toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
-                        break;
-                    case "Nether Fortress":
-                        toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
-                        break;
-                    case "Bastion Remnant":
-                        toadd.add(() -> StructureFeatures.BASTION_REMNANT);
-                        break;
+                    case "Village" -> toadd.add(() -> APConfiguredStructures.VILLAGE_NETHER);
+                    case "Pillager Outpost" -> toadd.add(() -> StructureFeatures.PILLAGER_OUTPOST);
+                    case "Nether Fortress" -> toadd.add(() -> StructureFeatures.NETHER_BRIDGE);
+                    case "Bastion Remnant" -> toadd.add(() -> StructureFeatures.BASTION_REMNANT);
                 }
             }
         }

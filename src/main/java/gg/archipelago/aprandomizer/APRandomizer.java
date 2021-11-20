@@ -5,6 +5,7 @@ import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
 import gg.archipelago.aprandomizer.capability.WorldData;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
@@ -42,10 +43,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.Random;
+import java.util.*;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -68,12 +66,10 @@ public class APRandomizer {
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
-    static private long lastDeathTimestamp;
+    static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        if (ModList.get().getModContainerById(MODID).isPresent()) {
-            LOGGER.info("Minecraft Archipelago v0.2.0 Randomizer initializing.");
-        }
+        LOGGER.info("Minecraft Archipelago v0.2.0-beta3 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -170,11 +166,11 @@ public class APRandomizer {
         return goalManager;
     }
 
-    public static void setLastDeathTimestamp(long deathTime) {
+    public static void setLastDeathTimestamp(double deathTime) {
         lastDeathTimestamp = deathTime;
     }
 
-    public static long getLastDeathTimestamp() {
+    public static double getLastDeathTimestamp() {
         return lastDeathTimestamp;
     }
 
@@ -284,6 +280,13 @@ public class APRandomizer {
         theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
         theEnd.save(null, true, false);
         //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
+
+        //check if our boss requirements means we should start with the dragon spawned.
+        if(apmcData.dragonStartSpawned()) {
+            Utils.SpawnDragon(theEnd);
+            WorldData endData = theEnd.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+            endData.setDragonState(WorldData.DRAGON_SPAWNED);
+        }
 
 
         if(jailPlayers) {

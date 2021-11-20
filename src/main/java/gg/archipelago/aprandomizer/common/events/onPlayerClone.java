@@ -20,7 +20,7 @@ public class onPlayerClone {
             BlockPos jail = APRandomizer.getJailPosition();
             event.getPlayer().teleportTo(jail.getX(), jail.getY(), jail.getZ());
         }
-        if(event.isEndConquered() && APRandomizer.getGoalManager().isDone()) {
+        if(event.isEndConquered() && APRandomizer.getGoalManager().goalsDone()) {
             APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
         }
     }

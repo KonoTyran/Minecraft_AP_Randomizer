@@ -21,7 +21,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
@@ -236,5 +239,25 @@ public class Utils {
             nbt.put("LodestoneDimension", p_234668_1_);
         });
         nbt.putBoolean("LodestoneTracked", false);
+    }
+
+    public static void giveItemToPlayer(ServerPlayer player, ItemStack itemstack) {
+        boolean flag = player.getInventory().add(itemstack);
+        if (flag && itemstack.isEmpty()) {
+            itemstack.setCount(1);
+            ItemEntity itementity1 = player.drop(itemstack, false);
+            if (itementity1 != null) {
+                itementity1.makeFakeItem();
+            }
+
+            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            player.inventoryMenu.broadcastChanges();
+        } else {
+            ItemEntity itementity = player.drop(itemstack, false);
+            if (itementity != null) {
+                itementity.setNoPickUpDelay();
+                itementity.setOwner(player.getUUID());
+            }
+        }
     }
 }

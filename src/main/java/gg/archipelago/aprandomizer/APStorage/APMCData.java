@@ -27,10 +27,32 @@ public class APMCData {
     @SerializedName("advancement_goal")
     public int advancements_required = -1;
 
+    @SerializedName("required_bosses")
+    public Bosses required_bosses = Bosses.NONE;
+
     public State state = State.VALID;
+
+    public boolean dragonStartSpawned() {
+        //if our goal is not to kill the dragon, start with the dragon spawned.
+        if (required_bosses == Bosses.NONE || required_bosses == Bosses.WITHER)
+            return true;
+        //if our goal is "fast" and requires no advancements or egg shards then the dragon should start spawned too;
+        return advancements_required == 0 && egg_shards_required == 0;
+    }
 
     public enum State {
         VALID, MISSING, INVALID_VERSION, INVALID_SEED
+    }
+
+    public enum Bosses {
+        @SerializedName("none")
+        NONE,
+        @SerializedName("ender_dragon")
+        ENDER_DRAGON,
+        @SerializedName("wither")
+        WITHER,
+        @SerializedName("both")
+        BOTH
     }
 
 }

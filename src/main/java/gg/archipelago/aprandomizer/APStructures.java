@@ -2,6 +2,7 @@ package gg.archipelago.aprandomizer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import gg.archipelago.aprandomizer.structures.BeeGroveStructure;
 import gg.archipelago.aprandomizer.structures.NetherEndCityStructure;
 import gg.archipelago.aprandomizer.structures.NetherPillagerOutpostStructure;
 import gg.archipelago.aprandomizer.structures.NetherVillageStructure;
@@ -48,6 +49,7 @@ public class APStructures {
     public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> VILLAGE_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("village_nether", () -> (new NetherVillageStructure(NoneFeatureConfiguration.CODEC)));
     public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> END_CITY_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("end_city_nether", () -> (new NetherEndCityStructure(NoneFeatureConfiguration.CODEC)));
     public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> PILLAGER_OUTPOST_NETHER = DEFERRED_REGISTRY_STRUCTURE.register("pillager_outpost_nether", () -> (new NetherPillagerOutpostStructure(NoneFeatureConfiguration.CODEC)));
+    public static final RegistryObject<StructureFeature<NoneFeatureConfiguration>> BEE_GROVE = DEFERRED_REGISTRY_STRUCTURE.register("bee_grove", () -> (new BeeGroveStructure(NoneFeatureConfiguration.CODEC)));
 
 
     /**
@@ -78,6 +80,14 @@ public class APStructures {
                         10 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
                         531125487 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
                 true);
+
+        //spacing and stuffs for our bee groves!
+        setupMapSpacingAndLand(
+                BEE_GROVE.get(), /* The instance of the structure */
+                new StructureFeatureConfiguration(12 /* average distance apart in chunks between spawn attempts */,
+                        8 /* minimum distance apart in chunks between spawn attempts. MUST BE LESS THAN ABOVE VALUE*/,
+                        87633157 /* this modifies the seed of the structure so no two structures always spawn over each-other. Make this large and unique. */),
+                false);
 
 
         // Add more structures here and so on

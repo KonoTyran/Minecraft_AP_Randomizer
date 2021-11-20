@@ -14,6 +14,7 @@ public class APConfiguredStructures {
     public static ConfiguredStructureFeature<?, ?> VILLAGE_NETHER = APStructures.VILLAGE_NETHER.get().configured(FeatureConfiguration.NONE);
     public static ConfiguredStructureFeature<?, ?> END_CITY_NETHER = APStructures.END_CITY_NETHER.get().configured(FeatureConfiguration.NONE);
     public static ConfiguredStructureFeature<?, ?> PILLAGER_OUTPOST_NETHER = APStructures.PILLAGER_OUTPOST_NETHER.get().configured(FeatureConfiguration.NONE);
+    public static ConfiguredStructureFeature<?, ?> BEE_GROVE = APStructures.BEE_GROVE.get().configured(FeatureConfiguration.NONE);
 
     /**
      * Registers the configured structure which is what gets added to the biomes.
@@ -27,6 +28,7 @@ public class APConfiguredStructures {
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "village_nether"), VILLAGE_NETHER);
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "end_city_nether"), END_CITY_NETHER);
         Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "pillager_outpost_nether"), PILLAGER_OUTPOST_NETHER);
+        Registry.register(registry, new ResourceLocation(APRandomizer.MODID, "bee_grove"), BEE_GROVE);
 
         /* Ok so, this part may be hard to grasp but basically, just add your structure to this to
          * prevent any sort of crash or issue with other mod's custom ChunkGenerators. If they use
@@ -46,5 +48,6 @@ public class APConfiguredStructures {
         FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.VILLAGE_NETHER.get(), VILLAGE_NETHER);
         FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.END_CITY_NETHER.get(), END_CITY_NETHER);
         FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.PILLAGER_OUTPOST_NETHER.get(), PILLAGER_OUTPOST_NETHER);
+        FlatLevelGeneratorSettings.STRUCTURE_FEATURES.put(APStructures.BEE_GROVE.get(), BEE_GROVE);
     }
 }

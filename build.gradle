@@ -24,7 +24,7 @@ apply plugin: 'maven-publish'
 
 
 
-version = '0.2.0'
+version = '0.2.0-beta3'
 group = 'gg.archipelago.aprandomizer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'aprandomizer'
 
@@ -135,7 +135,7 @@ configurations {
     shade
     library
     implementation.extendsFrom library
-    shade.extendsFrom library
+    library.extendsFrom shade
     implementation.extendsFrom shade
 }
 minecraft.runs.all {
@@ -169,7 +169,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    library project(path: ':APClient', configuration: 'shadow')
+    shade project(path: ':APClient', configuration: 'shadow')
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 

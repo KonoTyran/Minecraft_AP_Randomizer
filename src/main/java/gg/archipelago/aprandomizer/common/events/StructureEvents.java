@@ -46,6 +46,7 @@ public class StructureEvents {
         tempMap.putIfAbsent(APStructures.VILLAGE_NETHER.get(), StructureSettings.DEFAULTS.get(APStructures.VILLAGE_NETHER.get()));
         tempMap.putIfAbsent(APStructures.END_CITY_NETHER.get(), StructureSettings.DEFAULTS.get(APStructures.END_CITY_NETHER.get()));
         tempMap.putIfAbsent(APStructures.PILLAGER_OUTPOST_NETHER.get(), StructureSettings.DEFAULTS.get(APStructures.PILLAGER_OUTPOST_NETHER.get()));
+        tempMap.putIfAbsent(APStructures.BEE_GROVE.get(), StructureSettings.DEFAULTS.get(APStructures.BEE_GROVE.get()));
         serverWorld.getChunkSource().generator.getSettings().structureConfig = tempMap;
     }
 

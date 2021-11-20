@@ -6,7 +6,6 @@ import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionAttemptEvent;
 import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.BouncedPacket;
-import gg.archipelago.APClient.network.ConnectUpdatePacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
@@ -61,15 +60,19 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onAttemptConnection(ConnectionAttemptEvent event) {
-        SlotData temp = event.getSlotData(SlotData.class);
-        APMCData data = APRandomizer.getApmcData();
-        if (!event.getSeedName().equals(data.seed_name)) {
-            Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
-            event.setCanceled(true);
-        }
-        if (temp.getClient_version() != APRandomizer.getClientVersion()) {
-            event.setCanceled(true);
-            Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
+        try {
+            SlotData temp = event.getSlotData(SlotData.class);
+            APMCData data = APRandomizer.getApmcData();
+            if (!event.getSeedName().equals(data.seed_name)) {
+                Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
+                event.setCanceled(true);
+            }
+            if (temp.getClient_version() != APRandomizer.getClientVersion()) {
+                event.setCanceled(true);
+                Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -77,9 +80,14 @@ public class APClient extends gg.archipelago.APClient.APClient {
     public void onConnectResult(ConnectionResultEvent event) {
         if (event.getResult() == ConnectionResult.Success) {
             Utils.sendMessageToAll("Connected to Archipelago Server.");
-            slotData = event.getSlotData(SlotData.class);
+            try {
+                slotData = event.getSlotData(SlotData.class);
+                slotData.parseStartingItems();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
+            HashSet<String> tags = new HashSet<>();
             if(slotData.MC35) {
                 tags.add("MC35");
             }
@@ -88,7 +96,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 tags.add("DeathLink");
             }
             if(!tags.isEmpty()) {
-                setTags(tags.toArray(String[]::new));
+                addTags(tags);
             }
 
             APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
@@ -127,12 +135,11 @@ public class APClient extends gg.archipelago.APClient.APClient {
     @Override
     public void onBounced(BouncedPacket packet) {
         if(packet.tags.contains("DeathLink") && APRandomizer.getAP().getSlotData().deathlink) {
-            if(packet.getFloat("time") == APRandomizer.getLastDeathTimestamp())
+            if(packet.getDouble("time") == APRandomizer.getLastDeathTimestamp())
                 return;
             DeathLinkDamage deathLink = DeathLinkDamage.DEATH_LINK;
             GameRules.BooleanValue showDeathMessages = APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
             boolean showDeaths = showDeathMessages.get();
-            APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES).set(false,APRandomizer.getServer());
             if(showDeaths) {
                 String cause = packet.getString("cause");
                 if(!cause.isEmpty())
@@ -140,10 +147,11 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 else
                     Utils.sendMessageToAll("This Death brought to you by "+ packet.getString("source"));
             }
+            showDeathMessages.set(false,APRandomizer.getServer());
             for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 player.hurt(deathLink , Float.MAX_VALUE);
             }
-            APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES).set(showDeaths,APRandomizer.getServer());
+            showDeathMessages.set(showDeaths,APRandomizer.getServer());
         }
         if(packet.tags.contains("MC35") && APRandomizer.getAP().getSlotData().MC35) {
             int sourceSlot = packet.getInt("source");
@@ -228,4 +236,25 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onLocationInfo(ArrayList<NetworkItem> arrayList) {}
+
+    public void addTag(String tag) {
+        HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
+        tags.add(tag);
+        setTags(tags.toArray(String[]::new));
+    }
+
+    public boolean removeTag(String tag) {
+        HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
+        boolean flag = tags.remove(tag);
+        if(flag)
+            setTags(tags.toArray(String[]::new));
+        return flag;
+    }
+
+    public void addTags(HashSet<String> toAdd) {
+        HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
+        tags.addAll(toAdd);
+
+        setTags(tags.toArray(String[]::new));
+    }
 }
