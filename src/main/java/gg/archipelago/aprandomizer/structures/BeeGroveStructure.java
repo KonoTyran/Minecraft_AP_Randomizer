@@ -127,7 +127,7 @@ public class BeeGroveStructure extends StructureFeature<NoneFeatureConfiguration
             // Sets the bounds of the structure once you are finished.
             this.createBoundingBox();
 
-            APRandomizer.LOGGER.info("generating Bee Grove at {}",blockPos.toString());
+            //APRandomizer.LOGGER.info("generating Bee Grove at {}",blockPos.toString());
 
         }
     }

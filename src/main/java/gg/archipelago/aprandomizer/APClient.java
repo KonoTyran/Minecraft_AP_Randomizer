@@ -27,6 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -219,7 +220,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onReceiveItem(NetworkItem item) {
-        Component textItem = new TextComponent(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.value)));
+        Component textItem = new TextComponent(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())));
         Component chatMessage = new TextComponent(
                 "Received ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
                 .append(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("gold")))
@@ -228,7 +229,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 .append(" (").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
                 .append(item.locationName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("blue")))
                 .append(")").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")));
-        Component title = new TextComponent("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.value)));
+        Component title = new TextComponent("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.color.getRGB())));
         Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
         APRandomizer.getRecipeManager().grantRecipe(item.itemID);
         APRandomizer.getItemManager().giveItemToAll(item.itemID);

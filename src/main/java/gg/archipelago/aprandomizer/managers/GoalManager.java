@@ -78,9 +78,10 @@ public class GoalManager {
         connectionInfoBar.setVisible(true);
     }
 
-    public void updateGoal() {
+    public void updateGoal(boolean canFinish) {
         updateInfoBar();
-        checkGoalCompletion();
+        if(canFinish)
+            checkGoalCompletion();
         checkDragonSpawn();
     }
 
@@ -160,8 +161,9 @@ public class GoalManager {
         WorldData endData = end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
 
         //check if the dragon is not spawned and we need to spawn it.
-        if (goalsDone() && endData.getDragonState() == WorldData.DRAGON_ASLEEP && !apmc.dragonStartSpawned()) {
-            endData.setDragonState(WorldData.DRAGON_SPAWNED);
+        if (goalsDone() && endData.getDragonState() == WorldData.DRAGON_ASLEEP) {
+            //set the dragon state to spawn as soon as the end 0,0 chunk is loaded
+            endData.setDragonState(WorldData.DRAGON_WAITING);
             Utils.PlaySoundToAll(SoundEvents.ENDER_DRAGON_AMBIENT);
             Utils.sendMessageToAll("The Dragon has awoken.");
             Utils.sendTitleToAll(new TextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), new TextComponent("has awoken"), 40, 120, 40);
@@ -183,12 +185,19 @@ public class GoalManager {
         if(mob instanceof EnderDragon && goalManager.goalsDone()) {
             goalManager.dragonKilled = true;
             Utils.sendMessageToAll("She is no more...");
-            goalManager.updateGoal();
+            goalManager.updateGoal(false);
         }
         if(mob instanceof WitherBoss && goalManager.goalsDone()) {
             goalManager.witherKilled = true;
             Utils.sendMessageToAll("The Darkness has lifted...");
-            goalManager.updateGoal();
+            goalManager.updateGoal(true);
         }
+    }
+
+    public boolean isDragonDead() {
+        return dragonKilled;
+    }
+    public boolean isWitherDead() {
+        return witherKilled;
     }
 }

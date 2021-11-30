@@ -69,6 +69,9 @@ public class RecipeData {
                 "minecraft:campfire",
                 "minecraft:soul_campfire"
         }));
+        put(54044, new GroupRecipe(54044, "Campfire", new String[]{
+                "minecraft:spyglass"
+        }));
     }};
 
     HashMap<Integer, ProgressiveRecipe> progressiveRecipes = new HashMap<>() {{

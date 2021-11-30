@@ -123,7 +123,7 @@ public class ItemManager {
                 receivedCompasses.add(compasses.get(item));
             }
         }
-        APRandomizer.getGoalManager().updateGoal();
+        APRandomizer.getGoalManager().updateGoal(false);
     }
 
     public void giveItem(int itemID, ServerPlayer player) {
@@ -164,7 +164,7 @@ public class ItemManager {
             }
         });
 
-        APRandomizer.getGoalManager().updateGoal();
+        APRandomizer.getGoalManager().updateGoal(true);
     }
 
     /***

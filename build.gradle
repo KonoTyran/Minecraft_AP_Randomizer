@@ -24,7 +24,7 @@ apply plugin: 'maven-publish'
 
 
 
-version = '0.2.0-beta3'
+version = '0.2.0-beta5'
 group = 'gg.archipelago.aprandomizer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'aprandomizer'
 

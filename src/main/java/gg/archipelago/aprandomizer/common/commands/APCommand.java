@@ -14,7 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod.EventBusSubscriber
-public class APInfoDump {
+public class APCommand {
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -26,16 +26,16 @@ public class APInfoDump {
             Commands.literal("ap") //base slash command is "ap"
                 //First sub-command to set/retreive deathlink status
                 .then(Commands.literal("deathlink")
-                        .executes(APInfoDump::queryDeathLink)
+                        .executes(APCommand::queryDeathLink)
                         .then(Commands.argument("value", BoolArgumentType.bool())
-                                .executes(APInfoDump::setDeathLink)
+                                .executes(APCommand::setDeathLink)
                         )
                 )
                 //Second sub-command to set/retreive MC35 status
                 .then(Commands.literal("mc35")
-                        .executes(APInfoDump::queryMC35)
+                        .executes(APCommand::queryMC35)
                         .then(Commands.argument("value", BoolArgumentType.bool())
-                                .executes(APInfoDump::setMC35)
+                                .executes(APCommand::setMC35)
                         )
                 )
 
@@ -97,7 +97,7 @@ public class APInfoDump {
         } else {
             APRandomizer.getAP().removeTag("MC35");
         }
-        
+
         String enabled = (APRandomizer.getAP().getSlotData().MC35) ? "enabled" : "disabled";
         source.getSource().sendSuccess(new TextComponent("MC35 is "+ enabled),false);
         return 1;
@@ -106,6 +106,6 @@ public class APInfoDump {
     //wait for register commands event then register ourself as a command.
     @SubscribeEvent
     static void onRegisterCommandsEvent(RegisterCommandsEvent event) {
-        APInfoDump.Register(event.getDispatcher());
+        APCommand.Register(event.getDispatcher());
     }
 }

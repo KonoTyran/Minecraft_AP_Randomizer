@@ -148,7 +148,7 @@ public class AdvancementManager {
     public void addAdvancement(int id) {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
-        APRandomizer.getGoalManager().updateGoal();
+        APRandomizer.getGoalManager().updateGoal( true);
         APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
     }
 

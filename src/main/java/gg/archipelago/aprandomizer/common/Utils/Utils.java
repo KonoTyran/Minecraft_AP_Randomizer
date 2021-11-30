@@ -85,20 +85,20 @@ public class Utils {
             Style style = Style.EMPTY;
             if (part.color == null) {
                 if (APRandomizer.getAP().getMyName().equals(part.text)) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.value)).withBold(true);
+                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())).withBold(true);
                 } else if (part.type == APPrintType.playerID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.yellow.value));
+                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.yellow.color.getRGB()));
                 } else if (part.type == APPrintType.locationID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.green.value));
+                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.green.color.getRGB()));
                 } else if (part.type == APPrintType.itemID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.cyan.value));
+                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.cyan.color.getRGB()));
                 }
             } else if (part.color == APPrintColor.underline)
                 style = Style.EMPTY.withUnderlined(true);
             else if (part.color == APPrintColor.bold)
                 style = Style.EMPTY.withBold(true);
             else
-                style = Style.EMPTY.withColor(TextColor.fromRgb(part.color.value));
+                style = Style.EMPTY.withColor(TextColor.fromRgb(part.color.color.getRGB()));
 
             message.append(new TextComponent(part.text).withStyle(style));
         }
@@ -140,6 +140,7 @@ public class Utils {
     }
 
     public static void SpawnDragon(ServerLevel end) {
+        end.getChunkAt(new BlockPos(0, 128, 0));
         end.dragonFight.spawnExitPortal(false);
         end.dragonFight.findOrCreateDragon();
         end.dragonFight.dragonKilled = false;
