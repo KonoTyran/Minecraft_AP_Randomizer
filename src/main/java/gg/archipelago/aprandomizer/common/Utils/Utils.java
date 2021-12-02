@@ -16,6 +16,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -31,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,22 +86,33 @@ public class Utils {
             APPrintPart part = apPrint.parts[i];
             LOGGER.trace("part[" + i + "]: " + part.text + ", " + part.color + ", " + part.type);
             Style style = Style.EMPTY;
-            if (part.color == null) {
+            //no default color was sent so use our own coloring.
+            Color color = Color.WHITE;
+            boolean bold = false;
+            boolean underline = false;
+
+            if (part.color == APPrintColor.none) {
                 if (APRandomizer.getAP().getMyName().equals(part.text)) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())).withBold(true);
+                    color = APPrintColor.gold.color;
+                    bold = true;
                 } else if (part.type == APPrintType.playerID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.yellow.color.getRGB()));
+                    color = APPrintColor.yellow.color;
                 } else if (part.type == APPrintType.locationID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.green.color.getRGB()));
+                    color = APPrintColor.green.color;
                 } else if (part.type == APPrintType.itemID) {
-                    style = Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.cyan.color.getRGB()));
+                    color = APPrintColor.cyan.color;
                 }
+
             } else if (part.color == APPrintColor.underline)
-                style = Style.EMPTY.withUnderlined(true);
+                underline = true;
             else if (part.color == APPrintColor.bold)
-                style = Style.EMPTY.withBold(true);
+                bold = true;
             else
-                style = Style.EMPTY.withColor(TextColor.fromRgb(part.color.color.getRGB()));
+                color = part.color.color;
+
+            //blank out the first two bits because minecraft doesn't deal with alpha values
+            int iColor = color.getRGB() & ~(0xFF << 24);
+            style = Style.EMPTY.withColor(iColor).withBold(bold).withUnderlined(underline);
 
             message.append(new TextComponent(part.text).withStyle(style));
         }
@@ -146,6 +160,7 @@ public class Utils {
         end.dragonFight.dragonKilled = false;
         end.dragonFight.previouslyKilled = false;
         end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
+        end.save(null, true, false);
     }
 
     public static StructureFeature<?> getCorrectStructure(StructureFeature<?> structure) {

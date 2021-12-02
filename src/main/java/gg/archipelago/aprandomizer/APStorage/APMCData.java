@@ -30,6 +30,12 @@ public class APMCData {
     @SerializedName("required_bosses")
     public Bosses required_bosses = Bosses.NONE;
 
+    @SerializedName("server")
+    public String server;
+
+    @SerializedName("port")
+    public int port;
+
     public State state = State.VALID;
 
     public boolean dragonStartSpawned() {

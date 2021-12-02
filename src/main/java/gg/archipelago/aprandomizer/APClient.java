@@ -27,7 +27,6 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -68,9 +67,9 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 Utils.sendMessageToAll("Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
                 event.setCanceled(true);
             }
-            if (temp.getClient_version() != APRandomizer.getClientVersion()) {
+            if (!APRandomizer.getValidVersions().contains(temp.getClient_version())) {
                 event.setCanceled(true);
-                Utils.sendMessageToAll("AP server expects Minecraft Protocol version " + slotData.getClient_version() + " while current version is " + APRandomizer.getClientVersion());
+                Utils.sendMessageToAll("Game was generated with an for an incompatible version of the Minecraft Randomizer.");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,7 +84,8 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 slotData = event.getSlotData(SlotData.class);
                 slotData.parseStartingItems();
             } catch (Exception e) {
-                e.printStackTrace();
+                Utils.sendMessageToAll("Invalid staring item section, check logs for more details.");
+                LOGGER.warn("invalid staring items json string: " + slotData.startingItems);
             }
 
             HashSet<String> tags = new HashSet<>();

@@ -5,7 +5,6 @@ import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -31,11 +30,11 @@ public class onJoin {
         ServerPlayer player = (ServerPlayer) event.getPlayer();
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.MISSING)
-            Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
+            Utils.sendMessageToAll("No APMC file found, please only start the server via the APMC file.");
         else if (data.state == APMCData.State.INVALID_VERSION)
-            Utils.sendMessageToAll("APMC data file wrong version, Client Version: " + APRandomizer.getClientVersion() + " APMC version:" + data.client_version);
+            Utils.sendMessageToAll("This Seed was generated using an incompatible randomizer version.");
         else if (data.state == APMCData.State.INVALID_SEED)
-            Utils.sendMessageToAll("Current Minecraft world has been used for a previous game. please stop server, delete the world and relaunch the server.");
+            Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
 
         APRandomizer.getAdvancementManager().syncAllAdvancements();
         Set<Recipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();

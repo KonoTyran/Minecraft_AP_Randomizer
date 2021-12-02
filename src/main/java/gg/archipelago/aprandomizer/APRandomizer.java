@@ -26,7 +26,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -36,7 +35,6 @@ import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,14 +60,17 @@ public class APRandomizer {
     static private ItemManager itemManager;
     static private GoalManager goalManager;
     static private APMCData apmcData;
-    static private final int clientVersion = 7;
+    static private final Set<Integer> validVersions = new HashSet<>() {{
+        this.add(6); //mc 1.16.5
+        this.add(7); //mc 1.17.1
+    }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago v0.2.0-beta5 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.17.1 v0.2.0-RC1 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -94,7 +95,7 @@ public class APRandomizer {
             String b64 = Files.readAllLines(files[0].toPath()).get(0);
             String json = new String(Base64.getDecoder().decode(b64));
             apmcData = gson.fromJson(json, APMCData.class);
-            if (apmcData.client_version != clientVersion) {
+            if (!validVersions.contains(apmcData.client_version)) {
                 apmcData.state = APMCData.State.INVALID_VERSION;
             }
             //LOGGER.info(apmcData.structures.toString());
@@ -135,8 +136,8 @@ public class APRandomizer {
         return itemManager;
     }
 
-    public static int getClientVersion() {
-        return clientVersion;
+    public static Set<Integer> getValidVersions() {
+        return validVersions;
     }
 
 
@@ -312,6 +313,14 @@ public class APRandomizer {
 
         }
 
+        if (apmcData.state == APMCData.State.VALID && apmcData.server != null) {
+
+            APClient apClient = APRandomizer.getAP();
+            apClient.setName(apmcData.player_name);
+            String address = apmcData.server.concat(":" + apmcData.port);
+            Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
+            apClient.connect(address);
+        }
     }
 
     @SubscribeEvent
