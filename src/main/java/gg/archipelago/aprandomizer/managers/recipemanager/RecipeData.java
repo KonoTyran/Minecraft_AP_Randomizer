@@ -69,7 +69,7 @@ public class RecipeData {
                 "minecraft:campfire",
                 "minecraft:soul_campfire"
         }));
-        put(54044, new GroupRecipe(54044, "Campfire", new String[]{
+        put(45044, new GroupRecipe(45044, "Spyglass", new String[]{
                 "minecraft:spyglass"
         }));
     }};
@@ -160,7 +160,8 @@ public class RecipeData {
                                                 "minecraft:netherite_ingot_from_netherite_block",
                                                 "minecraft:anvil",
                                                 "minecraft:emerald",
-                                                "minecraft:emerald_block"
+                                                "minecraft:emerald_block",
+                                                "minecraft:copper_block"
                                         }
                                 )
                         )
