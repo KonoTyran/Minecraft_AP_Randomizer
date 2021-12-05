@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:husbandry/kill_axolotl_target",
+  "parent": "minecraft:husbandry/silk_touch_nest",
   "criteria": {
     "after_end_city": {
       "trigger": "minecraft:tick"

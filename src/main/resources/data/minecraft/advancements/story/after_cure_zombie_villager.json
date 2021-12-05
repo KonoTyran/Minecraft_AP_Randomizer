@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:husbandry/balanced_diet",
+  "parent": "minecraft:story/cure_zombie_villager",
   "criteria": {
     "after_end_city": {
       "trigger": "minecraft:tick"
