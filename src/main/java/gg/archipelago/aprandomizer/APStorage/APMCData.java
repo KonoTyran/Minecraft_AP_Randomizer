@@ -28,7 +28,7 @@ public class APMCData {
     public int advancements_required = -1;
 
     @SerializedName("required_bosses")
-    public Bosses required_bosses = Bosses.NONE;
+    public Bosses required_bosses = Bosses.ENDER_DRAGON;
 
     @SerializedName("server")
     public String server;
