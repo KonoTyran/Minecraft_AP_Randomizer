@@ -12,9 +12,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -34,36 +31,79 @@ public class ItemManager {
 
     public static final int DRAGON_EGG_SHARD = 45043;
 
-    private final HashMap<Integer, ItemInfo> itemData = new HashMap<Integer, ItemInfo>() {{
-        put(45015, new ItemInfo(Items.NETHERITE_SCRAP, 8));
-        put(45016, new ItemInfo(Items.EMERALD, 8));
-        put(45017, new ItemInfo(Items.EMERALD, 4));
-        put(45018, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.CHANNELING, 1)));
-        put(45019, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.SILK_TOUCH, 1)));
-        put(45020, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.SHARPNESS, 3)));
-        put(45021, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.PIERCING, 4)));
-        put(45022, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.MOB_LOOTING, 3)));
-        put(45023, new ItemInfo(Items.ENCHANTED_BOOK, 1, new EnchantmentInstance(Enchantments.INFINITY_ARROWS, 1)));
-        put(45024, new ItemInfo(Items.DIAMOND_ORE, 4));
-        put(45025, new ItemInfo(Items.IRON_ORE, 16));
-        put(45029, new ItemInfo(Items.ENDER_PEARL, 3));
-        put(45004, new ItemInfo(Items.LAPIS_LAZULI, 4));
-        put(45030, new ItemInfo(Items.LAPIS_LAZULI, 4));
-        put(45031, new ItemInfo(Items.COOKED_PORKCHOP, 16));
-        put(45032, new ItemInfo(Items.GOLD_ORE, 8));
-        put(45033, new ItemInfo(Items.ROTTEN_FLESH, 8));
-        put(45034, new ItemInfo(Items.ARROW, 1, "The Arrow"));
-        put(45035, new ItemInfo(Items.ARROW, 32));
-        put(45036, new ItemInfo(Items.SADDLE, 1));
-        put(45037, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(StructureFeature.VILLAGE), "Structure Compass (Village)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
-        put(45038, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(StructureFeature.PILLAGER_OUTPOST), "Structure Compass (Pillager Outpost)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
-        put(45039, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(StructureFeature.NETHER_BRIDGE), "Structure Compass (Nether Fortress)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
-        put(45040, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(StructureFeature.BASTION_REMNANT), "Structure Compass (Bastion Remnant)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
-        put(45041, new ItemInfo(Items.COMPASS, 1, Utils.getCorrectStructure(StructureFeature.END_CITY), "Structure Compass (End City)", new String[]{"Right click with compass in hand to","cycle to next known structure location."}));
-        put(45042, new ItemInfo(Items.SHULKER_BOX, 1));
+    private final HashMap<Integer, ItemStack> itemStacks = new HashMap<>() {{
+
+        put(45015, new ItemStack(Items.NETHERITE_SCRAP, 8));
+        put(45016, new ItemStack(Items.EMERALD, 8));
+        put(45017, new ItemStack(Items.EMERALD, 4));
+
+        ItemStack channelingBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.CHANNELING, 1));
+        put(45018, channelingBook);
+
+        ItemStack silkTouchBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.SILK_TOUCH, 1));
+        put(45019, silkTouchBook);
+
+        ItemStack sharpnessBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.SHARPNESS, 3));
+        put(45020, sharpnessBook);
+
+        ItemStack piercingBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(piercingBook,new EnchantmentInstance(Enchantments.PIERCING, 4));
+        put(45021, piercingBook);
+
+        ItemStack lootingBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(lootingBook,new EnchantmentInstance(Enchantments.MOB_LOOTING, 3));
+        put(45022, lootingBook);
+
+        ItemStack infinityBook = new ItemStack(Items.ENCHANTED_BOOK);
+        EnchantedBookItem.addEnchantment(infinityBook,new EnchantmentInstance(Enchantments.INFINITY_ARROWS, 1));
+        put(45023, infinityBook);
+
+        put(45024, new ItemStack(Items.DIAMOND_ORE, 4));
+        put(45025, new ItemStack(Items.IRON_ORE, 16));
+        put(45029, new ItemStack(Items.ENDER_PEARL, 3));
+        put(45004, new ItemStack(Items.LAPIS_LAZULI, 4));
+        put(45030, new ItemStack(Items.LAPIS_LAZULI, 4));
+        put(45031, new ItemStack(Items.COOKED_PORKCHOP, 16));
+        put(45032, new ItemStack(Items.GOLD_ORE, 8));
+        put(45033, new ItemStack(Items.ROTTEN_FLESH, 8));
+        put(45034, new ItemStack(Items.ARROW, 1).setHoverName(new TextComponent("The Arrow")));
+        put(45035, new ItemStack(Items.ARROW, 32));
+        put(45036, new ItemStack(Items.SADDLE, 1));
+
+        String[] compassLore = new String[]{"Right click with compass in hand to","cycle to next known structure location."};
+
+        ItemStack villageCompass = new ItemStack(Items.COMPASS, 1);
+        makeCompass(villageCompass, Utils.getCorrectStructure(StructureFeature.VILLAGE));
+        addLore(villageCompass, "Structure Compass (Village)", compassLore);
+        put(45037, villageCompass);
+
+        ItemStack outpostCompass = new ItemStack(Items.COMPASS, 1);
+        makeCompass(outpostCompass, Utils.getCorrectStructure(StructureFeature.PILLAGER_OUTPOST));
+        addLore(outpostCompass, "Structure Compass (Pillager Outpost)", compassLore);
+        put(45038, outpostCompass);
+
+        ItemStack fortressCompass = new ItemStack(Items.COMPASS, 1);
+        makeCompass(fortressCompass, Utils.getCorrectStructure(StructureFeature.NETHER_BRIDGE));
+        addLore(fortressCompass, "Structure Compass (Nether Fortress)", compassLore);
+        put(45039, fortressCompass);
+
+        ItemStack bastionCompass = new ItemStack(Items.COMPASS, 1);
+        makeCompass(bastionCompass, Utils.getCorrectStructure(StructureFeature.BASTION_REMNANT));
+        addLore(bastionCompass, "Structure Compass (Bastion Remnant)", compassLore);
+        put(45040,bastionCompass);
+
+        ItemStack endCityCompass = new ItemStack(Items.COMPASS, 1);
+        makeCompass(endCityCompass, Utils.getCorrectStructure(StructureFeature.END_CITY));
+        addLore(endCityCompass, "Structure Compass (End City)", compassLore);
+        put(45041, endCityCompass);
+
+        put(45042, new ItemStack(Items.SHULKER_BOX, 1));
     }};
 
-    private final HashMap<Integer,String> compasses = new HashMap<Integer,String>() {{
+    private final HashMap<Integer,String> compasses = new HashMap<>() {{
         put(45037, StructureFeature.VILLAGE.getFeatureName());
         put(45038, StructureFeature.PILLAGER_OUTPOST.getFeatureName());
         put(45039, StructureFeature.NETHER_BRIDGE.getFeatureName());
@@ -72,13 +112,13 @@ public class ItemManager {
 
     }};
 
-    private final HashMap<Integer, Integer> xpData = new HashMap<Integer, Integer>() {{
+    private final HashMap<Integer, Integer> xpData = new HashMap<>() {{
         put(45026, 500);
         put(45027, 100);
         put(45028, 50);
     }};
 
-    private final HashMap<Integer, Trap> trapData = new HashMap<Integer, Trap>() {{
+    private final HashMap<Integer, Trap> trapData = new HashMap<>() {{
         put(45100, new BeeTrap(3));
     }};
 
@@ -86,34 +126,24 @@ public class ItemManager {
 
     private final ArrayList<String> receivedCompasses = new ArrayList<>();
 
-    private ItemStack buildNewItemStack(int itemID) {
-        ItemInfo iInfo = itemData.get(itemID);
-        ItemStack iStack = new ItemStack(iInfo.item, iInfo.amount);
-        if (iInfo.enchant != null) {
-            EnchantedBookItem.addEnchantment(iStack, iInfo.enchant);
-        }
-        if (iInfo.name != null) {
-            iStack.setHoverName(new TextComponent(iInfo.name));
-        }
-        if (iInfo.lore != null) {
-            CompoundTag compoundnbt = iStack.getOrCreateTagElement("display");
-            ListTag itemLoreLines = new ListTag();
-            for (String s : iInfo.lore) {
-                StringTag itemLore = StringTag.valueOf(Component.Serializer.toJson(new TextComponent(s)));
-                itemLoreLines.add(itemLore);
-            }
-            compoundnbt.put("Lore",itemLoreLines);
-        }
-        if (iInfo.structure != null && iStack.getItem().equals(Items.COMPASS)) {
-            CompoundTag nbt = iStack.getOrCreateTag();
-            nbt.put("structure", StringTag.valueOf(iInfo.structure.getRegistryName().toString()));
+    private void makeCompass(ItemStack iStack, StructureFeature<?> structure) {
+        CompoundTag nbt = iStack.getOrCreateTag();
+        nbt.put("structure", StringTag.valueOf(structure.getRegistryName().toString()));
 
-            BlockPos structureCords = APRandomizer.getServer().getLevel(Utils.getStructureWorld(iInfo.structure)).findNearestMapFeature(iInfo.structure, new BlockPos(0,0,0), 100, false);
+        BlockPos structureCords = APRandomizer.getServer().getLevel(Utils.getStructureWorld(structure)).findNearestMapFeature(structure, new BlockPos(0,0,0), 100, false);
 
-            Utils.addLodestoneTags(Utils.getStructureWorld(iInfo.structure),structureCords, iStack.getOrCreateTag());
+        Utils.addLodestoneTags(Utils.getStructureWorld(structure),structureCords, iStack.getOrCreateTag());
+    }
 
+    private void addLore(ItemStack iStack, String name, String[] compassLore) {
+        iStack.setHoverName(new TextComponent(name));
+        CompoundTag compoundnbt = iStack.getOrCreateTagElement("display");
+        ListTag itemLoreLines = new ListTag();
+        for (String s : compassLore) {
+            StringTag itemLore = StringTag.valueOf(Component.Serializer.toJson(new TextComponent(s)));
+            itemLoreLines.add(itemLore);
         }
-        return iStack;
+        compoundnbt.put("Lore",itemLoreLines);
     }
 
     public void setReceivedItems(ArrayList<Integer> items) {
@@ -138,8 +168,8 @@ public class ItemManager {
             playerData.setIndex(receivedItems.size());
         }
 
-        if (itemData.containsKey(itemID)) {
-            ItemStack itemstack = buildNewItemStack(itemID);
+        if (itemStacks.containsKey(itemID)) {
+            ItemStack itemstack = itemStacks.get(itemID).copy();
             Utils.giveItemToPlayer(player, itemstack);
         } else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
