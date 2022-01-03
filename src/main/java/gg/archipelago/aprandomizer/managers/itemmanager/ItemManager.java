@@ -135,7 +135,7 @@ public class ItemManager {
         CompoundTag nbt = iStack.getOrCreateTag();
         nbt.put("structure", StringTag.valueOf(structure.getRegistryName().toString()));
 
-        BlockPos structureCords = APRandomizer.getServer().getLevel(Utils.getStructureWorld(structure)).findNearestMapFeature(structure, new BlockPos(0,0,0), 100, false);
+        BlockPos structureCords = new BlockPos(0,0,0);
 
         Utils.addLodestoneTags(Utils.getStructureWorld(structure),structureCords, iStack.getOrCreateTag());
     }
