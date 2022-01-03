@@ -2,6 +2,7 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
@@ -59,6 +60,8 @@ public class onPlayerInteract {
             return;
         if(event.getItemStack().getItem().equals(Items.COMPASS) && event.getItemStack().hasTag()) {
             ItemStack compass = event.getItemStack();
+            if(!compass.hasTag())
+                return;
             CompoundTag nbt = compass.getOrCreateTag();
             if(nbt.get("structure") == null)
                 return;
@@ -73,27 +76,7 @@ public class onPlayerInteract {
 
             String structureName = compasses.get(index);
 
-            //update the nbt data with our new structure.
-            nbt.put("structure", StringTag.valueOf(structureName));
-
-            //get the actual structure data from forge, and make sure its changed to the AP one if needed.
-            StructureFeature<?> structure = Utils.getCorrectStructure(ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName)));
-
-
-            //get our local custom structure if needed.
-            ResourceKey<Level> world = Utils.getStructureWorld(structure);
-
-            //locate the structure in the appropriate world.
-            BlockPos structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structure,event.getEntity().blockPosition(), 100, false);
-
-            String displayName = Utils.getAPStructureName(structure);
-
-            if(structurePos == null)
-                structurePos = new BlockPos(0,0,0);
-
-            Utils.addLodestoneTags(world,structurePos,compass.getOrCreateTag());
-            Utils.sendActionBarToPlayer((ServerPlayer)event.getPlayer(),String.format("Updated Compass (%s)",displayName),0,60,0);
-            compass.setHoverName(new TextComponent(String.format("Structure Compass (%s)", displayName)));
+            ItemManager.updateCompassLocation(structureName,event.getPlayer(),compass);
 
         }
     }

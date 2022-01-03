@@ -1,8 +1,8 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
-import gg.archipelago.aprandomizer.capability.PlayerData;
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.BeeTrap;
 import net.minecraft.core.BlockPos;
@@ -11,14 +11,19 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,11 +47,11 @@ public class ItemManager {
         put(45018, channelingBook);
 
         ItemStack silkTouchBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.SILK_TOUCH, 1));
+        EnchantedBookItem.addEnchantment(silkTouchBook,new EnchantmentInstance(Enchantments.SILK_TOUCH, 1));
         put(45019, silkTouchBook);
 
         ItemStack sharpnessBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.SHARPNESS, 3));
+        EnchantedBookItem.addEnchantment(sharpnessBook,new EnchantmentInstance(Enchantments.SHARPNESS, 3));
         put(45020, sharpnessBook);
 
         ItemStack piercingBook = new ItemStack(Items.ENCHANTED_BOOK);
@@ -162,7 +167,7 @@ public class ItemManager {
             return;
         }
         //update the player's index of received items for syncing later.
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
+        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
         if (loPlayerData.isPresent()) {
             PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
             playerData.setIndex(receivedItems.size());
@@ -170,6 +175,9 @@ public class ItemManager {
 
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
+            if(compasses.containsKey(itemID)){
+                updateCompassLocation(itemstack.getOrCreateTag().getString("structure"), player , itemstack);
+            }
             Utils.giveItemToPlayer(player, itemstack);
         } else if (xpData.containsKey(itemID)) {
             int xpValue = xpData.get(itemID);
@@ -202,7 +210,7 @@ public class ItemManager {
      * @param player ServerPlayer to catch up
      */
     public void catchUpPlayer(ServerPlayer player) {
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
+        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
         if (loPlayerData.isPresent()) {
             PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
 
@@ -218,5 +226,31 @@ public class ItemManager {
 
     public ArrayList<Integer> getAllItems() {
         return receivedItems;
+    }
+
+    public static void updateCompassLocation(String structureName, Player player, ItemStack compass) {
+
+        //get the actual structure data from forge, and make sure its changed to the AP one if needed.
+        StructureFeature<?> structure = Utils.getCorrectStructure(ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName)));
+        //get our local custom structure if needed.
+        ResourceKey<Level> world = Utils.getStructureWorld(structure);
+
+        //only locate structure if the player is in the same world as the one for the compass
+        //otherwise just point it to 0,0 in said dimension.
+        BlockPos structurePos = new BlockPos(0,0,0);
+        if(player.getCommandSenderWorld().dimension().equals(world)) {
+            structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structure, player.blockPosition(), 75, false);
+        }
+
+        String displayName = Utils.getAPStructureName(structure);
+
+        if(structurePos == null)
+            structurePos = new BlockPos(0,0,0);
+
+        CompoundTag nbt = compass.getOrCreateTag();
+        //update the nbt data with our new structure.
+        nbt.put("structure", StringTag.valueOf(structureName));
+        Utils.addLodestoneTags(world,structurePos,nbt);
+        compass.setHoverName(new TextComponent(String.format("Structure Compass (%s)", displayName)));
     }
 }

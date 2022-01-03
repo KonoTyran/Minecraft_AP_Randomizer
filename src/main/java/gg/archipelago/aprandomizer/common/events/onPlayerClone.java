@@ -1,12 +1,11 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.capability.CapabilityPlayerData;
-import gg.archipelago.aprandomizer.capability.PlayerData;
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,11 +33,14 @@ public class onPlayerClone {
 
     @SubscribeEvent
     public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
+        if(!event.isWasDeath())
+            return;
+
         Player player = event.getOriginal();
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA);
+        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
         if (loPlayerData.isPresent()) {
             PlayerData originalPlayerData = loPlayerData.orElseThrow(AssertionError::new);
-            event.getPlayer().getCapability(CapabilityPlayerData.CAPABILITY_PLAYER_DATA).orElseThrow(AssertionError::new).setIndex(originalPlayerData.getIndex());
+            event.getPlayer().getCapability(APCapabilities.PLAYER_INDEX).orElseThrow(AssertionError::new).setIndex(originalPlayerData.getIndex());
         }
     }
 }

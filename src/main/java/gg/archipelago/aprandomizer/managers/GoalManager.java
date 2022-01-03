@@ -3,8 +3,8 @@ package gg.archipelago.aprandomizer.managers;
 import gg.archipelago.APClient.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
-import gg.archipelago.aprandomizer.capability.WorldData;
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
@@ -158,7 +158,7 @@ public class GoalManager {
         ServerLevel end = APRandomizer.getServer().getLevel(Level.END);
         assert end != null;
         assert end.dragonFight != null;
-        WorldData endData = end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData endData = end.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
 
         //check if the dragon is not spawned and we need to spawn it.
         if (goalsDone() && endData.getDragonState() == WorldData.DRAGON_ASLEEP) {

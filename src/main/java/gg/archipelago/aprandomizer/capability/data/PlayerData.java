@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.capability;
+package gg.archipelago.aprandomizer.capability.data;
 
 public class PlayerData {
 

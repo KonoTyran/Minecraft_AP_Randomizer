@@ -7,8 +7,8 @@ import gg.archipelago.APClient.Print.APPrintPart;
 import gg.archipelago.APClient.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStructures;
-import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
-import gg.archipelago.aprandomizer.capability.WorldData;
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.WorldData;
 import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
@@ -159,7 +159,7 @@ public class Utils {
         end.dragonFight.findOrCreateDragon();
         end.dragonFight.dragonKilled = false;
         end.dragonFight.previouslyKilled = false;
-        end.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
+        end.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
         end.save(null, true, false);
     }
 

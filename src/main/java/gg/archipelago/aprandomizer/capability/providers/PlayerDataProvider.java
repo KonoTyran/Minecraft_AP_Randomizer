@@ -1,7 +1,9 @@
-package gg.archipelago.aprandomizer.capability;
+package gg.archipelago.aprandomizer.capability.providers;
 
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -10,10 +12,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CapabilityProviderWorldData implements ICapabilitySerializable<Tag> {
+public class PlayerDataProvider implements ICapabilitySerializable<Tag> {
 
 
-    private final WorldData worldData = new WorldData();
+    private final PlayerData playerData = new PlayerData();
 
     /**
      * Asks the Provider if it has the given capability
@@ -28,8 +30,8 @@ public class CapabilityProviderWorldData implements ICapabilitySerializable<Tag>
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-        if (CapabilityWorldData.CAPABILITY_WORLD_DATA == capability) {
-            return (LazyOptional<T>) LazyOptional.of(() -> worldData);
+        if (APCapabilities.PLAYER_INDEX == capability) {
+            return (LazyOptional<T>) LazyOptional.of(() -> playerData);
             // why are we using a lambda?  Because LazyOptional.of() expects a NonNullSupplier interface.  The lambda automatically
             //   conforms itself to that interface.  This save me having to define an inner class implementing NonNullSupplier.
             // The explicit cast to LazyOptional<T> is required because our CAPABILITY_ELEMENTAL_FIRE can't be typed.  Our code has
@@ -46,20 +48,15 @@ public class CapabilityProviderWorldData implements ICapabilitySerializable<Tag>
 
     @Override
     public Tag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("dragonState", worldData.getDragonState());
-        nbt.putString("seedName", worldData.getSeedName());
-        nbt.putBoolean("jailPlayers", worldData.getJailPlayers());
-        return nbt;
+        return IntTag.valueOf(playerData.getIndex());
     }
 
     @Override
     public void deserializeNBT(Tag nbt) {
-        if (nbt.getType() == CompoundTag.TYPE) {
-            CompoundTag read = (CompoundTag) nbt;
-            worldData.setSeedName(read.getString("seedName"));
-            worldData.setDragonState(read.getInt("dragonState"));
-            worldData.setJailPlayers(read.getBoolean("jailPlayers"));
+        int index = 0;
+        if (nbt.getType() == IntTag.TYPE) {
+            index = ((IntTag) nbt).getAsInt();
         }
+        playerData.setIndex(index);
     }
 }

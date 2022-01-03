@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.capability;
+package gg.archipelago.aprandomizer.capability.data;
 
 import com.google.common.collect.Lists;
 
@@ -48,6 +48,7 @@ public class WorldData {
     public void addLocation(int location) {
         this.locations.add(location);
     }
+
     public void setLocations(int[] locations) {
         this.locations.addAll(Lists.newArrayList(Arrays.stream(locations).iterator()));
     }

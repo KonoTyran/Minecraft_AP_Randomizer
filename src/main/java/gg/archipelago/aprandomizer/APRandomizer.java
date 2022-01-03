@@ -3,8 +3,8 @@ package gg.archipelago.aprandomizer;
 import com.google.gson.Gson;
 import gg.archipelago.APClient.network.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.CapabilityWorldData;
-import gg.archipelago.aprandomizer.capability.WorldData;
+import gg.archipelago.aprandomizer.capability.APCapabilities;
+import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
@@ -217,7 +217,7 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = server.getLevel(Level.OVERWORLD).getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
         advancementManager.setCheckedAdvancements(worldData.getLocations());
 
@@ -285,7 +285,7 @@ public class APRandomizer {
         //check if our boss requirements means we should start with the dragon spawned.
         if(apmcData.dragonStartSpawned()) {
             Utils.SpawnDragon(theEnd);
-            WorldData endData = theEnd.getCapability(CapabilityWorldData.CAPABILITY_WORLD_DATA).orElseThrow(AssertionError::new);
+            WorldData endData = theEnd.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
             endData.setDragonState(WorldData.DRAGON_SPAWNED);
         }
 
