@@ -143,7 +143,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
             boolean showDeaths = showDeathMessages.get();
             if(showDeaths) {
                 String cause = packet.getString("cause");
-                if(!cause.isEmpty())
+                if(cause != null && !cause.isBlank())
                     Utils.sendMessageToAll(packet.getString("cause"));
                 else
                     Utils.sendMessageToAll("This Death brought to you by "+ packet.getString("source"));
