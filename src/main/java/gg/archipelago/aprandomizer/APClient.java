@@ -8,6 +8,7 @@ import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.BouncedPacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
+import gg.archipelago.APClient.ItemFlags;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
@@ -43,6 +44,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
         super(APRandomizer.getApmcData().seed_name,APRandomizer.getApmcData().player_id);
 
         this.setGame("Minecraft");
+        this.setItemsHandlingFlags(ItemFlags.SEND_ITEMS + ItemFlags.SEND_OWN_ITEMS + ItemFlags.SEND_STARTING_INVENTORY);
         this.server = server;
         APRandomizer.getAdvancementManager().setCheckedAdvancements(getLocationManager().getCheckedLocations());
 
@@ -237,6 +239,11 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onLocationInfo(ArrayList<NetworkItem> arrayList) {}
+
+    @Override
+    public void onLocationChecked(int locationID) {
+
+    }
 
     public void addTag(String tag) {
         HashSet<String> tags = new HashSet<>(Arrays.asList(getTags()));
