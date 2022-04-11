@@ -1,7 +1,7 @@
 ---
 name: Feature request
-about: "[Feature Request] Name of Feature"
-title: ''
+about: Request a new feature, or enhancement to a current feature.
+title: "[Feature Request] name of feature"
 labels: enhancement
 assignees: ''
 
