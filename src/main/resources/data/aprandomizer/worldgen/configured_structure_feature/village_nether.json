@@ -1,0 +1,10 @@
+{
+  "type": "aprandomizer:village_nether",
+  "config": {
+    "start_pool": "aprandomizer:village/nether/town_centers",
+    "size": 6
+  },
+  "biomes": [],
+  "adapt_noise": true,
+  "spawn_overrides": {}
+}

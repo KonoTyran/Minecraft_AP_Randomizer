@@ -1,0 +1,10 @@
+{
+  "type": "aprandomizer:bee_grove",
+  "config": {
+    "start_pool": "aprandomizer:bee_groves",
+    "size": 6
+  },
+  "biomes": "#aprandomizer:bee_grove_biomes",
+  "adapt_noise": false,
+  "spawn_overrides": {}
+}

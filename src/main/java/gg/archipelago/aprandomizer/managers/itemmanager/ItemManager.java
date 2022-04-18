@@ -1,11 +1,14 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.BeeTrap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -13,7 +16,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ConfiguredStructureTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +27,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
@@ -81,39 +90,39 @@ public class ItemManager {
         String[] compassLore = new String[]{"Right click with compass in hand to","cycle to next known structure location."};
 
         ItemStack villageCompass = new ItemStack(Items.COMPASS, 1);
-        makeCompass(villageCompass, Utils.getCorrectStructure(StructureFeature.VILLAGE));
+        makeCompass(villageCompass, APStructures.VILLAGE_TAG);
         addLore(villageCompass, "Structure Compass (Village)", compassLore);
         put(45037, villageCompass);
 
         ItemStack outpostCompass = new ItemStack(Items.COMPASS, 1);
-        makeCompass(outpostCompass, Utils.getCorrectStructure(StructureFeature.PILLAGER_OUTPOST));
+        makeCompass(outpostCompass, APStructures.OUTPOST_TAG);
         addLore(outpostCompass, "Structure Compass (Pillager Outpost)", compassLore);
         put(45038, outpostCompass);
 
         ItemStack fortressCompass = new ItemStack(Items.COMPASS, 1);
-        makeCompass(fortressCompass, Utils.getCorrectStructure(StructureFeature.NETHER_BRIDGE));
+        makeCompass(fortressCompass, APStructures.FORTRESS_TAG);
         addLore(fortressCompass, "Structure Compass (Nether Fortress)", compassLore);
         put(45039, fortressCompass);
 
         ItemStack bastionCompass = new ItemStack(Items.COMPASS, 1);
-        makeCompass(bastionCompass, Utils.getCorrectStructure(StructureFeature.BASTION_REMNANT));
+        makeCompass(bastionCompass, APStructures.BASTION_REMNANT_TAG);
         addLore(bastionCompass, "Structure Compass (Bastion Remnant)", compassLore);
         put(45040,bastionCompass);
 
         ItemStack endCityCompass = new ItemStack(Items.COMPASS, 1);
-        makeCompass(endCityCompass, Utils.getCorrectStructure(StructureFeature.END_CITY));
+        makeCompass(endCityCompass, APStructures.END_CITY_TAG);
         addLore(endCityCompass, "Structure Compass (End City)", compassLore);
         put(45041, endCityCompass);
 
         put(45042, new ItemStack(Items.SHULKER_BOX, 1));
     }};
 
-    private final HashMap<Integer,String> compasses = new HashMap<>() {{
-        put(45037, StructureFeature.VILLAGE.getFeatureName());
-        put(45038, StructureFeature.PILLAGER_OUTPOST.getFeatureName());
-        put(45039, StructureFeature.NETHER_BRIDGE.getFeatureName());
-        put(45040, StructureFeature.BASTION_REMNANT.getFeatureName());
-        put(45041, StructureFeature.END_CITY.getFeatureName());
+    private final HashMap<Integer,TagKey<ConfiguredStructureFeature<?,?>>> compasses = new HashMap<>() {{
+        put(45037, APStructures.VILLAGE_TAG);
+        put(45038, APStructures.OUTPOST_TAG);
+        put(45039, APStructures.FORTRESS_TAG);
+        put(45040, APStructures.BASTION_REMNANT_TAG);
+        put(45041, APStructures.END_CITY_TAG);
 
     }};
 
@@ -129,15 +138,15 @@ public class ItemManager {
 
     private ArrayList<Integer> receivedItems = new ArrayList<>();
 
-    private final ArrayList<String> receivedCompasses = new ArrayList<>();
+    private final ArrayList<TagKey<ConfiguredStructureFeature<?,?>>> receivedCompasses = new ArrayList<>();
 
-    private void makeCompass(ItemStack iStack, StructureFeature<?> structure) {
+    private void makeCompass(ItemStack iStack, TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
         CompoundTag nbt = iStack.getOrCreateTag();
-        nbt.put("structure", StringTag.valueOf(structure.getRegistryName().toString()));
+        nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
 
         BlockPos structureCords = new BlockPos(0,0,0);
 
-        Utils.addLodestoneTags(Utils.getStructureWorld(structure),structureCords, iStack.getOrCreateTag());
+        Utils.addLodestoneTags(Utils.getStructureWorld(structureTag),structureCords, iStack.getOrCreateTag());
     }
 
     private void addLore(ItemStack iStack, String name, String[] compassLore) {
@@ -176,7 +185,8 @@ public class ItemManager {
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
             if(compasses.containsKey(itemID)){
-                updateCompassLocation(itemstack.getOrCreateTag().getString("structure"), player , itemstack);
+                TagKey<ConfiguredStructureFeature<?,?>> tag = TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
+                updateCompassLocation(tag, player , itemstack);
             }
             Utils.giveItemToPlayer(player, itemstack);
         } else if (xpData.containsKey(itemID)) {
@@ -220,7 +230,7 @@ public class ItemManager {
         }
     }
 
-    public ArrayList<String> getCompasses() {
+    public ArrayList<TagKey<ConfiguredStructureFeature<?,?>>> getCompasses() {
         return receivedCompasses;
     }
 
@@ -228,28 +238,28 @@ public class ItemManager {
         return receivedItems;
     }
 
-    public static void updateCompassLocation(String structureName, Player player, ItemStack compass) {
+    public static void updateCompassLocation(TagKey<ConfiguredStructureFeature<?,?>> structureTag, Player player, ItemStack compass) {
 
         //get the actual structure data from forge, and make sure its changed to the AP one if needed.
-        StructureFeature<?> structure = Utils.getCorrectStructure(ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName)));
+
         //get our local custom structure if needed.
-        ResourceKey<Level> world = Utils.getStructureWorld(structure);
+        ResourceKey<Level> world = Utils.getStructureWorld(structureTag);
 
         //only locate structure if the player is in the same world as the one for the compass
         //otherwise just point it to 0,0 in said dimension.
         BlockPos structurePos = new BlockPos(0,0,0);
         if(player.getCommandSenderWorld().dimension().equals(world)) {
-            structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structure, player.blockPosition(), 75, false);
+        structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structureTag, player.blockPosition(), 75, false);
         }
 
-        String displayName = Utils.getAPStructureName(structure);
+        String displayName = Utils.getAPStructureName(structureTag);
 
         if(structurePos == null)
             structurePos = new BlockPos(0,0,0);
 
         CompoundTag nbt = compass.getOrCreateTag();
         //update the nbt data with our new structure.
-        nbt.put("structure", StringTag.valueOf(structureName));
+        nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
         Utils.addLodestoneTags(world,structurePos,nbt);
         compass.setHoverName(new TextComponent(String.format("Structure Compass (%s)", displayName)));
     }

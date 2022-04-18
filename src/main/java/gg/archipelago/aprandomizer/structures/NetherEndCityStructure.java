@@ -1,41 +1,32 @@
 package gg.archipelago.aprandomizer.structures;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.block.Rotation;
+import com.google.common.collect.Lists;
+import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.structure.EndCityPieces;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.minecraft.world.level.levelgen.structure.PostPlacementProcessor;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 
 import java.util.List;
-
-import net.minecraft.world.level.levelgen.feature.StructureFeature.StructureStartFactory;
+import java.util.Optional;
 
 public class NetherEndCityStructure extends StructureFeature<NoneFeatureConfiguration> {
-    public NetherEndCityStructure(Codec<NoneFeatureConfiguration> codec) {
-        super(codec);
+    public NetherEndCityStructure() {
+        super(NoneFeatureConfiguration.CODEC, NetherEndCityStructure::pieceGeneratorSupplier, PostPlacementProcessor.NONE);
     }
 
-    /**
-     * This is how the worldgen code knows what to call when it
-     * is time to create the pieces of the structure for generation.
-     */
-    @Override
-    public StructureStartFactory<NoneFeatureConfiguration> getStartFactory() {
-        return NetherEndCityStructure.Start::new;
+    private static boolean isFeatureChunk(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
+        return context.validBiomeOnTop(Heightmap.Types.WORLD_SURFACE_WG);
     }
+
 
     /**
      * : WARNING!!! DO NOT FORGET THIS METHOD!!!! :
@@ -49,51 +40,28 @@ public class NetherEndCityStructure extends StructureFeature<NoneFeatureConfigur
         return GenerationStep.Decoration.UNDERGROUND_STRUCTURES;
     }
 
-    /**
-     * This method allow us to have naturally spawning mobs inside out structure
-     * in our case here we want to add enderman to our end city
-     */
-    private static final List<MobSpawnSettings.SpawnerData> STRUCTURE_MOBS = ImmutableList.of(
-            new MobSpawnSettings.SpawnerData(EntityType.ENDERMAN, 30, 10, 15)
-    );
+    private static Optional<PieceGenerator<NoneFeatureConfiguration>> pieceGeneratorSupplier(PieceGeneratorSupplier.Context<NoneFeatureConfiguration> context) {
+        // get sea Level, or in our case lava level.
+        int seaLevel = context.chunkGenerator().getSeaLevel();
 
-    @Override
-    public List<MobSpawnSettings.SpawnerData> getDefaultSpawnList() {
-        return STRUCTURE_MOBS;
-    }
+        /*
+         * yay for custom hard coded structure gen. let's just call this and hope it works...
+         */
+        BlockPos blockpos = context.chunkPos().getMiddleBlockPosition(seaLevel);
 
-
-    /**
-     * Handles calling up the structure's pieces class and height that structure will spawn at.
-     */
-    public static class Start extends StructureStart<NoneFeatureConfiguration> {
-        public Start(StructureFeature<NoneFeatureConfiguration> structureIn, ChunkPos chunkPos, int referenceIn, long seedIn) {
-            super(structureIn, chunkPos, referenceIn, seedIn);
+        // Check if the spot is valid for our structure. This is just as another method for cleanness.
+        // Returning an empty optional tells the game to skip this spot as it will not generate the structure.
+        if (!NetherEndCityStructure.isFeatureChunk(context)) {
+            return Optional.empty();
         }
 
-        @Override
-        public void generatePieces(RegistryAccess dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager templateManagerIn, ChunkPos chunkPos, Biome biomeIn, NoneFeatureConfiguration config, LevelHeightAccessor levelHeightAccessor) {
-
-            // Turns the chunk coordinates into actual coordinates we can use. (random position within the chunk.)
-            int x = chunkPos.getMinBlockX() + this.random.nextInt(16);
-            int z = chunkPos.getMinBlockZ() + this.random.nextInt(16);
-
-            // get sea Level, or in our case lava level.
-            int seaLevel = chunkGenerator.getSeaLevel();
-
-
-            /*
-             * yay for custom hard coded structure gen. lets just call this and hope it works...
-             */
-            BlockPos blockpos = new BlockPos(x, seaLevel, z);
-
-            Rotation rotation = Rotation.getRandom(this.random);
-            EndCityPieces.startHouseTower(templateManagerIn, blockpos, rotation, this.pieces, this.random);
-            //APRandomizer.LOGGER.info("generating Nether End City at {}",blockpos.toString());
-            // Sets the bounds of the structure once you are finished.
-            this.createBoundingBox();
-
-        }
+        return Optional.of((builder, context1) -> {
+            Rotation rotation = Rotation.getRandom(context1.random());
+            List<StructurePiece> list = Lists.newArrayList();
+            EndCityPieces.startHouseTower(context1.structureManager(), blockpos, rotation, list, context1.random());
+            list.forEach(builder::addPiece);
+        });
 
     }
+
 }

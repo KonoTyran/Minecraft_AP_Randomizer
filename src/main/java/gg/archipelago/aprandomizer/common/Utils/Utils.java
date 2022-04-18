@@ -25,9 +25,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -163,43 +165,9 @@ public class Utils {
         end.save(null, true, false);
     }
 
-    public static StructureFeature<?> getCorrectStructure(StructureFeature<?> structure) {
-        // if any of these structures appear in the nether we need to change the compass
-        // to point to our structure instead of the vanilla one.
+    public static ResourceKey<Level> getStructureWorld(TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
 
-        String structureName = Utils.getAPStructureName(structure);
-
-        //fetch what structures are where from our APMC data.
-        HashMap<String, String> structures = APRandomizer.getApmcData().structures;
-        if(structures == null)
-            return structure;
-        String nStructure1 = structures.get("Nether Structure 1");
-        String nStructure2 = structures.get("Nether Structure 2");
-        String eStructure = structures.get("The End Structure");
-
-        if (structureName.equals(nStructure1) || structureName.equals(nStructure2)) {
-            switch (structureName) {
-                case "Village":
-                    return APStructures.VILLAGE_NETHER.get();
-                case "Pillager Outpost":
-                    return APStructures.PILLAGER_OUTPOST_NETHER.get();
-                case "End City":
-                    return APStructures.END_CITY_NETHER.get();
-            }
-        }
-
-        if (structureName.equals(eStructure)) {
-            switch (structureName) {
-                case "Village":
-                    return APStructures.VILLAGE_NETHER.get();
-            }
-        }
-        return structure;
-    }
-
-    public static ResourceKey<Level> getStructureWorld(StructureFeature<?> structure) {
-
-        String structureName = getAPStructureName(structure);
+        String structureName = getAPStructureName(structureTag);
         String world = "overworld";
         //fetch what structures are where from our APMC data.
         HashMap<String, String> structures = APRandomizer.getApmcData().structures;
@@ -220,24 +188,15 @@ public class Utils {
         return Level.OVERWORLD;
     }
 
-    public static String getAPStructureName(StructureFeature<?> structure) {
-        switch(structure.getRegistryName().getPath().toLowerCase()) {
-            case "village_nether":
-            case "village":
-                return "Village";
-            case "end_city_nether":
-            case "endcity":
-                return "End City";
-            case "pillager_outpost_nether":
-            case "pillager_outpost":
-                return "Pillager Outpost";
-            case "fortress":
-                return "Nether Fortress";
-            case "bastion_remnant":
-                return "Bastion Remnant";
-            default:
-                return structure.getRegistryName().getPath().toLowerCase();
-        }
+    public static String getAPStructureName(TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
+        return switch (structureTag.location().toString()) {
+            case "aprandomizer:village" -> "Village";
+            case "aprandomizer:end_city" -> "End City";
+            case "aprandomizer:pillager_outpost" -> "Pillager Outpost";
+            case "aprandomizer:fortress" -> "Nether Fortress";
+            case "aprandomizer:bastion_remnant" -> "Bastion Remnant";
+            default -> structureTag.location().getPath().toLowerCase();
+        };
     }
 
     public static Vec3 getRandomPosition(Vec3 pos, int radius) {

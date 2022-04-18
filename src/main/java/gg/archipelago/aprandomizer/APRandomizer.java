@@ -11,28 +11,36 @@ import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManage
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.managers.recipemanager.RecipeManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmlserverevents.FMLServerAboutToStartEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppingEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,12 +78,11 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.17.1 v0.2.1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.0RC1 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
-        modEventBus.addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -176,35 +183,86 @@ public class APRandomizer {
     }
 
     @SubscribeEvent
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+    public void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (apmcData.state != APMCData.State.VALID) {
             LOGGER.error("invalid APMC file");
         }
-    }
+        server = event.getServer();
+        APMCData data = APRandomizer.getApmcData();
 
-    /**
-     * Here, setupStructures will be ran after registration of all structures are finished.
-     * This is important to be done here so that the Deferred Registry has already ran and
-     * registered/created our structure for us.
-     * <p>
-     * Once after that structure instance is made, we then can now do the rest of the setup
-     * that requires a structure instance such as setting the structure spacing, creating the
-     * configured structure instance, and more.
-     */
-    public void setup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            APStructures.setupStructures();
-            APConfiguredStructures.registerConfiguredStructures();
-        });
+        Registry<Biome> biomeRegistry = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
+
+        //get structure biome holdersets.
+        TagKey<Biome> overworldTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","overworld_structure"));
+        HolderSet<Biome> overworldStructures = biomeRegistry.getTag(overworldTag).orElseThrow();
+
+        TagKey<Biome> netherTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","nether_structure"));
+        HolderSet<Biome> netherStructures = biomeRegistry.getTag(netherTag).orElseThrow();
+
+        TagKey<Biome> endTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","end_structure"));
+        HolderSet<Biome> endStructures = biomeRegistry.getTag(endTag).orElseThrow();
+
+        TagKey<Biome> noneTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","none"));
+        HolderSet<Biome> noBiomes = biomeRegistry.getTag(noneTag).orElseThrow();
+
+        HashMap <String, HolderSet<Biome>> structures = new HashMap<>();
+        for (Map.Entry<String, String> entry : data.structures.entrySet()) {
+            switch (entry.getKey()) {
+                case "Overworld Structure 1", "Overworld Structure 2" ->
+                        structures.put(entry.getValue(), overworldStructures);
+                case "Nether Structure 1", "Nether Structure 2" ->
+                        structures.put(entry.getValue(), netherStructures);
+                case "The End Structure" ->
+                        structures.put(entry.getValue(), endStructures);
+            }
+        }
+
+        Registry<?> structureRegistry = server.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
+        for (ResourceLocation resourceLocation : structureRegistry.keySet()) {
+            ConfiguredStructureFeature<?, ?> struct = (ConfiguredStructureFeature<?, ?>) structureRegistry.get(resourceLocation);
+            assert struct != null;
+
+            switch (resourceLocation.toString()) {
+                case "minecraft:village_plains", "minecraft:village_desert", "minecraft:village_savanna", "minecraft:village_snowy", "minecraft:village_taiga" -> {
+                    if(!structures.get("Village").equals(overworldStructures))
+                        struct.biomes = noBiomes;
+                }
+                case "aprandomizer:village_nether" -> {
+                    if(!structures.get("Village").equals(overworldStructures))
+                        struct.biomes = structures.get("Village");
+                }
+                case "minecraft:pillager_outpost.json" -> {
+                    if(!structures.get("Pillager Outpost").equals(overworldStructures))
+                        struct.biomes = noBiomes;
+                }
+                case "aprandomizer:pillager_outpost_nether" -> {
+                    if(!structures.get("Pillager Outpost").equals(overworldStructures))
+                        struct.biomes = structures.get("Pillager Outpost");
+                }
+                case "minecraft:fortress" ->
+                        struct.biomes = structures.get("Nether Fortress");
+                case "minecraft:bastion_remnant" ->
+                        struct.biomes = structures.get("Bastion Remnant");
+                case "minecraft:end_city" -> {
+                    if(structures.get("End City").equals(netherStructures))
+                        struct.biomes = noBiomes;
+                    else if(!structures.get("End City").equals(endStructures))
+                        struct.biomes = structures.get("End City");
+                }
+                case "aprandomizer:end_city_nether" -> {
+                    if(!structures.get("End City").equals(netherStructures))
+                        struct.biomes = noBiomes;
+                }
+            }
+        }
     }
 
 
     @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public void onServerStarting(ServerStartingEvent event) {
 
         // do something when the server starts
-        server = event.getServer();
         advancementManager = new AdvancementManager();
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
@@ -324,13 +382,13 @@ public class APRandomizer {
     }
 
     @SubscribeEvent
-    public void onServerStopping(FMLServerStoppingEvent event) {
+    public void onServerStopping(ServerStoppingEvent event) {
         if(apClient != null)
             apClient.close();
     }
 
     @SubscribeEvent
-    public void onServerStopped(FMLServerStoppedEvent event) {
+    public void onServerStopped(ServerStoppedEvent event) {
         if(apClient != null)
             apClient.close();
     }
