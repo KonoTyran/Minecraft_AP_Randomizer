@@ -231,7 +231,7 @@ public class APRandomizer {
                     if(!structures.get("Village").equals(overworldStructures))
                         struct.biomes = structures.get("Village");
                 }
-                case "minecraft:pillager_outpost.json" -> {
+                case "minecraft:pillager_outpost" -> {
                     if(!structures.get("Pillager Outpost").equals(overworldStructures))
                         struct.biomes = noBiomes;
                 }
