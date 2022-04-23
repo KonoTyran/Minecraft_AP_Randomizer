@@ -4,8 +4,6 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,11 +34,17 @@ public class onPlayerClone {
         if(!event.isWasDeath())
             return;
 
-        Player player = event.getOriginal();
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
-        if (loPlayerData.isPresent()) {
-            PlayerData originalPlayerData = loPlayerData.orElseThrow(AssertionError::new);
-            event.getPlayer().getCapability(APCapabilities.PLAYER_INDEX).orElseThrow(AssertionError::new).setIndex(originalPlayerData.getIndex());
-        }
+        event.getOriginal().reviveCaps();
+
+        event.getPlayer().getCapability(APCapabilities.PLAYER_INDEX).ifPresent(playerData -> {
+            LazyOptional<PlayerData> lazyOptional = event.getOriginal().getCapability(APCapabilities.PLAYER_INDEX);
+            if (lazyOptional.isPresent()) {
+                playerData.setIndex(lazyOptional.orElseThrow(AssertionError::new).getIndex());
+                event.getOriginal().invalidateCaps();
+            }
+            else {
+                APRandomizer.LOGGER.error("unable to copy player index for player " + event.getPlayer().getDisplayName().getString());
+            }
+        });
     }
 }

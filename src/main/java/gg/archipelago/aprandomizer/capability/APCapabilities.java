@@ -32,12 +32,15 @@ public class APCapabilities {
     @SubscribeEvent
     static void onAttachCapabilitiesToEntityEvent(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof ServerPlayer) {
-            event.addCapability(new ResourceLocation(APRandomizer.MODID + ":capability_provider_player_data"), new PlayerDataProvider());
+            event.addCapability(new ResourceLocation(APRandomizer.MODID + ":player_data"), new PlayerDataProvider());
+            event.addListener(() -> {
+                
+            });
         }
     }
 
     @SubscribeEvent
     static void onAttachCapabilitiesToWorldEvent(AttachCapabilitiesEvent<Level> event) {
-        event.addCapability(new ResourceLocation(APRandomizer.MODID + ":capability_provider_world_data"), new WorldDataProvider());
+        event.addCapability(new ResourceLocation(APRandomizer.MODID + ":world_data"), new WorldDataProvider());
     }
 }
