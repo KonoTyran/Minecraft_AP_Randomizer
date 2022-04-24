@@ -246,6 +246,8 @@ public class APRandomizer {
                 case "minecraft:end_city" -> {
                     if(structures.get("End City").equals(netherStructures))
                         struct.biomes = noBiomes;
+                    else if(!structures.get("End City").equals(endStructures))
+                        struct.biomes = structures.get("End City");
                 }
                 case "aprandomizer:end_city_nether" -> {
                     if(structures.get("End City").equals(netherStructures))
