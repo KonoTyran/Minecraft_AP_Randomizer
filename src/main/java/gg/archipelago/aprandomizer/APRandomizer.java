@@ -351,8 +351,9 @@ public class APRandomizer {
         if(jailPlayers) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
             BlockPos spawn = overworld.getSharedSpawnPos();
-            BlockPos jailPos = new BlockPos(spawn.getX(), 240, spawn.getZ());
+            // alter the spawn box position, so it doesn't interfere with spawning
             StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
+            BlockPos jailPos = new BlockPos(spawn.getX()+25, 300, spawn.getZ()+25);
             jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
             jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(),new Random(),2);
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
