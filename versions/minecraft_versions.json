@@ -1,14 +1,14 @@
 {
   "release": [
     {
-      "version": "6",
+      "version": 6,
       "java": "16",
       "forge": "1.17.1-37.1.1"
     }
   ],
   "prerelease": [
     {
-      "version": "7",
+      "version": 7,
       "java": "17",
       "forge": "1.18.2-40.1.0"
     }
