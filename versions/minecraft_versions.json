@@ -1,7 +1,12 @@
 {
   "release": [
     {
-      "version": 6,
+      "version": 8,
+      "java": "17",
+      "forge": "1.18.2-40.1.0"
+    },
+    {
+      "version": 7,
       "java": "16",
       "forge": "1.17.1-37.1.1"
     }
