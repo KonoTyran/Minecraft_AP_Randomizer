@@ -11,7 +11,7 @@
       "forge": "1.17.1-37.1.1"
     }
   ],
-  "prerelease": [
+  "beta": [
     {
       "version": 7,
       "java": "17",
