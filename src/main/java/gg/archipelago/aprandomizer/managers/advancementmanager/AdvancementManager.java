@@ -121,6 +121,10 @@ public class AdvancementManager {
         put("minecraft:adventure/walk_on_powder_snow_with_leather_boots", 42100);
         put("minecraft:husbandry/make_a_sign_glow", 42101);
         put("minecraft:husbandry/ride_a_boat_with_a_goat", 42102);
+        put("minecraft:adventure/fall_from_world_height", 42103);
+        put("minecraft:nether/ride_strider_in_overworld_lava", 42104);
+        put("minecraft:adventure/play_jukebox_in_meadows", 42105);
+        put("minecraft:adventure/trade_at_world_height", 42106);
     }};
 
     private final Set<Integer> earnedAdvancements = new HashSet<>();

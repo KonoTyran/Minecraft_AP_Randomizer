@@ -24,11 +24,11 @@ apply plugin: 'maven-publish'
 
 
 
-version = '0.3.0RC2'
+version = '0.3.0'
 group = 'gg.archipelago.aprandomizer' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'aprandomizer-MC1.18.2'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17) // Mojang ships Java 16 to end users, so your mod should target Java 16.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
