@@ -71,6 +71,7 @@ public class APRandomizer {
     static private final Set<Integer> validVersions = new HashSet<>() {{
         this.add(6); //mc 1.16.5
         this.add(7); //mc 1.17.1
+        this.add(8); //mc 1.18.2
     }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
@@ -78,7 +79,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.0 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.1 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -353,7 +354,7 @@ public class APRandomizer {
             BlockPos spawn = overworld.getSharedSpawnPos();
             // alter the spawn box position, so it doesn't interfere with spawning
             StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
-            BlockPos jailPos = new BlockPos(spawn.getX()+25, 300, spawn.getZ()+25);
+            BlockPos jailPos = new BlockPos(spawn.getX(), 300, spawn.getZ());
             jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
             jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(),new Random(),2);
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
