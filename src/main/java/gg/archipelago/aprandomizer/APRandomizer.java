@@ -79,7 +79,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.2 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
