@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:adventure/fall_from_world_height",
+  "criteria": {
+    "after_end_city": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}
