@@ -8,9 +8,9 @@ import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.bossevents.CustomBossEvent;
 import net.minecraft.server.bossevents.CustomBossEvents;
@@ -56,17 +56,17 @@ public class GoalManager {
 
     public void initializeInfoBar() {
         CustomBossEvents bossInfoManager = APRandomizer.getServer().getCustomBossEvents();
-        advancementInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"advancementinfobar"), new TextComponent(""));
+        advancementInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"advancementinfobar"), Component.literal(""));
         advancementInfoBar.setMax(advancementsRequired);
         advancementInfoBar.setColor(BossEvent.BossBarColor.PINK);
         advancementInfoBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
 
-        eggInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"egginfobar"), new TextComponent(""));
+        eggInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"egginfobar"), Component.literal(""));
         eggInfoBar.setMax(dragonEggShardsRequired);
         eggInfoBar.setColor(BossEvent.BossBarColor.WHITE);
         eggInfoBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_6);
 
-        connectionInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"connectioninfobar"), new TextComponent("Not connected to Archipelago").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red"))));
+        connectionInfoBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"connectioninfobar"), Component.literal("Not connected to Archipelago").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red"))));
         connectionInfoBar.setMax(1);
         connectionInfoBar.setValue(1);
         connectionInfoBar.setColor(BossEvent.BossBarColor.RED);
@@ -125,8 +125,8 @@ public class GoalManager {
 
         connectionInfoBar.setVisible(!APRandomizer.isConnected());
 
-        advancementInfoBar.setName(new TextComponent(getAdvancementRemainingString()));
-        eggInfoBar.setName(new TextComponent(getEggShardsRemainingString()));
+        advancementInfoBar.setName(Component.literal(getAdvancementRemainingString()));
+        eggInfoBar.setName(Component.literal(getEggShardsRemainingString()));
 
     }
 
@@ -166,7 +166,7 @@ public class GoalManager {
             endData.setDragonState(WorldData.DRAGON_WAITING);
             Utils.PlaySoundToAll(SoundEvents.ENDER_DRAGON_AMBIENT);
             Utils.sendMessageToAll("The Dragon has awoken.");
-            Utils.sendTitleToAll(new TextComponent("Ender Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), new TextComponent("has awoken"), 40, 120, 40);
+            Utils.sendTitleToAll(Component.literal("Ender Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), Component.literal("has awoken"), 40, 120, 40);
 
             Utils.SpawnDragon(end);
         }

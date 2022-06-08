@@ -13,12 +13,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.ConfiguredStructureTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
@@ -27,12 +24,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,7 +76,7 @@ public class ItemManager {
         put(45031, new ItemStack(Items.COOKED_PORKCHOP, 16));
         put(45032, new ItemStack(Items.GOLD_ORE, 8));
         put(45033, new ItemStack(Items.ROTTEN_FLESH, 8));
-        put(45034, new ItemStack(Items.ARROW, 1).setHoverName(new TextComponent("The Arrow")));
+        put(45034, new ItemStack(Items.ARROW, 1).setHoverName(Component.literal("The Arrow")));
         put(45035, new ItemStack(Items.ARROW, 32));
         put(45036, new ItemStack(Items.SADDLE, 1));
 
@@ -117,7 +110,7 @@ public class ItemManager {
         put(45042, new ItemStack(Items.SHULKER_BOX, 1));
     }};
 
-    private final HashMap<Integer,TagKey<ConfiguredStructureFeature<?,?>>> compasses = new HashMap<>() {{
+    private final HashMap<Integer,TagKey<Structure>> compasses = new HashMap<>() {{
         put(45037, APStructures.VILLAGE_TAG);
         put(45038, APStructures.OUTPOST_TAG);
         put(45039, APStructures.FORTRESS_TAG);
@@ -138,9 +131,9 @@ public class ItemManager {
 
     private ArrayList<Integer> receivedItems = new ArrayList<>();
 
-    private final ArrayList<TagKey<ConfiguredStructureFeature<?,?>>> receivedCompasses = new ArrayList<>();
+    private final ArrayList<TagKey<Structure>> receivedCompasses = new ArrayList<>();
 
-    private void makeCompass(ItemStack iStack, TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
+    private void makeCompass(ItemStack iStack, TagKey<Structure> structureTag) {
         CompoundTag nbt = iStack.getOrCreateTag();
         nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
 
@@ -150,11 +143,11 @@ public class ItemManager {
     }
 
     private void addLore(ItemStack iStack, String name, String[] compassLore) {
-        iStack.setHoverName(new TextComponent(name));
+        iStack.setHoverName(Component.literal(name));
         CompoundTag compoundnbt = iStack.getOrCreateTagElement("display");
         ListTag itemLoreLines = new ListTag();
         for (String s : compassLore) {
-            StringTag itemLore = StringTag.valueOf(Component.Serializer.toJson(new TextComponent(s)));
+            StringTag itemLore = StringTag.valueOf(Component.Serializer.toJson(Component.literal(s)));
             itemLoreLines.add(itemLore);
         }
         compoundnbt.put("Lore",itemLoreLines);
@@ -185,7 +178,7 @@ public class ItemManager {
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
             if(compasses.containsKey(itemID)){
-                TagKey<ConfiguredStructureFeature<?,?>> tag = TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
+                TagKey<Structure> tag = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
                 updateCompassLocation(tag, player , itemstack);
             }
             Utils.giveItemToPlayer(player, itemstack);
@@ -230,7 +223,7 @@ public class ItemManager {
         }
     }
 
-    public ArrayList<TagKey<ConfiguredStructureFeature<?,?>>> getCompasses() {
+    public ArrayList<TagKey<Structure>> getCompasses() {
         return receivedCompasses;
     }
 
@@ -238,7 +231,7 @@ public class ItemManager {
         return receivedItems;
     }
 
-    public static void updateCompassLocation(TagKey<ConfiguredStructureFeature<?,?>> structureTag, Player player, ItemStack compass) {
+    public static void updateCompassLocation(TagKey<Structure> structureTag, Player player, ItemStack compass) {
 
         //get the actual structure data from forge, and make sure its changed to the AP one if needed.
 
@@ -249,7 +242,7 @@ public class ItemManager {
         //otherwise just point it to 0,0 in said dimension.
         BlockPos structurePos = new BlockPos(0,0,0);
         if(player.getCommandSenderWorld().dimension().equals(world)) {
-        structurePos = APRandomizer.getServer().getLevel(world).findNearestMapFeature(structureTag, player.blockPosition(), 75, false);
+        structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
         }
 
         String displayName = Utils.getAPStructureName(structureTag);
@@ -261,6 +254,6 @@ public class ItemManager {
         //update the nbt data with our new structure.
         nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
         Utils.addLodestoneTags(world,structurePos,nbt);
-        compass.setHoverName(new TextComponent(String.format("Structure Compass (%s)", displayName)));
+        compass.setHoverName(Component.literal(String.format("Structure Compass (%s)", displayName)));
     }
 }

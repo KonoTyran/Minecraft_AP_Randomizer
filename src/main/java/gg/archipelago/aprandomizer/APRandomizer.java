@@ -19,15 +19,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -41,11 +43,15 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,6 +78,7 @@ public class APRandomizer {
         this.add(6); //mc 1.16.5
         this.add(7); //mc 1.17.1
         this.add(8); //mc 1.18.2
+        this.add(9); //mc 1.18.2
     }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
@@ -79,7 +86,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.18.2 v0.3.2 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.19 v0.4.0 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -218,43 +225,43 @@ public class APRandomizer {
             }
         }
 
-        Registry<?> structureRegistry = server.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY);
+        Registry<Structure> structureRegistry = server.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
         for (ResourceLocation resourceLocation : structureRegistry.keySet()) {
-            ConfiguredStructureFeature<?, ?> struct = (ConfiguredStructureFeature<?, ?>) structureRegistry.get(resourceLocation);
+            Structure struct = structureRegistry.get(resourceLocation);
             assert struct != null;
+            HolderSet<Biome> biomes = struct.biomes();
 
             switch (resourceLocation.toString()) {
                 case "minecraft:village_plains", "minecraft:village_desert", "minecraft:village_savanna", "minecraft:village_snowy", "minecraft:village_taiga" -> {
-                    if(!structures.get("Village").equals(overworldStructures))
-                        struct.biomes = noBiomes;
+                    if (!structures.get("Village").equals(overworldStructures))
+                        biomes = noBiomes;
                 }
                 case "aprandomizer:village_nether" -> {
-                    if(!structures.get("Village").equals(overworldStructures))
-                        struct.biomes = structures.get("Village");
+                    if (!structures.get("Village").equals(overworldStructures))
+                        biomes = structures.get("Village");
                 }
                 case "minecraft:pillager_outpost" -> {
-                    if(!structures.get("Pillager Outpost").equals(overworldStructures))
-                        struct.biomes = noBiomes;
+                    if (!structures.get("Pillager Outpost").equals(overworldStructures))
+                        biomes = noBiomes;
                 }
                 case "aprandomizer:pillager_outpost_nether" -> {
-                    if(!structures.get("Pillager Outpost").equals(overworldStructures))
-                        struct.biomes = structures.get("Pillager Outpost");
+                    if (!structures.get("Pillager Outpost").equals(overworldStructures))
+                        biomes = structures.get("Pillager Outpost");
                 }
-                case "minecraft:fortress" ->
-                        struct.biomes = structures.get("Nether Fortress");
-                case "minecraft:bastion_remnant" ->
-                        struct.biomes = structures.get("Bastion Remnant");
+                case "minecraft:fortress" -> biomes = structures.get("Nether Fortress");
+                case "minecraft:bastion_remnant" -> biomes = structures.get("Bastion Remnant");
                 case "minecraft:end_city" -> {
-                    if(structures.get("End City").equals(netherStructures))
-                        struct.biomes = noBiomes;
-                    else if(!structures.get("End City").equals(endStructures))
-                        struct.biomes = structures.get("End City");
+                    if (structures.get("End City").equals(netherStructures))
+                        biomes = noBiomes;
+                    else if (!structures.get("End City").equals(endStructures))
+                        biomes = structures.get("End City");
                 }
                 case "aprandomizer:end_city_nether" -> {
-                    if(structures.get("End City").equals(netherStructures))
-                        struct.biomes = structures.get("End City");
+                    if (structures.get("End City").equals(netherStructures))
+                        biomes = structures.get("End City");
                 }
             }
+            struct.settings =  new Structure.StructureSettings(biomes, struct.settings.spawnOverrides(), struct.settings.step(), struct.settings.terrainAdaptation());
         }
     }
 
@@ -356,7 +363,7 @@ public class APRandomizer {
             StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
             BlockPos jailPos = new BlockPos(spawn.getX(), 300, spawn.getZ());
             jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
-            jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(),new Random(),2);
+            jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(), RandomSource.create(),2);
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);

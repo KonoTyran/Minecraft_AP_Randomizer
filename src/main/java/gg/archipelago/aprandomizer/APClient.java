@@ -17,7 +17,6 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -222,8 +221,8 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onReceiveItem(NetworkItem item) {
-        Component textItem = new TextComponent(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())));
-        Component chatMessage = new TextComponent(
+        Component textItem = Component.literal(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())));
+        Component chatMessage = Component.literal(
                 "Received ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
                 .append(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("gold")))
                 .append(" from ").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
@@ -231,7 +230,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
                 .append(" (").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")))
                 .append(item.locationName).withStyle(Style.EMPTY.withColor(TextColor.parseColor("blue")))
                 .append(")").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")));
-        Component title = new TextComponent("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.color.getRGB())));
+        Component title = Component.literal("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.color.getRGB())));
         Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
         APRandomizer.getRecipeManager().grantRecipe(item.itemID);
         APRandomizer.getItemManager().giveItemToAll(item.itemID);

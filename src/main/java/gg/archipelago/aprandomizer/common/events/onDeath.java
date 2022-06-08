@@ -8,7 +8,6 @@ import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManage
 import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;

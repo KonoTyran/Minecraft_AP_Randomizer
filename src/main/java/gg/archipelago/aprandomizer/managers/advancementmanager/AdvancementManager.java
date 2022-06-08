@@ -125,6 +125,15 @@ public class AdvancementManager {
         put("minecraft:nether/ride_strider_in_overworld_lava", 42104);
         put("minecraft:adventure/play_jukebox_in_meadows", 42105);
         put("minecraft:adventure/trade_at_world_height", 42106);
+        // 1.19 advancements
+        put("minecraft:husbandry/allay_deliver_cake_to_note_block", 42107);
+        put("minecraft:husbandry/tadpole_in_a_bucket", 42108);
+        put("minecraft:adventure/kill_mob_near_sculk_catalyst", 42109);
+        put("minecraft:adventure/avoid_vibration", 42110);
+        put("minecraft:husbandry/leash_all_frog_variants", 42111);
+        put("minecraft:husbandry/froglights", 42112);
+        put("minecraft:husbandry/allay_deliver_item_to_player", 42113);
+
     }};
 
     private final Set<Integer> earnedAdvancements = new HashSet<>();

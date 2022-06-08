@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -45,18 +45,18 @@ public class APCommand {
 
     private static int queryDeathLink(CommandContext<CommandSourceStack> source) {
         if(!APRandomizer.isConnected()) {
-            source.getSource().sendFailure(new TextComponent("Must be connected to an AP server to use this command"));
+            source.getSource().sendFailure(Component.literal("Must be connected to an AP server to use this command"));
             return 0;
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().deathlink) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(new TextComponent("DeathLink is "+ enabled),false);
+        source.getSource().sendSuccess(Component.literal("DeathLink is "+ enabled),false);
         return 1;
     }
 
     private static int setDeathLink(CommandContext<CommandSourceStack> source) {
         if(!APRandomizer.isConnected()) {
-            source.getSource().sendFailure(new TextComponent("Must be connected to an AP server to use this command"));
+            source.getSource().sendFailure(Component.literal("Must be connected to an AP server to use this command"));
             return 0;
         }
 
@@ -69,24 +69,24 @@ public class APCommand {
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().deathlink) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(new TextComponent("DeathLink is "+ enabled),false);
+        source.getSource().sendSuccess(Component.literal("DeathLink is "+ enabled),false);
         return 1;
     }
 
     private static int queryMC35(CommandContext<CommandSourceStack> source) {
         if(!APRandomizer.isConnected()) {
-            source.getSource().sendFailure(new TextComponent("Must be connected to an AP server to use this command"));
+            source.getSource().sendFailure(Component.literal("Must be connected to an AP server to use this command"));
             return 0;
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().MC35) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(new TextComponent("MC35 is "+ enabled),false);
+        source.getSource().sendSuccess(Component.literal("MC35 is "+ enabled),false);
         return 1;
     }
 
     private static int setMC35(CommandContext<CommandSourceStack> source) {
         if(!APRandomizer.isConnected()) {
-            source.getSource().sendFailure(new TextComponent("Must be connected to an AP server to use this command"));
+            source.getSource().sendFailure(Component.literal("Must be connected to an AP server to use this command"));
             return 0;
         }
 
@@ -99,7 +99,7 @@ public class APCommand {
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().MC35) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(new TextComponent("MC35 is "+ enabled),false);
+        source.getSource().sendSuccess(Component.literal("MC35 is "+ enabled),false);
         return 1;
     }
 
