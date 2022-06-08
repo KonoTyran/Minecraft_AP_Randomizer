@@ -6,7 +6,7 @@ import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManage
 import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,15 +34,14 @@ public class onAdvancement {
         if (!am.hasAdvancement(id) && am.getAdvancementID(id) != 0) {
             LOGGER.debug("{} has gotten the advancement {}", player.getDisplayName().getString(), id);
             am.addAdvancement(am.getAdvancementID(id));
-            APRandomizer.getServer().getPlayerList().broadcastMessage(
-                    new TranslatableComponent(
+            APRandomizer.getServer().getPlayerList().broadcastSystemMessage(
+                    Component.translatable(
                             "chat.type.advancement."
                                     + advancement.getDisplay().getFrame().getName(),
                             player.getDisplayName(),
                             advancement.getChatComponent()
                     ),
-                    ChatType.SYSTEM,
-                    Util.NIL_UUID
+                    ChatType.SYSTEM
             );
 
             am.syncAdvancement(advancement);

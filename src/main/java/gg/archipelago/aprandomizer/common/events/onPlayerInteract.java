@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -61,15 +61,15 @@ public class onPlayerInteract {
                 return;
 
             //fetch our current compass list.
-            ArrayList<TagKey<ConfiguredStructureFeature<?,?>>> compasses = APRandomizer.getItemManager().getCompasses();
+            ArrayList<TagKey<Structure>> compasses = APRandomizer.getItemManager().getCompasses();
 
-            TagKey<ConfiguredStructureFeature<?, ?>> tagKey = TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(nbt.getString("structure")));
+            TagKey<Structure> tagKey = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(nbt.getString("structure")));
             //get our current structures index in that list, increase it by one, wrapping it to 0 if needed.
             int index = compasses.indexOf(tagKey) + 1;
             if(index >= compasses.size())
                 index = 0;
 
-            TagKey<ConfiguredStructureFeature<?,?>> structure = compasses.get(index);
+            TagKey<Structure> structure = compasses.get(index);
 
             ItemManager.updateCompassLocation(structure,event.getPlayer(),compass);
 

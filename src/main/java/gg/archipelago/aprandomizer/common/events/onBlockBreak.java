@@ -2,7 +2,7 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.Util;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,6 +20,6 @@ public class onBlockBreak {
         if(!APRandomizer.isJailPlayers())
             return;
         event.setCanceled(true);
-        event.getPlayer().sendMessage(new TextComponent("No!"), Util.NIL_UUID);
+        event.getPlayer().sendSystemMessage(Component.literal("No!"));
     }
 }

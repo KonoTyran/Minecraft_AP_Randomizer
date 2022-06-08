@@ -2,7 +2,7 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,6 +39,6 @@ public class onCommand {
                 return;
 
         event.setCanceled(true);
-        source.sendFailure(new TextComponent("Non-essential commands are disabled in race mode."));
+        source.sendFailure(Component.literal("Non-essential commands are disabled in race mode."));
     }
 }

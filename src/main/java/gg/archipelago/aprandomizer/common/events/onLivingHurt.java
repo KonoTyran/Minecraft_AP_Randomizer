@@ -27,9 +27,8 @@ public class onLivingHurt {
 
     @SubscribeEvent
     static void onLivingDeathEvent(LivingDeathEvent event) {
-        ResourceLocation location = event.getEntity().getType().getRegistryName();
-        if(location == null)
-            return;
+        //TODO: this may be broken.
+        String name = event.getEntity().getType().toString();
 
         if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)
             return;
@@ -39,7 +38,7 @@ public class onLivingHurt {
             BouncePacket packet = new BouncePacket();
             packet.tags = new String[]{"MC35"};
             packet.setData(new HashMap<String, Object>() {{
-                put("enemy", location.toString());
+                put("enemy", name);
                 put("source", APRandomizer.getAP().getSlot());
                 CompoundTag nbt = event.getEntity().saveWithoutId(new CompoundTag());
                 nbt.remove("UUID");

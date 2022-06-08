@@ -6,7 +6,6 @@ import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.Print.APPrintPart;
 import gg.archipelago.APClient.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import net.minecraft.Util;
@@ -17,7 +16,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -29,8 +27,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,20 +51,20 @@ public class Utils {
     public static void SendMessage(CommandSourceStack source, String Message) {
         try {
             ServerPlayer player = source.getPlayerOrException();
-            player.sendMessage(new TextComponent(Message), Util.NIL_UUID);
+            player.sendSystemMessage(Component.literal(Message));
         } catch (CommandSyntaxException e) {
-            source.getServer().sendMessage(new TextComponent(Message), Util.NIL_UUID);
+            source.getServer().sendSystemMessage(Component.literal(Message));
         }
     }
 
     public static void sendMessageToAll(String message) {
-        sendMessageToAll(new TextComponent(message));
+        sendMessageToAll(Component.literal(message));
     }
 
     public static void sendMessageToAll(Component message) {
         //tell the server to send the message in a thread safe way.
         server.execute(() -> {
-            server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
+            server.getPlayerList().broadcastSystemMessage(message, ChatType.SYSTEM);
         });
 
     }
@@ -77,13 +74,13 @@ public class Utils {
 
         //tell the server to send the message in a thread safe way.
         server.execute(() -> {
-            server.getPlayerList().broadcastMessage(message, ChatType.SYSTEM, Util.NIL_UUID);
+            server.getPlayerList().broadcastSystemMessage(message, ChatType.SYSTEM);
         });
 
     }
 
     public static Component apPrintToTextComponent(APPrint apPrint) {
-        TextComponent message = new TextComponent("");
+        MutableComponent message = Component.literal("");
         for (int i = 0; apPrint.parts.length > i; ++i) {
             APPrintPart part = apPrint.parts[i];
             LOGGER.trace("part[" + i + "]: " + part.text + ", " + part.color + ", " + part.type);
@@ -116,7 +113,7 @@ public class Utils {
             int iColor = color.getRGB() & ~(0xFF << 24);
             style = Style.EMPTY.withColor(iColor).withBold(bold).withUnderlined(underline);
 
-            message.append(new TextComponent(part.text).withStyle(style));
+            message.append(Component.literal(part.text).withStyle(style));
         }
         return message;
     }
@@ -136,14 +133,14 @@ public class Utils {
     public static void sendActionBarToAll(String actionBarMessage, int fadeIn, int stay, int fadeOut) {
         server.execute(() -> {
             TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
-            TitleUtils.showActionBar(server.getPlayerList().getPlayers(), new TextComponent(actionBarMessage));
+            TitleUtils.showActionBar(server.getPlayerList().getPlayers(), Component.literal(actionBarMessage));
         });
     }
 
     public static void sendActionBarToPlayer(ServerPlayer player, String actionBarMessage, int fadeIn, int stay, int fadeOut) {
         server.execute(() -> {
             TitleUtils.setTimes(Collections.singletonList(player), fadeIn, stay, fadeOut);
-            TitleUtils.showActionBar(Collections.singletonList(player), new TextComponent(actionBarMessage));
+            TitleUtils.showActionBar(Collections.singletonList(player), Component.literal(actionBarMessage));
         });
     }
 
@@ -165,7 +162,7 @@ public class Utils {
         end.save(null, true, false);
     }
 
-    public static ResourceKey<Level> getStructureWorld(TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
+    public static ResourceKey<Level> getStructureWorld(TagKey<Structure> structureTag) {
 
         String structureName = getAPStructureName(structureTag);
         String world = "overworld";
@@ -188,7 +185,7 @@ public class Utils {
         return Level.OVERWORLD;
     }
 
-    public static String getAPStructureName(TagKey<ConfiguredStructureFeature<?,?>> structureTag) {
+    public static String getAPStructureName(TagKey<Structure> structureTag) {
         return switch (structureTag.location().toString()) {
             case "aprandomizer:village" -> "Village";
             case "aprandomizer:end_city" -> "End City";
