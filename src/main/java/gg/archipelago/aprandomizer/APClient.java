@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import gg.archipelago.APClient.ItemFlags;
 import gg.archipelago.APClient.Print.APPrint;
 import gg.archipelago.APClient.Print.APPrintColor;
 import gg.archipelago.APClient.events.ConnectionAttemptEvent;
@@ -8,7 +9,6 @@ import gg.archipelago.APClient.events.ConnectionResultEvent;
 import gg.archipelago.APClient.network.BouncedPacket;
 import gg.archipelago.APClient.network.ConnectionResult;
 import gg.archipelago.APClient.parts.NetworkItem;
-import gg.archipelago.APClient.ItemFlags;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
@@ -27,7 +27,9 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class APClient extends gg.archipelago.APClient.APClient {
@@ -241,7 +243,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
 
     @Override
     public void onLocationChecked(int locationID) {
-
+        APRandomizer.getAdvancementManager().addAdvancement(locationID);
     }
 
     public void addTag(String tag) {

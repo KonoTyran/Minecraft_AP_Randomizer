@@ -3,7 +3,6 @@ package gg.archipelago.aprandomizer.common.events;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
-import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;

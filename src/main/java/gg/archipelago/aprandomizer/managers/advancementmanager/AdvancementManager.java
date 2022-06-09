@@ -163,6 +163,7 @@ public class AdvancementManager {
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal( true);
         APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
+        syncAllAdvancements();
     }
 
     public void resendAdvancements() {

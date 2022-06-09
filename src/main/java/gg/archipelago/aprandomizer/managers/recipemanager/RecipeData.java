@@ -72,6 +72,9 @@ public class RecipeData {
         put(45044, new GroupRecipe(45044, "Spyglass", new String[]{
                 "minecraft:spyglass"
         }));
+        put(45045, new GroupRecipe(45044, "Lead", new String[]{
+                "minecraft:lead"
+        }));
     }};
 
     HashMap<Integer, ProgressiveRecipe> progressiveRecipes = new HashMap<>() {{

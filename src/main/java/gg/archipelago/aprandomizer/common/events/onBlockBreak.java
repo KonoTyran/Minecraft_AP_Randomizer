@@ -1,7 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
