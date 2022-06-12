@@ -1,20 +1,16 @@
 {
-  "parent": "aprandomizer:archipelago/root",
   "display": {
     "icon": {
       "item": "minecraft:minecart"
     },
-    "title": {
-      "text": "On A Rail"
-    },
-    "description": {
-      "text": "Reach 1k by minecart in your statistics."
-    },
+    "title": "On A Rail",
+    "description": "Reach 1km by minecart in your statistics.",
     "frame": "goal",
     "show_toast": true,
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "hidden": false
   },
+  "parent": "aprandomizer:archipelago/root",
   "criteria": {
     "ride_1km": {
       "trigger": "minecraft:tick",
@@ -24,7 +20,8 @@
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
-              "player": {
+              "type_specific": {
+                "type": "player",
                 "stats": [
                   {
                     "type": "minecraft:custom",
