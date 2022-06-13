@@ -1,0 +1,33 @@
+{
+  "parent": "aprandomizer:archipelago/hot_topic",
+  "display": {
+    "icon": {
+      "item": "minecraft:anvil"
+    },
+    "title": {
+      "text": "Forged Anew"
+    },
+    "description": {
+      "text": "Make a anvil with 3 iron blocks and 4 iron ingots"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "consumed_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "item": {
+          "items": ["minecraft:anvil"]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_anvil"
+    ]
+  ]
+}
