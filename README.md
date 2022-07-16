@@ -3,7 +3,7 @@
 ## Required Software
 
 - Minecraft Java Edition from
-  the [Minecraft Java Edition Store Page](https://www.minecraft.net/en-us/store/minecraft-java-edition) (update 1.17.1)
+  the [Minecraft Java Edition Store Page](https://www.minecraft.net/en-us/store/minecraft-java-edition)
 - Archipelago from the [Archipelago Releases Page](https://github.com/ArchipelagoMW/Archipelago/releases)
    - (select `Minecraft Client` during installation.)
 
@@ -33,7 +33,7 @@ leave this window open as this is your server console.
 
 ### Connect to the MultiServer
 
-Using minecraft 1.17.1 connect to the server `localhost`.
+Using minecraft 1.19 connect to the server `localhost`.
 
 Once you are in game type `/connect <AP-Address> (Port) (Password)` where `<AP-Address>` is the address of the
 Archipelago server. `(Port)` is only required if the Archipelago server is not using the default port of
