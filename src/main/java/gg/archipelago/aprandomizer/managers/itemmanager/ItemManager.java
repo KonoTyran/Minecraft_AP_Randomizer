@@ -35,100 +35,100 @@ public class ItemManager {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final int DRAGON_EGG_SHARD = 45043;
+    public static final long DRAGON_EGG_SHARD = 45043L;
 
-    private final HashMap<Integer, ItemStack> itemStacks = new HashMap<>() {{
+    private final HashMap<Long, ItemStack> itemStacks = new HashMap<>() {{
 
-        put(45015, new ItemStack(Items.NETHERITE_SCRAP, 8));
-        put(45016, new ItemStack(Items.EMERALD, 8));
-        put(45017, new ItemStack(Items.EMERALD, 4));
+        put(45015L, new ItemStack(Items.NETHERITE_SCRAP, 8));
+        put(45016L, new ItemStack(Items.EMERALD, 8));
+        put(45017L, new ItemStack(Items.EMERALD, 4));
 
         ItemStack channelingBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.CHANNELING, 1));
-        put(45018, channelingBook);
+        put(45018L, channelingBook);
 
         ItemStack silkTouchBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(silkTouchBook,new EnchantmentInstance(Enchantments.SILK_TOUCH, 1));
-        put(45019, silkTouchBook);
+        put(45019L, silkTouchBook);
 
         ItemStack sharpnessBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(sharpnessBook,new EnchantmentInstance(Enchantments.SHARPNESS, 3));
-        put(45020, sharpnessBook);
+        put(45020L, sharpnessBook);
 
         ItemStack piercingBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(piercingBook,new EnchantmentInstance(Enchantments.PIERCING, 4));
-        put(45021, piercingBook);
+        put(45021L, piercingBook);
 
         ItemStack lootingBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(lootingBook,new EnchantmentInstance(Enchantments.MOB_LOOTING, 3));
-        put(45022, lootingBook);
+        put(45022L, lootingBook);
 
         ItemStack infinityBook = new ItemStack(Items.ENCHANTED_BOOK);
         EnchantedBookItem.addEnchantment(infinityBook,new EnchantmentInstance(Enchantments.INFINITY_ARROWS, 1));
-        put(45023, infinityBook);
+        put(45023L, infinityBook);
 
-        put(45024, new ItemStack(Items.DIAMOND_ORE, 4));
-        put(45025, new ItemStack(Items.IRON_ORE, 16));
-        put(45029, new ItemStack(Items.ENDER_PEARL, 3));
-        put(45004, new ItemStack(Items.LAPIS_LAZULI, 4));
-        put(45030, new ItemStack(Items.LAPIS_LAZULI, 4));
-        put(45031, new ItemStack(Items.COOKED_PORKCHOP, 16));
-        put(45032, new ItemStack(Items.GOLD_ORE, 8));
-        put(45033, new ItemStack(Items.ROTTEN_FLESH, 8));
-        put(45034, new ItemStack(Items.ARROW, 1).setHoverName(Component.literal("The Arrow")));
-        put(45035, new ItemStack(Items.ARROW, 32));
-        put(45036, new ItemStack(Items.SADDLE, 1));
+        put(45024L, new ItemStack(Items.DIAMOND_ORE, 4));
+        put(45025L, new ItemStack(Items.IRON_ORE, 16));
+        put(45029L, new ItemStack(Items.ENDER_PEARL, 3));
+        put(45004L, new ItemStack(Items.LAPIS_LAZULI, 4));
+        put(45030L, new ItemStack(Items.LAPIS_LAZULI, 4));
+        put(45031L, new ItemStack(Items.COOKED_PORKCHOP, 16));
+        put(45032L, new ItemStack(Items.GOLD_ORE, 8));
+        put(45033L, new ItemStack(Items.ROTTEN_FLESH, 8));
+        put(45034L, new ItemStack(Items.ARROW, 1).setHoverName(Component.literal("The Arrow")));
+        put(45035L, new ItemStack(Items.ARROW, 32));
+        put(45036L, new ItemStack(Items.SADDLE, 1));
 
         String[] compassLore = new String[]{"Right click with compass in hand to","cycle to next known structure location."};
 
         ItemStack villageCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(villageCompass, APStructures.VILLAGE_TAG);
         addLore(villageCompass, "Structure Compass (Village)", compassLore);
-        put(45037, villageCompass);
+        put(45037L, villageCompass);
 
         ItemStack outpostCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(outpostCompass, APStructures.OUTPOST_TAG);
         addLore(outpostCompass, "Structure Compass (Pillager Outpost)", compassLore);
-        put(45038, outpostCompass);
+        put(45038L, outpostCompass);
 
         ItemStack fortressCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(fortressCompass, APStructures.FORTRESS_TAG);
         addLore(fortressCompass, "Structure Compass (Nether Fortress)", compassLore);
-        put(45039, fortressCompass);
+        put(45039L, fortressCompass);
 
         ItemStack bastionCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(bastionCompass, APStructures.BASTION_REMNANT_TAG);
         addLore(bastionCompass, "Structure Compass (Bastion Remnant)", compassLore);
-        put(45040,bastionCompass);
+        put(45040L,bastionCompass);
 
         ItemStack endCityCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(endCityCompass, APStructures.END_CITY_TAG);
         addLore(endCityCompass, "Structure Compass (End City)", compassLore);
-        put(45041, endCityCompass);
+        put(45041L, endCityCompass);
 
-        put(45042, new ItemStack(Items.SHULKER_BOX, 1));
+        put(45042L, new ItemStack(Items.SHULKER_BOX, 1));
     }};
 
-    private final HashMap<Integer,TagKey<Structure>> compasses = new HashMap<>() {{
-        put(45037, APStructures.VILLAGE_TAG);
-        put(45038, APStructures.OUTPOST_TAG);
-        put(45039, APStructures.FORTRESS_TAG);
-        put(45040, APStructures.BASTION_REMNANT_TAG);
-        put(45041, APStructures.END_CITY_TAG);
+    private final HashMap<Long,TagKey<Structure>> compasses = new HashMap<>() {{
+        put(45037L, APStructures.VILLAGE_TAG);
+        put(45038L, APStructures.OUTPOST_TAG);
+        put(45039L, APStructures.FORTRESS_TAG);
+        put(45040L, APStructures.BASTION_REMNANT_TAG);
+        put(45041L, APStructures.END_CITY_TAG);
 
     }};
 
-    private final HashMap<Integer, Integer> xpData = new HashMap<>() {{
-        put(45026, 500);
-        put(45027, 100);
-        put(45028, 50);
+    private final HashMap<Long, Integer> xpData = new HashMap<>() {{
+        put(45026L, 500);
+        put(45027L, 100);
+        put(45028L, 50);
     }};
 
-    private final HashMap<Integer, Trap> trapData = new HashMap<>() {{
-        put(45100, new BeeTrap(3));
+    private final HashMap<Long, Trap> trapData = new HashMap<>() {{
+        put(45100L, new BeeTrap(3));
     }};
 
-    private ArrayList<Integer> receivedItems = new ArrayList<>();
+    private ArrayList<Long> receivedItems = new ArrayList<>();
 
     private final ArrayList<TagKey<Structure>> receivedCompasses = new ArrayList<>();
 
@@ -152,9 +152,9 @@ public class ItemManager {
         compoundnbt.put("Lore",itemLoreLines);
     }
 
-    public void setReceivedItems(ArrayList<Integer> items) {
+    public void setReceivedItems(ArrayList<Long> items) {
         this.receivedItems = items;
-        for (Integer item : items) {
+        for (var item : items) {
             if(compasses.containsKey(item) && !receivedCompasses.contains(compasses.get(item))) {
                 receivedCompasses.add(compasses.get(item));
             }
@@ -162,7 +162,7 @@ public class ItemManager {
         APRandomizer.getGoalManager().updateGoal(false);
     }
 
-    public void giveItem(int itemID, ServerPlayer player) {
+    public void giveItem(Long itemID, ServerPlayer player) {
         if (APRandomizer.isJailPlayers()) {
             //dont send items to players if game has not started.
             return;
@@ -190,7 +190,7 @@ public class ItemManager {
     }
 
 
-    public void giveItemToAll(int itemID) {
+    public void giveItemToAll(long itemID) {
 
         receivedItems.add(itemID);
         //check if this item is a structure compass, and we are not already tracking that one.
@@ -226,7 +226,7 @@ public class ItemManager {
         return receivedCompasses;
     }
 
-    public ArrayList<Integer> getAllItems() {
+    public ArrayList<Long> getAllItems() {
         return receivedItems;
     }
 

@@ -41,8 +41,8 @@ public class RecipeManager {
         granted = initialGranted;
     }
 
-    public boolean grantRecipeList(List<Integer> recipes) {
-        for (Integer id : recipes) {
+    public boolean grantRecipeList(List<Long> recipes) {
+        for (var id : recipes) {
             if (!recipeData.hasID(id))
                 continue;
             Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
@@ -57,7 +57,7 @@ public class RecipeManager {
         return true;
     }
 
-    public void grantRecipe(int id) {
+    public void grantRecipe(long id) {
         if (!recipeData.hasID(id))
             return;
         Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();

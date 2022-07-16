@@ -28,7 +28,7 @@ public class onLivingHurt {
     @SubscribeEvent
     static void onLivingDeathEvent(LivingDeathEvent event) {
         //TODO: this may be broken.
-        String name = event.getEntity().getType().toString();
+        String name = event.getEntityLiving().getEncodeId();
 
         if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)
             return;

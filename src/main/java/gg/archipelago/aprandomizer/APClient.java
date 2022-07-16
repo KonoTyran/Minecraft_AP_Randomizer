@@ -182,7 +182,6 @@ public class APClient extends gg.archipelago.APClient.APClient {
                     player.getLevel().addFreshEntity(entity);
                 }
             }
-            return;
         }
     }
 
@@ -242,7 +241,7 @@ public class APClient extends gg.archipelago.APClient.APClient {
     public void onLocationInfo(ArrayList<NetworkItem> arrayList) {}
 
     @Override
-    public void onLocationChecked(int locationID) {
+    public void onLocationChecked(long locationID) {
         APRandomizer.getAdvancementManager().addAdvancement(locationID);
     }
 

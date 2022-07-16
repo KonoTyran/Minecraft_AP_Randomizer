@@ -136,7 +136,7 @@ public class AdvancementManager {
 
     }};
 
-    private final Set<Integer> earnedAdvancements = new HashSet<>();
+    private final Set<Long> earnedAdvancements = new HashSet<>();
 
 
     public AdvancementManager() {
@@ -158,7 +158,7 @@ public class AdvancementManager {
         return earnedAdvancements.contains(getAdvancementID(namespacedID));
     }
 
-    public void addAdvancement(int id) {
+    public void addAdvancement(long id) {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal( true);
@@ -167,7 +167,7 @@ public class AdvancementManager {
     }
 
     public void resendAdvancements() {
-        for (Integer earnedAdvancement : earnedAdvancements) {
+        for (Long earnedAdvancement : earnedAdvancements) {
             APRandomizer.getAP().checkLocation(earnedAdvancement);
         }
     }
@@ -195,10 +195,10 @@ public class AdvancementManager {
         return earnedAdvancements.size();
     }
 
-    public void setCheckedAdvancements(Set<Integer> checkedLocations) {
+    public void setCheckedAdvancements(Set<Long> checkedLocations) {
         earnedAdvancements.addAll(checkedLocations);
         WorldData data = APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
-        for (Integer checkedLocation : checkedLocations) {
+        for (var checkedLocation : checkedLocations) {
             data.addLocation(checkedLocation);
         }
 

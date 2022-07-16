@@ -103,7 +103,7 @@ public class GoalManager {
 
     private int currentEggShards() {
         int current = 0;
-        for (Integer item : APRandomizer.getItemManager().getAllItems()) {
+        for (var item : APRandomizer.getItemManager().getAllItems()) {
             if(item == ItemManager.DRAGON_EGG_SHARD) {
                 ++current;
             }
