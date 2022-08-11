@@ -7,7 +7,6 @@ import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.aprandomizer.common.events.onDataGather;
 import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
@@ -32,7 +31,6 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.ModifiableStructureInfo;
 import net.minecraftforge.common.world.StructureModifier;
 import net.minecraftforge.common.world.StructureSettingsBuilder;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
@@ -84,7 +82,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.19 v0.4.1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.19.2 v0.4.1 Randomizer initializing.");
 
         // For registration and init stuff.
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -93,11 +91,6 @@ public class APRandomizer {
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
         forgeBus.register(this);
-
-        // Serializer types can be registered via deferred register.
-        final DeferredRegister<Codec<? extends StructureModifier>> serializers = DeferredRegister.create(ForgeRegistries.Keys.STRUCTURE_MODIFIER_SERIALIZERS, MODID);
-        serializers.register(modEventBus);
-        serializers.register(onDataGather.TEST, onDataGather.TestModifier::makeCodec);
 
 
         Gson gson = new Gson();
@@ -268,7 +261,7 @@ public class APRandomizer {
             var builder = StructureSettingsBuilder.copyOf(struct.getModifiedStructureSettings());
             builder.setBiomes(biomes);
 
-            //struct.settings =  new Structure.StructureSettings(biomes, struct.settings.spawnOverrides(), struct.settings.step(), struct.settings.terrainAdaptation());
+            struct.settings =  new Structure.StructureSettings(biomes, struct.settings.spawnOverrides(), struct.settings.step(), struct.settings.terrainAdaptation());
         }
     }
 

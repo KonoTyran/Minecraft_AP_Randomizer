@@ -20,7 +20,7 @@ public class onServerChat {
             return;
         ServerPlayer player = event.getPlayer();
 
-        String message = event.getMessage();
+        String message = event.getMessage().getString();
 
         if (message.startsWith("!"))
             APRandomizer.getAP().sendChat(message);

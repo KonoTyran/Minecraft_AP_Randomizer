@@ -22,12 +22,11 @@ public class onJoin {
 
     @SubscribeEvent
     static void onPlayerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
-        if(APRandomizer.isRace()) {
-            if(event.getPlayer() instanceof ServerPlayer) {
-                ((ServerPlayer) event.getPlayer()).setGameMode(GameType.SURVIVAL);
-            }
-        }
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+
+        ServerPlayer player = (ServerPlayer) event.getEntity();
+        if(APRandomizer.isRace())
+                player.setGameMode(GameType.SURVIVAL);
+
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("No APMC file found, please only start the server via the APMC file.");
@@ -49,7 +48,7 @@ public class onJoin {
         if(APRandomizer.isJailPlayers()) {
             BlockPos jail = APRandomizer.getJailPosition();
             player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
-            ((ServerPlayer) event.getPlayer()).setGameMode(GameType.SURVIVAL);
+            player.setGameMode(GameType.SURVIVAL);
         }
     }
 }

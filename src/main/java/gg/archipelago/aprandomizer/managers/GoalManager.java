@@ -180,7 +180,7 @@ public class GoalManager {
     //subscribe to living death event to check for wither/dragon kills;
     @SubscribeEvent
     static void onBossDeath(LivingDeathEvent event) {
-        LivingEntity mob = event.getEntityLiving();
+        LivingEntity mob = event.getEntity();
         GoalManager goalManager = APRandomizer.getGoalManager();
         if(mob instanceof EnderDragon && goalManager.goalsDone()) {
             goalManager.dragonKilled = true;

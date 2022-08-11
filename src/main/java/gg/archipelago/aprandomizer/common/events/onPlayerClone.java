@@ -20,7 +20,7 @@ public class onPlayerClone {
     public static void onPlayerCloneEvent(PlayerEvent.PlayerRespawnEvent event) {
         if (APRandomizer.isJailPlayers()) {
             BlockPos jail = APRandomizer.getJailPosition();
-            event.getPlayer().teleportTo(jail.getX(), jail.getY(), jail.getZ());
+            event.getEntity().teleportTo(jail.getX(), jail.getY(), jail.getZ());
         }
 
         //if we are leaving because the dragon is dead check if our goals are all done!
@@ -36,14 +36,14 @@ public class onPlayerClone {
 
         event.getOriginal().reviveCaps();
 
-        event.getPlayer().getCapability(APCapabilities.PLAYER_INDEX).ifPresent(playerData -> {
+        event.getEntity().getCapability(APCapabilities.PLAYER_INDEX).ifPresent(playerData -> {
             LazyOptional<PlayerData> lazyOptional = event.getOriginal().getCapability(APCapabilities.PLAYER_INDEX);
             if (lazyOptional.isPresent()) {
                 playerData.setIndex(lazyOptional.orElseThrow(AssertionError::new).getIndex());
                 event.getOriginal().invalidateCaps();
             }
             else {
-                APRandomizer.LOGGER.error("unable to copy player index for player " + event.getPlayer().getDisplayName().getString());
+                APRandomizer.LOGGER.error("unable to copy player index for player " + event.getEntity().getDisplayName().getString());
             }
         });
     }

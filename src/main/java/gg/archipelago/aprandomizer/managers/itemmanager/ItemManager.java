@@ -241,7 +241,7 @@ public class ItemManager {
         //otherwise just point it to 0,0 in said dimension.
         BlockPos structurePos = new BlockPos(0,0,0);
         if(player.getCommandSenderWorld().dimension().equals(world)) {
-        structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
+            structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
         }
 
         String displayName = Utils.getAPStructureName(structureTag);

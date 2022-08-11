@@ -38,13 +38,13 @@ public class onPlayerInteract {
             return;
         }
 
-        BlockState block = event.getWorld().getBlockState(event.getHitVec().getBlockPos());
+        BlockState block = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
         if(event.getItemStack().getTag().get("structure") != null && block.is(Blocks.LODESTONE))
             event.setCanceled(true);
 
-        event.getPlayer().getServer().execute(() -> {
-            event.getPlayer().getInventory().setChanged();
-            event.getPlayer().inventoryMenu.broadcastChanges();
+        event.getEntity().getServer().execute(() -> {
+            event.getEntity().getInventory().setChanged();
+            event.getEntity().inventoryMenu.broadcastChanges();
         });
     }
 
@@ -71,7 +71,7 @@ public class onPlayerInteract {
 
             TagKey<Structure> structure = compasses.get(index);
 
-            ItemManager.updateCompassLocation(structure,event.getPlayer(),compass);
+            ItemManager.updateCompassLocation(structure,event.getEntity(),compass);
 
         }
     }

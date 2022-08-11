@@ -65,7 +65,7 @@ public class Utils {
     public static void sendMessageToAll(Component message) {
         //tell the server to send the message in a thread safe way.
         server.execute(() -> {
-            server.getPlayerList().broadcastSystemMessage(message, ChatType.SYSTEM);
+            server.getPlayerList().broadcastSystemMessage(message, false);
         });
 
     }
@@ -75,7 +75,7 @@ public class Utils {
 
         //tell the server to send the message in a thread safe way.
         server.execute(() -> {
-            server.getPlayerList().broadcastSystemMessage(message, ChatType.SYSTEM);
+            server.getPlayerList().broadcastSystemMessage(message, false);
         });
 
     }

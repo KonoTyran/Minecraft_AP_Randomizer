@@ -24,7 +24,7 @@ public class onAdvancement {
         if (APRandomizer.getApmcData().state != APMCData.State.VALID)
             return;
 
-        ServerPlayer player = (ServerPlayer) event.getPlayer();
+        ServerPlayer player = (ServerPlayer) event.getEntity();
         Advancement advancement = event.getAdvancement();
         String id = advancement.getId().toString();
 
@@ -40,7 +40,7 @@ public class onAdvancement {
                             player.getDisplayName(),
                             advancement.getChatComponent()
                     ),
-                    ChatType.SYSTEM
+                    false
             );
 
             am.syncAdvancement(advancement);

@@ -28,7 +28,7 @@ public class onLivingHurt {
     @SubscribeEvent
     static void onLivingDeathEvent(LivingDeathEvent event) {
         //TODO: this may be broken.
-        String name = event.getEntityLiving().getEncodeId();
+        String name = event.getEntity().getEncodeId();
 
         if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)
             return;
@@ -53,13 +53,13 @@ public class onLivingHurt {
 
     @SubscribeEvent
     static void onLivingHurtEvent(LivingHurtEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+        LivingEntity entity = event.getEntity();
         if (entity instanceof Pig) {
             if (entity.getPassengers().size() > 0) {
                 if (entity.getPassengers().get(0) instanceof ServerPlayer) {
                     if (event.getSource().msgId.equals("fall")) {
                         ServerPlayer player = (ServerPlayer) entity.getPassengers().get(0);
-                        Advancement advancement = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/ride_pig"));
+                        Advancement advancement = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/ride_pig"));
                         AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
                         if (!ap.isDone()) {
                             for (String s : ap.getRemainingCriteria()) {
@@ -76,7 +76,7 @@ public class onLivingHurt {
             ServerPlayer player = (ServerPlayer) e;
             //Utils.sendMessageToAll("damage type: "+ event.getSource().getMsgId());
             if (event.getAmount() >= 18 && !event.getSource().isExplosion() && !event.getSource().msgId.equals("fireball")) {
-                Advancement a = event.getEntityLiving().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/overkill"));
+                Advancement a = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/overkill"));
                 AdvancementProgress ap = player.getAdvancements().getOrStartProgress(a);
                 if (!ap.isDone()) {
                     for (String s : ap.getRemainingCriteria()) {
