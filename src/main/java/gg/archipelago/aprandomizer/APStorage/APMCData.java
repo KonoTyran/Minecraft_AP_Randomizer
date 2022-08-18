@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 public class APMCData {
 
+    @SerializedName("dig_chunk")
+    public boolean dig_chunk = false;
     @SerializedName("world_seed")
     public long world_seed;
     @SerializedName("structures")

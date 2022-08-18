@@ -25,8 +25,15 @@ public abstract class MixinPropertyManager {
         properties.setProperty("level-seed", "" + data.world_seed);
         properties.setProperty("spawn-protection", "0");
         properties.setProperty("allow-flight", "true");
-        properties.setProperty("level-name","Archipelago-"+ data.seed_name+"-P"+ data.player_id);
-        properties.setProperty("level-type","default");
+        properties.setProperty("level-name", "Archipelago-" + data.seed_name + "-P" + data.player_id);
+
+        if (data.dig_chunk) {
+            properties.setProperty("level-type", "flat");
+            properties.setProperty("generator-settings", "{\"layers\":[{\"block\":\"minecraft:air\",\"height\":319}],\"biome\":\"minecraft:the_void\"}");
+        } else {
+            properties.setProperty("level-type", "default");
+            properties.setProperty("generator-settings", "{}");
+        }
 
         if(data.race) {
             LogManager.getLogger().info("Archipelago race flag found enforcing race settings.");
