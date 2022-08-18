@@ -79,12 +79,10 @@ public class SlotData extends gg.archipelago.APClient.SlotData {
                     continue;
                 }
 
-                String nbtString = (object.has("nbt"))? object.get("nbt").getAsString() : "{}";
-                CompoundTag nbt = TagParser.parseTag(nbtString);
-
-
                 ItemStack iStack = new ItemStack(item,amount);
-                iStack.setTag(nbt);
+
+                if(object.has("nbt"))
+                    iStack.setTag(TagParser.parseTag(object.get("nbt").getAsString()));
 
                 startingItemStacks.add(iStack);
 
