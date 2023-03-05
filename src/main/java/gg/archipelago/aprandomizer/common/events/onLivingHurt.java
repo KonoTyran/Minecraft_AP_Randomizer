@@ -1,6 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.APClient.network.BouncePacket;
+import gg.archipelago.client.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;

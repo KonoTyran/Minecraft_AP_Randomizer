@@ -1,12 +1,13 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.APClient.network.BouncePacket;
+import gg.archipelago.client.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,7 @@ public class onDeath {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     static void onDeathEvent(LivingDeathEvent event) {
         if(!APRandomizer.isConnected())
             return;

@@ -31,7 +31,7 @@ public class DisconnectCommand {
 
     private static int disconnect(CommandContext<CommandSourceStack> commandContext) {
         APRandomizer.getAP().disconnect();
-        Utils.sendMessageToAll("Disconnected.");
+        //Utils.sendMessageToAll("Disconnected.");
         return 1;
     }
 

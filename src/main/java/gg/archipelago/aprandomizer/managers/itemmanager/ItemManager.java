@@ -8,6 +8,7 @@ import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.BeeTrap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -177,7 +178,7 @@ public class ItemManager {
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
             if(compasses.containsKey(itemID)){
-                TagKey<Structure> tag = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
+                TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
                 updateCompassLocation(tag, player , itemstack);
             }
             Utils.giveItemToPlayer(player, itemstack);

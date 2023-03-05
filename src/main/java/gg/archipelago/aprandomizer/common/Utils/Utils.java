@@ -1,10 +1,10 @@
 package gg.archipelago.aprandomizer.common.Utils;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import gg.archipelago.APClient.Print.APPrint;
-import gg.archipelago.APClient.Print.APPrintColor;
-import gg.archipelago.APClient.Print.APPrintPart;
-import gg.archipelago.APClient.Print.APPrintType;
+import gg.archipelago.client.Print.APPrint;
+import gg.archipelago.client.Print.APPrintColor;
+import gg.archipelago.client.Print.APPrintPart;
+import gg.archipelago.client.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
