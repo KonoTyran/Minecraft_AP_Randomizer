@@ -1,6 +1,6 @@
 package gg.archipelago.aprandomizer.managers;
 
-import gg.archipelago.APClient.ClientStatus;
+import gg.archipelago.client.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.APCapabilities;

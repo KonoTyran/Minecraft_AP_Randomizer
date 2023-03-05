@@ -18,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 
-public class SlotData extends gg.archipelago.APClient.SlotData {
+public class SlotData {
 
     public int include_hard_advancements;
     public int include_insane_advancements;

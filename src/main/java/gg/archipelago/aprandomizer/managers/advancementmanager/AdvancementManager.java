@@ -5,15 +5,20 @@ import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import static gg.archipelago.aprandomizer.APRandomizer.getServer;
+import static gg.archipelago.aprandomizer.APRandomizer.*;
 
 public class AdvancementManager {
 
@@ -136,12 +141,67 @@ public class AdvancementManager {
 
     }};
 
+    public final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
+        add(new ResourceLocation("adventure/very_very_frightening")); // Very Very Frightening
+        add(new ResourceLocation("nether/all_potions")); // A Furious Cocktail
+        add(new ResourceLocation("husbandry/bred_all_animals")); // Two by Two
+        add(new ResourceLocation("adventure/two_birds_one_arrow")); // Two Birds, One Arrow
+        add(new ResourceLocation("adventure/arbalistic")); // Arbalistic
+        add(new ResourceLocation("adventure/kill_all_mobs")); // Monsters Hunted
+        add(new ResourceLocation("nether/create_full_beacon")); // Beaconator
+        add(new ResourceLocation("husbandry/balanced_diet")); // A Balanced Diet
+        add(new ResourceLocation("nether/uneasy_alliance")); // Uneasy Alliance
+        add(new ResourceLocation("nether/netherite_armor")); // Cover Me in Debris
+        add(new ResourceLocation("husbandry/complete_catalogue")); // A Complete Catalogue
+        add(new ResourceLocation("adventure/lightning_rod_with_villager_no_fire")); // Surge Protector
+        add(new ResourceLocation("adventure/play_jukebox_in_meadows")); // Sound of Music
+        add(new ResourceLocation("adventure/trade_at_world_height")); // Star Trader
+        add(new ResourceLocation("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
+        add(new ResourceLocation("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
+        add(new ResourceLocation("husbandry/froglights")); // With Our Powers Combined!
+    }};
+
+    public final Set<ResourceLocation> unreasonableAdvancements = new HashSet<>() {{
+        add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
+        add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
+    }};
+
     private final Set<Long> earnedAdvancements = new HashSet<>();
 
-
     public AdvancementManager() {
-        Collection<Advancement> advancements = getServer().getAdvancements().getAllAdvancements();
-        advancements.removeIf(advancement -> advancement.getId().getPath().startsWith("recipes/"));
+
+    }
+
+    @SubscribeEvent
+    public void onReload(AddReloadListenerEvent event) {
+        LOGGER.debug("Reload found.");
+        var advancementsList = event.getServerResources().getAdvancements().advancements;
+        advancementsList.getAllAdvancements().removeIf(
+                advancement -> advancement.getId().getPath().startsWith("recipes/")
+        );
+
+        Style hardStyle = Style.EMPTY.withBold(true).withColor(TextColor.parseColor("#FFA500"));
+        Component hardText = Component.literal(" (Hard)").withStyle(hardStyle);
+
+        var newAdvancements = new HashMap<ResourceLocation, Advancement.Builder>();
+        var advIterator = advancementsList.getAllAdvancements().iterator();
+        while (advIterator.hasNext()) {
+            var advancement = advIterator.next();
+            if(hardAdvancements.contains(advancement.getId())) {
+                advIterator.remove();
+                var display = advancement.getDisplay();
+                LOGGER.debug("Hard advancement " + advancement.getDisplay().getTitle().getString() + " found.");
+                var title = display.getTitle().copy().append(hardText);
+
+
+                var newDisplay = new DisplayInfo(display.getIcon(), title, display.getDescription(), display.getBackground(), display.getFrame(), true, false, false);
+                var advancementBuilder = advancement.deconstruct().display(newDisplay);
+                newAdvancements.put(advancement.getId(), advancementBuilder);
+                LOGGER.debug("Hard advancement " + newDisplay.getTitle().getString() + " modified.");
+            }
+        }
+
+        advancementsList.add(newAdvancements);
     }
 
     public int getAdvancementID(String namespacedID) {

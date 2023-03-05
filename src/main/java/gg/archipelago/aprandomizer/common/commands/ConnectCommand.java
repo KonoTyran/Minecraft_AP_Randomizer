@@ -16,6 +16,8 @@ import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.net.URISyntaxException;
+
 @Mod.EventBusSubscriber
 public class ConnectCommand {
 
@@ -28,35 +30,11 @@ public class ConnectCommand {
         dispatcher.register(
                 Commands.literal("connect") //base slash command is "connect"
                         //take the first argument as a string and name it "Address"
-                        .then(Commands.literal("archipelago.gg")
-                                .executes(context -> connectToAPServer(
-                                        context,
-                                        "archipelago.gg",
-                                        38281,
-                                        null
-                                ))
-                                .then(Commands.argument("Port", IntegerArgumentType.integer())
-                                        .executes(context -> connectToAPServer(
-                                                context,
-                                                "archipelago.gg",
-                                                IntegerArgumentType.getInteger(context, "Port"),
-                                                null
-                                        ))
-                                        .then(Commands.argument("Password", StringArgumentType.string())
-                                                .executes(context -> connectToAPServer(
-                                                        context,
-                                                        "archipelago.gg",
-                                                        IntegerArgumentType.getInteger(context, "Port"),
-                                                        StringArgumentType.getString(context, "Password")
-                                                ))
-                                        )
-                                )
-                        )
                         .then(Commands.argument("Address", StringArgumentType.string())
                                 .executes(context -> connectToAPServer(
                                         context,
                                         StringArgumentType.getString(context, "Address"),
-                                        38281,
+                                        -1,
                                         null
                                 ))
                                 .then(Commands.argument("Port", IntegerArgumentType.integer())
@@ -87,9 +65,13 @@ public class ConnectCommand {
             APClient apClient = APRandomizer.getAP();
             apClient.setName(data.player_name);
             apClient.setPassword(password);
-            String address = hostname.concat(":" + port);
+            String address = (port==-1) ? hostname : hostname.concat(":" + port);
             Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
-            apClient.connect(address);
+            try {
+                apClient.connect(address);
+            } catch (URISyntaxException e) {
+                Utils.sendMessageToAll("Malformed address " + address);
+            }
         } else if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("no .apmc file found. please stop the server,  place .apmc file in './APData/', delete the world folder, then relaunch the server.");
         else if (data.state == APMCData.State.INVALID_VERSION)

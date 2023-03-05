@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.common.events;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -63,7 +64,7 @@ public class onPlayerInteract {
             //fetch our current compass list.
             ArrayList<TagKey<Structure>> compasses = APRandomizer.getItemManager().getCompasses();
 
-            TagKey<Structure> tagKey = TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(nbt.getString("structure")));
+            TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, new ResourceLocation(nbt.getString("structure")));
             //get our current structures index in that list, increase it by one, wrapping it to 0 if needed.
             int index = compasses.indexOf(tagKey) + 1;
             if(index >= compasses.size())

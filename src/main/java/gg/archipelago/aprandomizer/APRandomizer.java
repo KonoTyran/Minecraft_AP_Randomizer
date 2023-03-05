@@ -1,8 +1,7 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
-import com.mojang.serialization.Codec;
-import gg.archipelago.APClient.network.BouncePacket;
+import gg.archipelago.client.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
@@ -11,47 +10,38 @@ import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.managers.recipemanager.RecipeManager;
+import gg.archipelago.aprandomizer.modifiers.APStructureModifier;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.StructureModifier;
-import net.minecraftforge.common.world.StructureSettingsBuilder;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.minecraftforge.event.server.*;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -63,7 +53,7 @@ public class APRandomizer {
     //store our APClient
     static private APClient apClient;
 
-    static private MinecraftServer server;
+    static public MinecraftServer server;
 
     static private AdvancementManager advancementManager;
     static private RecipeManager recipeManager;
@@ -82,11 +72,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.19.2 v0.4.2 Randomizer initializing.");
-
-        // For registration and init stuff.
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+        LOGGER.info("Minecraft Archipelago 1.19.3 v0.4.2 Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -118,6 +104,13 @@ public class APRandomizer {
                 apmcData.state = APMCData.State.MISSING;
             }
         }
+
+        // For registration and init stuff.
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        APStructures.DEFERRED_REGISTRY_STRUCTURE.register(modEventBus);
+        APStructureModifier.structureModifiers.register(modEventBus);
+        APStructureModifier.structureModifiers.register("ap_structure_modifier",APStructureModifier::makeCodec);
+
     }
 
     public static APClient getAP() {
@@ -193,78 +186,7 @@ public class APRandomizer {
             LOGGER.error("invalid APMC file");
         }
         server = event.getServer();
-        APMCData data = APRandomizer.getApmcData();
-
-        Registry<Biome> biomeRegistry = server.registryAccess().registryOrThrow(Registry.BIOME_REGISTRY);
-
-        //get structure biome holdersets.
-        TagKey<Biome> overworldTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","overworld_structure"));
-        HolderSet<Biome> overworldStructures = biomeRegistry.getTag(overworldTag).orElseThrow();
-
-        TagKey<Biome> netherTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","nether_structure"));
-        HolderSet<Biome> netherStructures = biomeRegistry.getTag(netherTag).orElseThrow();
-
-        TagKey<Biome> endTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","end_structure"));
-        HolderSet<Biome> endStructures = biomeRegistry.getTag(endTag).orElseThrow();
-
-        TagKey<Biome> noneTag = TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation("aprandomizer","none"));
-        HolderSet<Biome> noBiomes = biomeRegistry.getTag(noneTag).orElseThrow();
-
-        HashMap <String, HolderSet<Biome>> structures = new HashMap<>();
-        for (Map.Entry<String, String> entry : data.structures.entrySet()) {
-            switch (entry.getKey()) {
-                case "Overworld Structure 1", "Overworld Structure 2" ->
-                        structures.put(entry.getValue(), overworldStructures);
-                case "Nether Structure 1", "Nether Structure 2" ->
-                        structures.put(entry.getValue(), netherStructures);
-                case "The End Structure" ->
-                        structures.put(entry.getValue(), endStructures);
-            }
-        }
-
-        Registry<Structure> structureRegistry = server.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY);
-        for (ResourceLocation resourceLocation : structureRegistry.keySet()) {
-            Structure struct = structureRegistry.get(resourceLocation);
-            assert struct != null;
-            HolderSet<Biome> biomes = struct.biomes();
-
-            switch (resourceLocation.toString()) {
-                case "minecraft:village_plains", "minecraft:village_desert", "minecraft:village_savanna", "minecraft:village_snowy", "minecraft:village_taiga" -> {
-                    if (!structures.get("Village").equals(overworldStructures))
-                        biomes = noBiomes;
-                }
-                case "aprandomizer:village_nether" -> {
-                    if (!structures.get("Village").equals(overworldStructures))
-                        biomes = structures.get("Village");
-                }
-                case "minecraft:pillager_outpost" -> {
-                    if (!structures.get("Pillager Outpost").equals(overworldStructures))
-                        biomes = noBiomes;
-                }
-                case "aprandomizer:pillager_outpost_nether" -> {
-                    if (!structures.get("Pillager Outpost").equals(overworldStructures))
-                        biomes = structures.get("Pillager Outpost");
-                }
-                case "minecraft:fortress" -> biomes = structures.get("Nether Fortress");
-                case "minecraft:bastion_remnant" -> biomes = structures.get("Bastion Remnant");
-                case "minecraft:end_city" -> {
-                    if (structures.get("End City").equals(netherStructures))
-                        biomes = noBiomes;
-                    else if (!structures.get("End City").equals(endStructures))
-                        biomes = structures.get("End City");
-                }
-                case "aprandomizer:end_city_nether" -> {
-                    if (structures.get("End City").equals(netherStructures))
-                        biomes = structures.get("End City");
-                }
-            }
-            var builder = StructureSettingsBuilder.copyOf(struct.getModifiedStructureSettings());
-            builder.setBiomes(biomes);
-
-            struct.settings =  new Structure.StructureSettings(biomes, struct.settings.spawnOverrides(), struct.settings.step(), struct.settings.terrainAdaptation());
-        }
     }
-
 
     @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
@@ -334,7 +256,7 @@ public class APRandomizer {
         }
         //check if there is dragon data, if not create new stuff.
         if (theEnd.dragonFight == null)
-            theEnd.dragonFight = new EndDragonFight(theEnd, server.getWorldData().worldGenSettings().seed(), server.getWorldData().endDragonFightData());
+            theEnd.dragonFight = new EndDragonFight(theEnd, server.getWorldData().worldGenOptions().seed(), server.getWorldData().endDragonFightData());
         //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
         for (int i = 0; i < 20; i++) {
             theEnd.dragonFight.spawnNewGateway();
@@ -385,8 +307,14 @@ public class APRandomizer {
             APClient apClient = APRandomizer.getAP();
             apClient.setName(apmcData.player_name);
             String address = apmcData.server.concat(":" + apmcData.port);
+
             Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
-            apClient.connect(address);
+
+            try {
+                apClient.connect(address);
+            } catch (URISyntaxException e) {
+                Utils.sendMessageToAll("unable to connect");
+            }
         }
     }
 

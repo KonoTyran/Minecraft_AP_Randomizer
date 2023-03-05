@@ -40,11 +40,12 @@ public class onPlayerClone {
             LazyOptional<PlayerData> lazyOptional = event.getOriginal().getCapability(APCapabilities.PLAYER_INDEX);
             if (lazyOptional.isPresent()) {
                 playerData.setIndex(lazyOptional.orElseThrow(AssertionError::new).getIndex());
-                event.getOriginal().invalidateCaps();
             }
             else {
                 APRandomizer.LOGGER.error("unable to copy player index for player " + event.getEntity().getDisplayName().getString());
             }
         });
+
+        event.getOriginal().invalidateCaps();
     }
 }
