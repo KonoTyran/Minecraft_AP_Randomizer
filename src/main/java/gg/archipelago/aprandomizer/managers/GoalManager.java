@@ -1,12 +1,12 @@
 package gg.archipelago.aprandomizer.managers;
 
+import gg.archipelago.aprandomizer.managers.advancementmanager.LocationManager;
 import gg.archipelago.client.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -34,7 +34,7 @@ public class GoalManager {
 
     int totalDragonEggShards = 0;
 
-    private final AdvancementManager advancementManager;
+    private final LocationManager locationManager;
 
     private CustomBossEvent advancementInfoBar;
     private CustomBossEvent eggInfoBar;
@@ -47,7 +47,7 @@ public class GoalManager {
 
     public GoalManager () {
         apmc = APRandomizer.getApmcData();
-        advancementManager = APRandomizer.getAdvancementManager();
+        locationManager = APRandomizer.getAdvancementManager();
         advancementsRequired = apmc.advancements_required;
         dragonEggShardsRequired = apmc.egg_shards_required;
         totalDragonEggShards = apmc.egg_shards_available;
@@ -89,7 +89,7 @@ public class GoalManager {
 
     public String getAdvancementRemainingString() {
         if (advancementsRequired > 0) {
-            return String.format(" Advancements (%d / %d)", advancementManager.getFinishedAmount(), advancementsRequired);
+            return String.format(" Advancements (%d / %d)", locationManager.getFinishedAmount(), advancementsRequired);
         }
         return "";
     }
@@ -120,7 +120,7 @@ public class GoalManager {
             connectionInfoBar.setPlayers(APRandomizer.getServer().getPlayerList().getPlayers());
         });
 
-        advancementInfoBar.setValue(advancementManager.getFinishedAmount());
+        advancementInfoBar.setValue(locationManager.getFinishedAmount());
         eggInfoBar.setValue(currentEggShards());
 
         connectionInfoBar.setVisible(!APRandomizer.isConnected());
@@ -173,7 +173,7 @@ public class GoalManager {
     }
 
     public boolean goalsDone() {
-        return advancementManager.getFinishedAmount() >= advancementsRequired && this.currentEggShards() >= dragonEggShardsRequired;
+        return locationManager.getFinishedAmount() >= advancementsRequired && this.currentEggShards() >= dragonEggShardsRequired;
     }
 
 

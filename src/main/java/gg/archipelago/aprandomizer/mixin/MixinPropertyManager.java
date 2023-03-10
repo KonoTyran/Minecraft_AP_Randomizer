@@ -27,7 +27,7 @@ public abstract class MixinPropertyManager {
         properties.setProperty("allow-flight", "true");
         properties.setProperty("level-name", "Archipelago-" + data.seed_name + "-P" + data.player_id);
 
-        if (data.dig_chunk) {
+        if (data.dig_hole) {
             properties.setProperty("level-type", "flat");
             properties.setProperty("generator-settings", "{\"layers\":[{\"block\":\"minecraft:air\",\"height\":319}],\"biome\":\"minecraft:the_void\"}");
         } else {

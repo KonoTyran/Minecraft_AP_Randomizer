@@ -14,13 +14,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.*;
 
 import static gg.archipelago.aprandomizer.APRandomizer.*;
 
-public class AdvancementManager {
+public class LocationManager {
 
     private final HashMap<String, Integer> advancementData = new HashMap<>() {{
         put("minecraft:nether/obtain_crying_obsidian", 42000);
@@ -141,6 +140,8 @@ public class AdvancementManager {
 
     }};
 
+    private final HashMap<String, Integer> layerData = new HashMap<>();
+
     public final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
         add(new ResourceLocation("adventure/very_very_frightening")); // Very Very Frightening
         add(new ResourceLocation("nether/all_potions")); // A Furious Cocktail
@@ -168,8 +169,14 @@ public class AdvancementManager {
 
     private final Set<Long> earnedAdvancements = new HashSet<>();
 
-    public AdvancementManager() {
-
+    public LocationManager() {
+        int initialLayer = 42000 - 1; // initial start ID is 41999 = y 256
+        int buildHeight = 319; // build height
+        int totalLayers = 319;
+        for (int id = initialLayer; id > initialLayer-319; id--) {
+            int layer = initialLayer + id;
+            layerData.put("Layer " + layer, id);
+        }
     }
 
     @SubscribeEvent

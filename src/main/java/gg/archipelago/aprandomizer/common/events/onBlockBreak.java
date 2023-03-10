@@ -1,6 +1,8 @@
 package gg.archipelago.aprandomizer.common.events;
 
+import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.client.LocationManager;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -16,9 +18,10 @@ public class onBlockBreak {
 
     @SubscribeEvent
     static void onPlayerBlockInteract(BlockEvent.BreakEvent event) {
-        if(!APRandomizer.isJailPlayers())
+        if(APRandomizer.isJailPlayers())
+            event.setCanceled(true);
+
+        if(!APRandomizer.getApmcData().dig_hole)
             return;
-        event.setCanceled(true);
-        event.getPlayer().sendSystemMessage(Component.literal("No!"));
     }
 }

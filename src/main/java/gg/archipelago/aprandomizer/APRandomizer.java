@@ -7,7 +7,7 @@ import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.GoalManager;
-import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
+import gg.archipelago.aprandomizer.managers.advancementmanager.LocationManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.aprandomizer.managers.recipemanager.RecipeManager;
 import gg.archipelago.aprandomizer.modifiers.APStructureModifier;
@@ -19,6 +19,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
@@ -41,7 +42,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -55,7 +55,7 @@ public class APRandomizer {
 
     static public MinecraftServer server;
 
-    static private AdvancementManager advancementManager;
+    static private LocationManager locationManager;
     static private RecipeManager recipeManager;
     static private ItemManager itemManager;
     static private GoalManager goalManager;
@@ -121,8 +121,8 @@ public class APRandomizer {
         return (apClient != null && apClient.isConnected());
     }
 
-    public static AdvancementManager getAdvancementManager() {
-        return advancementManager;
+    public static LocationManager getAdvancementManager() {
+        return locationManager;
     }
 
     public static RecipeManager getRecipeManager() {
@@ -193,7 +193,7 @@ public class APRandomizer {
     public void onServerStarting(ServerStartingEvent event) {
 
         // do something when the server starts
-        advancementManager = new AdvancementManager();
+        locationManager = new LocationManager();
         recipeManager = new RecipeManager();
         itemManager = new ItemManager();
         goalManager = new GoalManager();
@@ -207,7 +207,7 @@ public class APRandomizer {
         //fetch our custom world save data we attach to the worlds.
         worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
-        advancementManager.setCheckedAdvancements(worldData.getLocations());
+        locationManager.setCheckedAdvancements(worldData.getLocations());
 
 
         //check if APMC data is present and if the seed matches what we expect
@@ -280,12 +280,28 @@ public class APRandomizer {
 
         if(jailPlayers) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-            BlockPos spawn = overworld.getSharedSpawnPos();
-            // alter the spawn box position, so it doesn't interfere with spawning
-            StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
-            BlockPos jailPos = new BlockPos(spawn.getX()+5, 300, spawn.getZ()+5);
-            jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
-            jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(), RandomSource.create(),2);
+            assert overworld != null;
+
+            if(APRandomizer.getApmcData().dig_hole) {
+                for (int x = -5; x < -1; x++) {
+                    for (int z = -5; z < -1; z++) {
+                        overworld.setBlock(new BlockPos(x,128,z), Blocks.BEDROCK.defaultBlockState(),2);
+                    }
+                }
+
+                overworld.setDefaultSpawnPos(new BlockPos(-3,129,-3),0f);
+                jailCenter = overworld.getSharedSpawnPos();
+
+            }
+            else {
+                BlockPos spawn = overworld.getSharedSpawnPos();
+                // alter the spawn box position, so it doesn't interfere with spawning
+                StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID, "spawnjail")).get();
+                BlockPos jailPos = new BlockPos(spawn.getX() + 5, 300, spawn.getZ() + 5);
+                jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX() / 2), jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ() / 2));
+                jail.placeInWorld(overworld, jailPos, jailPos, new StructurePlaceSettings(), RandomSource.create(), 2);
+            }
+
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);

@@ -2,9 +2,8 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
+import gg.archipelago.aprandomizer.managers.advancementmanager.LocationManager;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -12,9 +11,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Iterator;
-import java.util.Objects;
 
 @Mod.EventBusSubscriber
 public class onAdvancement {
@@ -40,7 +36,7 @@ public class onAdvancement {
         Advancement advancement = event.getAdvancement();
         String id = advancement.getId().toString();
 
-        AdvancementManager am = APRandomizer.getAdvancementManager();
+        LocationManager am = APRandomizer.getAdvancementManager();
         //don't do anything if this advancement has already been had, or is not on our list of tracked advancements.
         if (!am.hasAdvancement(id) && am.getAdvancementID(id) != 0) {
             LOGGER.debug("{} has gotten the advancement {}", player.getDisplayName().getString(), id);
