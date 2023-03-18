@@ -5,15 +5,14 @@ import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Set;
 
 @Mod.EventBusSubscriber
 public class onJoin {
@@ -27,6 +26,12 @@ public class onJoin {
         if(APRandomizer.isRace())
                 player.setGameMode(GameType.SURVIVAL);
 
+        MobEffectInstance saturation = new MobEffectInstance(MobEffects.SATURATION,MobEffectInstance.INFINITE_DURATION,1,false,false,false);
+        player.addEffect(saturation);
+
+        MobEffectInstance nightVision = new MobEffectInstance(MobEffects.NIGHT_VISION,MobEffectInstance.INFINITE_DURATION,1,false,false,false);
+        player.addEffect(nightVision);
+
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.MISSING)
             Utils.sendMessageToAll("No APMC file found, please only start the server via the APMC file.");
@@ -34,12 +39,6 @@ public class onJoin {
             Utils.sendMessageToAll("This Seed was generated using an incompatible randomizer version.");
         else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
-
-        APRandomizer.getAdvancementManager().syncAllAdvancements();
-        Set<Recipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
-        Set<Recipe<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();
-        player.resetRecipes(restricted);
-        player.awardRecipes(granted);
 
 
         APRandomizer.getGoalManager().updateInfoBar();

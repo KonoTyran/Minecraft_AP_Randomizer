@@ -17,7 +17,7 @@ public class onServerTick {
             if(++count < 20)
                 return;
             count = 0;
-            Utils.sendActionBarToPlayer(player,"Current feet Y level: " + y,0,100, 0);
+            Utils.sendActionBarToPlayer(player,"Current feet Y level: " + (int)y);
         }
     }
 }

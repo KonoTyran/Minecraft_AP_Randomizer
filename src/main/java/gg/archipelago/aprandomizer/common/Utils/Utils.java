@@ -131,16 +131,15 @@ public class Utils {
         });
     }
 
-    public static void sendActionBarToAll(String actionBarMessage, int fadeIn, int stay, int fadeOut) {
+    public static void sendActionBarToAll(String actionBarMessage) {
         server.execute(() -> {
-            TitleUtils.setTimes(server.getPlayerList().getPlayers(), fadeIn, stay, fadeOut);
             TitleUtils.showActionBar(server.getPlayerList().getPlayers(), Component.literal(actionBarMessage));
         });
     }
 
-    public static void sendActionBarToPlayer(ServerPlayer player, String actionBarMessage, int fadeIn, int stay, int fadeOut) {
+    public static void sendActionBarToPlayer(ServerPlayer player, String actionBarMessage) {
         server.execute(() -> {
-            TitleUtils.setTimes(Collections.singletonList(player), fadeIn, stay, fadeOut);
+            //TitleUtils.setTimes(Collections.singletonList(player), fadeIn, stay, fadeOut);
             TitleUtils.showActionBar(Collections.singletonList(player), Component.literal(actionBarMessage));
         });
     }
@@ -153,50 +152,6 @@ public class Utils {
         });
     }
 
-    public static void SpawnDragon(ServerLevel end) {
-        end.getChunkAt(new BlockPos(0, 128, 0));
-        end.dragonFight.spawnExitPortal(false);
-        end.dragonFight.findOrCreateDragon();
-        end.dragonFight.dragonKilled = false;
-        end.dragonFight.previouslyKilled = false;
-        end.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
-        end.save(null, true, false);
-    }
-
-    public static ResourceKey<Level> getStructureWorld(TagKey<Structure> structureTag) {
-
-        String structureName = getAPStructureName(structureTag);
-        String world = "overworld";
-        //fetch what structures are where from our APMC data.
-        HashMap<String, String> structures = APRandomizer.getApmcData().structures;
-        for (Map.Entry<String, String> entry : structures.entrySet()) {
-            if(entry.getValue().equals(structureName)) {
-                if (entry.getKey().contains("Overworld")) {
-                    return Level.OVERWORLD;
-                }
-                if(entry.getKey().contains("Nether")) {
-                    return Level.NETHER;
-                }
-                if(entry.getKey().contains("The End")) {
-                    return Level.END;
-                }
-            }
-        }
-
-        return Level.OVERWORLD;
-    }
-
-    public static String getAPStructureName(TagKey<Structure> structureTag) {
-        return switch (structureTag.location().toString()) {
-            case "aprandomizer:village" -> "Village";
-            case "aprandomizer:end_city" -> "End City";
-            case "aprandomizer:pillager_outpost" -> "Pillager Outpost";
-            case "aprandomizer:fortress" -> "Nether Fortress";
-            case "aprandomizer:bastion_remnant" -> "Bastion Remnant";
-            default -> structureTag.location().getPath().toLowerCase();
-        };
-    }
-
     public static Vec3 getRandomPosition(Vec3 pos, int radius) {
         double a = Math.random()*Math.PI*2;
         double b = Math.random()*Math.PI/2;
@@ -204,14 +159,6 @@ public class Utils {
         double z = radius * Math.sin(a) * Math.sin(b) + pos.z;
         double y = radius * Math.cos(b) + pos.y;
         return new Vec3(x,y,z);
-    }
-
-    public static void addLodestoneTags(ResourceKey<Level> worldRegistryKey, BlockPos blockPos, CompoundTag nbt) {
-        nbt.put("LodestonePos", NbtUtils.writeBlockPos(blockPos));
-        Level.RESOURCE_KEY_CODEC.encodeStart(NbtOps.INSTANCE, worldRegistryKey).resultOrPartial(LOGGER::error).ifPresent((p_234668_1_) -> {
-            nbt.put("LodestoneDimension", p_234668_1_);
-        });
-        nbt.putBoolean("LodestoneTracked", false);
     }
 
     public static void giveItemToPlayer(ServerPlayer player, ItemStack itemstack) {
@@ -229,7 +176,7 @@ public class Utils {
             ItemEntity itementity = player.drop(itemstack, false);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
-                itementity.setOwner(player.getUUID());
+                itementity.setTarget(player.getUUID());
             }
         }
     }

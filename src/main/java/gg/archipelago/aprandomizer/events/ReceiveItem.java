@@ -26,7 +26,7 @@ public class ReceiveItem {
                 .append(")").withStyle(Style.EMPTY.withColor(TextColor.parseColor("red")));
         Component title = Component.literal("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.color.getRGB())));
         Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
-        APRandomizer.getRecipeManager().grantRecipe(item.itemID);
+
         APRandomizer.getItemManager().giveItemToAll(item.itemID);
     }
 }

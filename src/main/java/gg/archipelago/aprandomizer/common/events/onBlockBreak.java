@@ -1,11 +1,11 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.client.LocationManager;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,11 +17,17 @@ public class onBlockBreak {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @SubscribeEvent
+    static void onExplosionEvent(ExplosionEvent.Detonate event) {
+        for (BlockPos affectedBlock : event.getAffectedBlocks()) {
+            APRandomizer.getLayerManager().addLayerCheck(affectedBlock.getY());
+        }
+    }
+
+    @SubscribeEvent
     static void onPlayerBlockInteract(BlockEvent.BreakEvent event) {
         if(APRandomizer.isJailPlayers())
             event.setCanceled(true);
 
-        if(!APRandomizer.getApmcData().dig_hole)
-            return;
+        APRandomizer.getLayerManager().addLayerCheck(event.getPos().getY());
     }
 }

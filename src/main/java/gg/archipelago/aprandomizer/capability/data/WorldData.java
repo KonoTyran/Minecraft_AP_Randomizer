@@ -14,7 +14,7 @@ public class WorldData {
 
     private boolean jailPlayers = true;
 
-    private Set<Long> locations = new HashSet<>();
+    private Set<Integer> locations = new HashSet<>();
 
     public static final int DRAGON_KILLED = 30;
     public static final int DRAGON_SPAWNED = 20;
@@ -45,15 +45,15 @@ public class WorldData {
         this.jailPlayers = jailPlayers;
     }
 
-    public void addLocation(Long location) {
+    public void addLocation(int location) {
         this.locations.add(location);
     }
 
-    public void setLocations(Long[] locations) {
+    public void setLocations(int[] locations) {
         this.locations.addAll(Lists.newArrayList(Arrays.stream(locations).iterator()));
     }
 
-    public Set<Long> getLocations() {
+    public Set<Integer> getLocations() {
         return locations;
     }
 }

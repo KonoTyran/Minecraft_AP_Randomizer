@@ -4,6 +4,8 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,10 +25,11 @@ public class onPlayerClone {
             event.getEntity().teleportTo(jail.getX(), jail.getY(), jail.getZ());
         }
 
-        //if we are leaving because the dragon is dead check if our goals are all done!
-        if(event.isEndConquered() && APRandomizer.getGoalManager().isDragonDead()) {
-           APRandomizer.getGoalManager().checkGoalCompletion();
-        }
+        MobEffectInstance saturation = new MobEffectInstance(MobEffects.SATURATION,MobEffectInstance.INFINITE_DURATION,0,false,false,false);
+        event.getEntity().addEffect(saturation);
+
+        MobEffectInstance nightVision = new MobEffectInstance(MobEffects.NIGHT_VISION,MobEffectInstance.INFINITE_DURATION,0,false,false,false);
+        event.getEntity().addEffect(nightVision);
     }
 
     @SubscribeEvent

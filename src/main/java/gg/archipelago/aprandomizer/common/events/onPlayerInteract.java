@@ -17,6 +17,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -40,15 +41,12 @@ public class onPlayerInteract {
             return;
         }
 
-        if(!APRandomizer.getApmcData().dig_hole)
-            return;
-
         LevelChunk chunk = event.getLevel().getChunkAt(event.getPos());
         if(chunk.getPos().x != 0 || chunk.getPos().z != 0)
             event.setCanceled(true);
 
     }
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     static void onBlockBreakEvent(BlockEvent.BreakEvent event) {
         double x = Math.floor(event.getPos().getX() / 16f);
         double z = Math.floor(event.getPos().getZ() / 16f);
@@ -57,56 +55,11 @@ public class onPlayerInteract {
     }
 
     @SubscribeEvent
-    static void onBlockBreakEvent(BlockEvent.EntityPlaceEvent event) {
+    static void onBlockPlaceEvent(BlockEvent.EntityPlaceEvent event) {
         double x = Math.floor(event.getPos().getX() / 16f);
         double z = Math.floor(event.getPos().getZ() / 16f);
         if(x != 0 || z != 0)
             event.setCanceled(true);
     }
 
-    @SubscribeEvent
-    static void onPlayerBlockInteract(PlayerInteractEvent.RightClickBlock event) {
-        if(event.getSide().isClient())
-            return;
-        if(!event.getItemStack().getItem().equals(Items.COMPASS) || !event.getItemStack().hasTag()) {
-            return;
-        }
-
-        BlockState block = event.getLevel().getBlockState(event.getHitVec().getBlockPos());
-        if(event.getItemStack().getTag().get("structure") != null && block.is(Blocks.LODESTONE))
-            event.setCanceled(true);
-
-        event.getEntity().getServer().execute(() -> {
-            event.getEntity().getInventory().setChanged();
-            event.getEntity().inventoryMenu.broadcastChanges();
-        });
-    }
-
-    @SubscribeEvent
-    static void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
-        if(event.getSide().isClient())
-            return;
-        if(event.getItemStack().getItem().equals(Items.COMPASS) && event.getItemStack().hasTag()) {
-            ItemStack compass = event.getItemStack();
-            if(!compass.hasTag())
-                return;
-            CompoundTag nbt = compass.getOrCreateTag();
-            if(nbt.get("structure") == null)
-                return;
-
-            //fetch our current compass list.
-            ArrayList<TagKey<Structure>> compasses = APRandomizer.getItemManager().getCompasses();
-
-            TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, new ResourceLocation(nbt.getString("structure")));
-            //get our current structures index in that list, increase it by one, wrapping it to 0 if needed.
-            int index = compasses.indexOf(tagKey) + 1;
-            if(index >= compasses.size())
-                index = 0;
-
-            TagKey<Structure> structure = compasses.get(index);
-
-            ItemManager.updateCompassLocation(structure,event.getEntity(),compass);
-
-        }
-    }
 }
