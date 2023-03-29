@@ -4,6 +4,7 @@ import gg.archipelago.aprandomizer.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.SlotData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.client.ClientStatus;
 import gg.archipelago.client.events.ArchipelagoEventListener;
 import gg.archipelago.client.events.ConnectionResultEvent;
 import gg.archipelago.client.network.ConnectionResult;
@@ -27,17 +28,17 @@ public class ConnectResult {
 
             client.slotData = event.getSlotData(SlotData.class);
 
-            //ToDo: set this properly.
-            //APRandomizer.getLayerManager().setCheckedLayers(client.getLocationManager().getCheckedLocations());
+            APRandomizer.getLayerManager().setCheckedLayers(client.getLocationManager().getCheckedLocations());
 
             //give our item manager the list of received items to give to players as they log in.
             APRandomizer.getItemManager().setReceivedItems(client.getItemManager().getReceivedItemIDs());
 
+            if(APRandomizer.getServer().getPlayerList().getPlayers().size() >= 1) {
+                APRandomizer.getAP().setGameState(ClientStatus.CLIENT_READY);
+            }
+
             //catch up all connected players to the list just received.
             APRandomizer.server.execute(() -> {
-                for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                    APRandomizer.getItemManager().catchUpPlayer(player);
-                }
                 APRandomizer.getGoalManager().updateInfoBar();
             });
 

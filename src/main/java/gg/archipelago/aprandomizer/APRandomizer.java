@@ -10,12 +10,21 @@ import gg.archipelago.aprandomizer.managers.advancementmanager.LayerManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.client.network.client.BouncePacket;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.border.WorldBorder;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.criteria.ObjectiveCriteria;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -56,7 +65,7 @@ public class APRandomizer {
     }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
-    static private WorldData worldData;
+    static public WorldData worldData;
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
@@ -166,7 +175,6 @@ public class APRandomizer {
         server = event.getServer();
     }
 
-    @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
@@ -184,14 +192,9 @@ public class APRandomizer {
         server.getGameRules().getRule(GameRules.RULE_FALL_DAMAGE).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
-        server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);
-        server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).value = 0;
-        server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).onChanged(server);
         server.getGameRules().getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false, server);
-        server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
-        server.getGameRules().getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(true, server);
         server.getGameRules().getRule(GameRules.RULE_DOMOBLOOT).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DOENTITYDROPS).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DOBLOCKDROPS).set(false, server);
@@ -201,7 +204,7 @@ public class APRandomizer {
         //fetch our custom world save data we attach to the worlds.
         worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
-        layerManager.setCheckedLayers(worldData.getLocations());
+        layerManager.setCheckedLayers(new HashSet<>(worldData.getLocations()));
 
 
         //check if APMC data is present and if the seed matches what we expect
@@ -225,6 +228,11 @@ public class APRandomizer {
         }
 
         if (jailPlayers) {
+            if(!server.getScoreboard().hasObjective("deaths")) {
+                Objective deaths = server.getScoreboard().addObjective("deaths", ObjectiveCriteria.DEATH_COUNT, Component.literal("oopses"), ObjectiveCriteria.RenderType.INTEGER);
+                server.getScoreboard().setDisplayObjective(Scoreboard.DISPLAY_SLOT_SIDEBAR, deaths);
+            }
+
             for (int x = -5; x <= -1; x++) {
                 for (int z = -5; z <= -1; z++) {
                     overworld.setBlock(new BlockPos(x, 128, z), Blocks.BEDROCK.defaultBlockState(), 2);
@@ -237,17 +245,33 @@ public class APRandomizer {
                 }
             }
 
-            //stone
-            for (int x = 0; x <= 15; x++) {
-                for (int z = 0; z <= 15; z++) {
-                    for (int y = -63; y <= 128; y++) {
-                        overworld.setBlock(new BlockPos(x, y, z), Blocks.STONE.defaultBlockState(), 2);
-                    }
-                }
-            }
+            StructureTemplate endChunk = overworld.getStructureManager().get(new ResourceLocation(MODID,"end1")).get();
+            BlockPos endChunkPos = new BlockPos(0,-63,0);
+            endChunk.placeInWorld(overworld,endChunkPos,endChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
+
+            StructureTemplate netherChunk = overworld.getStructureManager().get(new ResourceLocation(MODID,"nether1")).get();
+            BlockPos netherChunkPos = new BlockPos(0,-15,0);
+            netherChunk.placeInWorld(overworld,netherChunkPos,netherChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
+
+            StructureTemplate overworld1Chunk = overworld.getStructureManager().get(new ResourceLocation(MODID,"overworld1")).get();
+            BlockPos overworld1ChunkPos = new BlockPos(0,33,0);
+            overworld1Chunk.placeInWorld(overworld,overworld1ChunkPos,overworld1ChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
+
+            StructureTemplate overworld2Chunk = overworld.getStructureManager().get(new ResourceLocation(MODID,"overworld2")).get();
+            BlockPos overworld2ChunkPos = new BlockPos(0,81,0);
+            overworld2Chunk.placeInWorld(overworld,overworld2ChunkPos,overworld2ChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
 
             overworld.setDefaultSpawnPos(new BlockPos(-3, 129, -3), 0f);
             jailCenter = overworld.getSharedSpawnPos();
+
+            WorldBorder border = overworld.getWorldBorder();
+            border.setCenter(-2.5,-2.5);
+            border.setSize(5);
+            border.setWarningBlocks(0);
+            border.setWarningTime(0);
+            border.setDamageSafeZone(0);
+            border.setDamagePerBlock(Double.MAX_VALUE);
+
         }
 
         if (apmcData.state == APMCData.State.VALID && apmcData.server != null) {

@@ -12,11 +12,11 @@ public class onServerTick {
     static double count = 0;
     @SubscribeEvent
     static public void serverTickEvent(TickEvent.ServerTickEvent event) {
+        if(++count < 20)
+            return;
+        count = 0;
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             double y = Math.floor(player.getY());
-            if(++count < 20)
-                return;
-            count = 0;
             Utils.sendActionBarToPlayer(player,"Current feet Y level: " + (int)y);
         }
     }

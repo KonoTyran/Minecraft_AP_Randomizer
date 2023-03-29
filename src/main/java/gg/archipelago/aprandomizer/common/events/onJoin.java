@@ -3,11 +3,15 @@ package gg.archipelago.aprandomizer.common.events;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.client.ClientStatus;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.ServerScoreboard;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.scores.Objective;
+import net.minecraft.world.scores.Score;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -26,11 +30,6 @@ public class onJoin {
         if(APRandomizer.isRace())
                 player.setGameMode(GameType.SURVIVAL);
 
-        MobEffectInstance saturation = new MobEffectInstance(MobEffects.SATURATION,MobEffectInstance.INFINITE_DURATION,1,false,false,false);
-        player.addEffect(saturation);
-
-        MobEffectInstance nightVision = new MobEffectInstance(MobEffects.NIGHT_VISION,MobEffectInstance.INFINITE_DURATION,1,false,false,false);
-        player.addEffect(nightVision);
 
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.MISSING)
@@ -40,9 +39,18 @@ public class onJoin {
         else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
 
+        if(APRandomizer.getAP().isConnected() && APRandomizer.isJailPlayers()) {
+            APRandomizer.getAP().setGameState(ClientStatus.CLIENT_READY);
+        }
+
+        ServerScoreboard scoreboard = APRandomizer.getServer().getScoreboard();
+        Objective stats = scoreboard.getObjective("deaths");
+        if(stats != null) {
+            scoreboard.getOrCreatePlayerScore(player.getScoreboardName(), stats);
+        }
+
 
         APRandomizer.getGoalManager().updateInfoBar();
-        APRandomizer.getItemManager().catchUpPlayer(player);
 
         if(APRandomizer.isJailPlayers()) {
             BlockPos jail = APRandomizer.getJailPosition();

@@ -24,7 +24,7 @@ public class QueuedTitle {
         this.fadeOut = fadeOut;
         this.subTitle = subTitle;
         this.title = title;
-        this.ticks = fadeIn + stay + fadeOut + 20;
+        this.ticks = fadeIn + stay + fadeOut;
     }
 
     public QueuedTitle(List<ServerPlayer> players, int fadeIn, int stay, int fadeOut, Component subTitle, Component title,Component chatMessage) {

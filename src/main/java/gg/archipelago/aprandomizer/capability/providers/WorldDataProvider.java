@@ -52,6 +52,7 @@ public class WorldDataProvider implements ICapabilitySerializable<Tag> {
         nbt.putInt("dragonState", worldData.getDragonState());
         nbt.putString("seedName", worldData.getSeedName());
         nbt.putBoolean("jailPlayers", worldData.getJailPlayers());
+        nbt.putLong("index", worldData.getIndex());
         return nbt;
     }
 
@@ -62,6 +63,7 @@ public class WorldDataProvider implements ICapabilitySerializable<Tag> {
             worldData.setSeedName(read.getString("seedName"));
             worldData.setDragonState(read.getInt("dragonState"));
             worldData.setJailPlayers(read.getBoolean("jailPlayers"));
+            worldData.setIndex(read.getLong("index"));
         }
     }
 }

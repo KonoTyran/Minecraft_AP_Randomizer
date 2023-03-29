@@ -7,20 +7,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
-public class SandRain implements Trap {
+public class AnvilTrap implements Trap {
+
     @Override
     public void trigger(ServerPlayer player) {
         APRandomizer.getServer().execute(() -> {
             ServerLevel world = APRandomizer.getServer().overworld();
             Vec3 pos = player.position();
-            int radius = 5;
-            for (int x = (int)pos.x - radius; x <= (int)pos.x + radius; x++) {
-                for (int z = (int)pos.z - radius; z <= (int)pos.z + radius; z++) {
-                    BlockPos blockPos = new BlockPos(x, (int)pos.y + 15, z);
-                    if(world.isEmptyBlock(blockPos))
-                        world.setBlock(blockPos, Blocks.SAND.defaultBlockState(), 3);
-                }
-            }
+            BlockPos blockPos = new BlockPos(player.getBlockX(), (int)pos.y + 6, player.getBlockZ());
+            if(world.isEmptyBlock(blockPos))
+                world.setBlock(blockPos, Blocks.ANVIL.defaultBlockState(), 3);
         });
     }
 }

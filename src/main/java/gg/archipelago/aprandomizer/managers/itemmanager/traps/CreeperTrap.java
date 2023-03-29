@@ -15,6 +15,11 @@ public class CreeperTrap implements Trap {
     public CreeperTrap(int numberOfCreepers) {
         this.numberOfCreepers = numberOfCreepers;
     }
+
+    public CreeperTrap() {
+        this(3);
+    }
+
     @Override
     public void trigger(ServerPlayer player) {
         APRandomizer.getServer().execute(() -> {
@@ -22,6 +27,9 @@ public class CreeperTrap implements Trap {
             Vec3 pos = player.position();
             for (int i = 0; i < numberOfCreepers; i++) {
                 Creeper creeper = EntityType.CREEPER.create(world);
+                if(creeper == null)
+                    continue;
+                creeper.setTarget(player);
                 Vec3 offset = Utils.getRandomPosition(pos, 5);
                 creeper.moveTo(offset);
                 world.addFreshEntity(creeper);

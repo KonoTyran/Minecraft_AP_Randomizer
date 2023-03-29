@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.managers;
 import gg.archipelago.aprandomizer.managers.advancementmanager.LayerManager;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
+import gg.archipelago.client.ClientStatus;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -31,7 +32,7 @@ public class GoalManager {
     public void initializeInfoBar() {
         CustomBossEvents bossInfoManager = APRandomizer.getServer().getCustomBossEvents();
         layerDugBar = bossInfoManager.create(new ResourceLocation(APRandomizer.MODID,"layer-dug-bar"), Component.literal(""));
-        layerDugBar.setMax(100);
+        layerDugBar.setMax(192);
         layerDugBar.setColor(BossEvent.BossBarColor.BLUE);
         layerDugBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
 
@@ -65,7 +66,7 @@ public class GoalManager {
 
         connectionInfoBar.setVisible(!APRandomizer.isConnected());
 
-        layerDugBar.setName(Component.literal("Layers Dug"));
+        layerDugBar.setName(Component.literal("Layers Dug (" + layerManager.getFinishedAmount() + "/192)"));
 
     }
 
@@ -73,10 +74,8 @@ public class GoalManager {
         if(!APRandomizer.isConnected())
             return;
 
-        //todo: check for fully dug chunk.
-    }
-
-    public boolean goalsDone() {
-        return layerManager.getFinishedAmount() >= 319; //todo: Count this correctly.
+        if(layerManager.getFinishedAmount() >= 192) {
+            APRandomizer.getAP().setGameState(ClientStatus.CLIENT_GOAL);
+        }
     }
 }

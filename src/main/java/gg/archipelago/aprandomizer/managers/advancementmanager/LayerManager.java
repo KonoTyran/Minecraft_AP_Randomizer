@@ -17,7 +17,7 @@ public class LayerManager {
 
     private static final Set<Integer> checkLayers = new HashSet<>();
 
-    private static final Set<Integer> clearedLayers = new HashSet<>();
+    private static final Set<Long> clearedLayers = new HashSet<>();
 
     public static final long START_INDEX = 42000;
 
@@ -26,7 +26,7 @@ public class LayerManager {
         layerCheck:
         for (int y : checkLayers) {
 
-            if(clearedLayers.contains(y))
+            if(clearedLayers.contains((long)y))
                 continue;
             Level overWorld = APRandomizer.server.getLevel(Level.OVERWORLD);
             assert overWorld != null;
@@ -39,22 +39,26 @@ public class LayerManager {
                 }
             }
             //layer clear? nice!!!
-            clearedLayers.add(y);
-            Utils.sendTitleToAll(Component.literal("Layer " + y +" clear!"),Component.empty(), 10,20,10);
-            APRandomizer.getGoalManager().updateInfoBar();
-            APRandomizer.getAP().checkLocation(y + 64 + START_INDEX);
+            clearedLayers.add((long)y);
+            Utils.sendTitleToAll(Component.literal("Layer " + y +" clear!"),Component.empty(), 0,20,0);
+            APRandomizer.getGoalManager().updateGoal(true);
+            APRandomizer.getAP().checkLocation(y + 63 + START_INDEX);
         }
         checkLayers.clear();
 
     }
 
     public void addLayerCheck(int y) {
-        checkLayers.add(y);
+        if(y <= 128) {
+            checkLayers.add(y);
+        }
     }
 
-    public void setCheckedLayers(Set<Integer> locations) {
+    public void setCheckedLayers(Set<Long> locations) {
         clearedLayers.clear();
-        clearedLayers.addAll(locations);
+        for (Long location : locations) {
+            clearedLayers.add(location - 63 - START_INDEX);
+        }
     }
 
     public int getFinishedAmount() {
