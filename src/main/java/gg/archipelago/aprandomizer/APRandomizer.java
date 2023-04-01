@@ -183,12 +183,11 @@ public class APRandomizer {
         itemManager = new ItemManager();
         goalManager = new GoalManager();
 
-        ServerLevel overworld = server.getLevel(Level.OVERWORLD);
-        assert overworld != null;
+        ServerLevel overworld = server.overworld();
 
         server.getGameRules().getRule(GameRules.RULE_LIMITED_CRAFTING).set(true, server);
         server.getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
-        server.getGameRules().getRule(GameRules.RULE_ANNOUNCE_ADVANCEMENTS).set(false, server);
+        server.getGameRules().getRule(GameRules.RULE_ANNOUNCE_ADVANCEMENTS).set(true, server);
         server.getGameRules().getRule(GameRules.RULE_FALL_DAMAGE).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
         server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
@@ -202,7 +201,7 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = overworld.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
         jailPlayers = worldData.getJailPlayers();
         layerManager.setCheckedLayers(new HashSet<>(worldData.getLocations()));
 
@@ -229,7 +228,7 @@ public class APRandomizer {
 
         if (jailPlayers) {
             if(!server.getScoreboard().hasObjective("deaths")) {
-                Objective deaths = server.getScoreboard().addObjective("deaths", ObjectiveCriteria.DEATH_COUNT, Component.literal("oopses"), ObjectiveCriteria.RenderType.INTEGER);
+                Objective deaths = server.getScoreboard().addObjective("deaths", ObjectiveCriteria.DEATH_COUNT, Component.literal("deaths"), ObjectiveCriteria.RenderType.INTEGER);
                 server.getScoreboard().setDisplayObjective(Scoreboard.DISPLAY_SLOT_SIDEBAR, deaths);
             }
 
@@ -262,10 +261,10 @@ public class APRandomizer {
             overworld2Chunk.placeInWorld(overworld,overworld2ChunkPos,overworld2ChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
 
             overworld.setDefaultSpawnPos(new BlockPos(-3, 129, -3), 0f);
-            jailCenter = overworld.getSharedSpawnPos();
+            jailCenter = new BlockPos(0,127,0);
 
             WorldBorder border = overworld.getWorldBorder();
-            border.setCenter(-2.5,-2.5);
+            border.setCenter(ServerLevel.END_SPAWN_POINT.getX()+.5,ServerLevel.END_SPAWN_POINT.getZ()+.5);
             border.setSize(5);
             border.setWarningBlocks(0);
             border.setWarningTime(0);

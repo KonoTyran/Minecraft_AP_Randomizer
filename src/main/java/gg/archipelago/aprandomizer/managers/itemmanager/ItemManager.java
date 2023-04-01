@@ -155,10 +155,6 @@ public class ItemManager {
     private static final HashMap<String, MobEffectInstance> permanentEffects = new HashMap<>();
 
     public ItemManager() {
-        ItemStack scaffolding = new ItemStack(Items.SCAFFOLDING, 64);
-        scaffolding.getOrCreateTag().putString("key", "scaffolding");
-        permanentItems.put("scaffolding", scaffolding);
-
         permanentEffects.put("saturation", new MobEffectInstance(MobEffects.SATURATION, MobEffectInstance.INFINITE_DURATION, 0, true, false));
     }
 

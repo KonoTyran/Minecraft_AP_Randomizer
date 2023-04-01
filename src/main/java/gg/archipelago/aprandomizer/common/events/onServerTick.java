@@ -1,5 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
+import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.TickEvent;
@@ -12,6 +13,8 @@ public class onServerTick {
     static double count = 0;
     @SubscribeEvent
     static public void serverTickEvent(TickEvent.ServerTickEvent event) {
+        if(APRandomizer.isJailPlayers())
+            return;
         if(++count < 20)
             return;
         count = 0;

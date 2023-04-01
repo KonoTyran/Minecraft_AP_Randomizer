@@ -6,10 +6,14 @@ import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.client.ClientStatus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.ServerScoreboard;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.scores.Objective;
 import net.minecraft.world.scores.Score;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -53,9 +57,23 @@ public class onJoin {
         APRandomizer.getGoalManager().updateInfoBar();
 
         if(APRandomizer.isJailPlayers()) {
-            BlockPos jail = APRandomizer.getJailPosition();
-            player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
+            ServerLevel end = APRandomizer.getServer().getLevel(Level.END);
+            player.changeDimension(end);
+            WorldBorder border = end.getWorldBorder();
+            border.setCenter(ServerLevel.END_SPAWN_POINT.getX()+.5,ServerLevel.END_SPAWN_POINT.getZ()+.5);
+            border.setSize(5);
+            border.setWarningBlocks(0);
+            border.setWarningTime(0);
+            border.setDamageSafeZone(0);
+            border.setDamagePerBlock(Double.MAX_VALUE);
+//            player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
+//            //player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
             player.setGameMode(GameType.SURVIVAL);
+//            for (int x = -5; x <= -1; x++) {
+//                for (int z = -5; z <= -1; z++) {
+//                    end.setBlock(new BlockPos(x, 128, z), Blocks.BARRIER.defaultBlockState(), 2);
+//                }
+//            }
         }
     }
 }

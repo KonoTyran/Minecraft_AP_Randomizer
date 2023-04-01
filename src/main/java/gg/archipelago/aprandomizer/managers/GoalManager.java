@@ -43,7 +43,7 @@ public class GoalManager {
         connectionInfoBar.setOverlay(BossEvent.BossBarOverlay.PROGRESS);
 
         updateInfoBar();
-        layerDugBar.setVisible(true);
+        //layerDugBar.setVisible(true);
         connectionInfoBar.setVisible(true);
     }
 
@@ -65,6 +65,7 @@ public class GoalManager {
         layerDugBar.setValue(layerManager.getFinishedAmount());
 
         connectionInfoBar.setVisible(!APRandomizer.isConnected());
+        layerDugBar.setVisible(!APRandomizer.isJailPlayers());
 
         layerDugBar.setName(Component.literal("Layers Dug (" + layerManager.getFinishedAmount() + "/192)"));
 
