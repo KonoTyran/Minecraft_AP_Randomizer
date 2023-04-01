@@ -3,7 +3,7 @@
     "icon": {
       "item": "minecraft:stone_button"
     },
-    "title": "False Start.",
+    "title": "False Start",
     "description": "Hey, who said you could start early.",
     "frame": "task",
     "show_toast": true,

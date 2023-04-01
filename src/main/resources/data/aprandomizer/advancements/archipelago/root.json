@@ -1,13 +1,15 @@
 {
   "display": {
     "icon": {
-      "item": "minecraft:target"
+      "item": "minecraft:stone_shovel"
     },
-    "title": "Archipelago - Dig",
-    "description": "Congradulations, you used \"/start\" to start the game",
+    "title": "Archipelago",
+    "description": "Congradulations, the game has started",
     "frame": "task",
     "show_toast": true,
-    "announce_to_chat": true
+    "announce_to_chat": true,
+    "hidden": false,
+    "background": "minecraft:textures/block/bamboo_block.png"
   },
   "criteria": {
     "impossible": {

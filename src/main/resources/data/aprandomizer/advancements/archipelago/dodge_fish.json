@@ -1,16 +1,16 @@
 {
   "display": {
     "icon": {
-      "item": "minecraft:golden_pickaxe"
+      "item": "minecraft:salmon"
     },
-    "title": "Why tho?",
-    "description": "Why would you do this?",
+    "title": "If you can dodge a fish",
+    "description": "Evade all members of a goon squad trap.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false
   },
-  "parent": "aprandomizer:archipelago/use_true_pick",
+  "parent": "aprandomizer:archipelago/get_trap",
   "criteria": {
     "impossible": {
       "trigger": "minecraft:impossible"

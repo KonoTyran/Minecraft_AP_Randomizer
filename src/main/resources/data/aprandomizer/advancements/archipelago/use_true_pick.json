@@ -3,14 +3,14 @@
     "icon": {
       "item": "minecraft:golden_pickaxe"
     },
-    "title": "Why tho?",
-    "description": "Why would you do this?",
+    "title": "Behold the power",
+    "description": "Use a True Golden Pick to clear a full layer.",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false
   },
-  "parent": "aprandomizer:archipelago/use_true_pick",
+  "parent": "aprandomizer:archipelago/punch_tree",
   "criteria": {
     "impossible": {
       "trigger": "minecraft:impossible"

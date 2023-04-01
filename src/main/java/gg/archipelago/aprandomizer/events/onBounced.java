@@ -2,11 +2,13 @@ package gg.archipelago.aprandomizer.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.managers.advancementmanager.CustomAdvancementHandler;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import gg.archipelago.client.ClientStatus;
 import gg.archipelago.client.events.ArchipelagoEventListener;
 import gg.archipelago.client.events.BouncedEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,6 +41,7 @@ public class onBounced {
                 for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                     player.seenCredits = true;
                     player.changeDimension(APRandomizer.getServer().overworld());
+                    CustomAdvancementHandler.grantAdvancement(player,new ResourceLocation(APRandomizer.MODID,"archipelago/root"));
                 }
             });
         }

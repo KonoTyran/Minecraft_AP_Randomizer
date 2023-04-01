@@ -2,6 +2,7 @@ package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.managers.advancementmanager.CustomAdvancementHandler;
 import gg.archipelago.aprandomizer.managers.itemmanager.powers.ExcavationPower;
 import gg.archipelago.aprandomizer.managers.itemmanager.powers.Power;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -186,6 +188,9 @@ public class ItemManager {
         } else if (trapData.containsKey(itemID)) {
             try {
                 trapData.get(itemID).call().trigger(player);
+                for (ServerPlayer serverPlayer : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                    CustomAdvancementHandler.grantAdvancement(serverPlayer,new ResourceLocation(APRandomizer.MODID,"archipelago/get_trap"));
+                }
             } catch (Exception ignored) {
             }
         }

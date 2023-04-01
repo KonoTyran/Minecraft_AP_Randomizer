@@ -31,8 +31,10 @@ public class onJoin {
     static void onPlayerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
 
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        if(APRandomizer.isRace())
-                player.setGameMode(GameType.SURVIVAL);
+        if(APRandomizer.isRace()) {
+            player.setGameMode(GameType.SURVIVAL);
+            APRandomizer.getServer().getPlayerList().deop(event.getEntity().getGameProfile());
+        }
 
 
         APMCData data = APRandomizer.getApmcData();

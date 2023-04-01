@@ -1,7 +1,10 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.managers.advancementmanager.CustomAdvancementHandler;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.*;
 import net.minecraftforge.common.extensions.IForgeBlock;
 import net.minecraftforge.event.level.BlockEvent;
@@ -44,6 +47,7 @@ public class onBlockBreak {
                     event.getLevel().destroyBlock(new BlockPos(x, layer, z),true);
                 }
             }
+            CustomAdvancementHandler.grantAdvancement((ServerPlayer)event.getPlayer(),new ResourceLocation(APRandomizer.MODID,"archipelago/use_true_pick"));
             APRandomizer.getLayerManager().addLayerCheck(layer);
         }
     }

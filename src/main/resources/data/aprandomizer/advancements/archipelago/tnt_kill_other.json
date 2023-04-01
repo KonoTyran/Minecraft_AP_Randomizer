@@ -1,16 +1,16 @@
 {
   "display": {
     "icon": {
-      "item": "minecraft:golden_pickaxe"
+      "item": "minecraft:tnt"
     },
-    "title": "Why tho?",
-    "description": "Why would you do this?",
+    "title": "Acceptable losses",
+    "description": "Kill a player with TNT",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false
   },
-  "parent": "aprandomizer:archipelago/use_true_pick",
+  "parent": "aprandomizer:archipelago/root",
   "criteria": {
     "impossible": {
       "trigger": "minecraft:impossible"

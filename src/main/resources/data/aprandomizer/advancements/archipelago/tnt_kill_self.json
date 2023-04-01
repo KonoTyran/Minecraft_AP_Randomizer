@@ -1,16 +1,16 @@
 {
   "display": {
     "icon": {
-      "item": "minecraft:golden_pickaxe"
+      "item": "minecraft:tnt"
     },
-    "title": "Why tho?",
-    "description": "Why would you do this?",
+    "title": "Explosions Expert",
+    "description": "Kill yourself with TNT",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false
   },
-  "parent": "aprandomizer:archipelago/use_true_pick",
+  "parent": "aprandomizer:archipelago/tnt_kill_other",
   "criteria": {
     "impossible": {
       "trigger": "minecraft:impossible"

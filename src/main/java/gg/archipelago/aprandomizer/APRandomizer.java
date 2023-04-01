@@ -69,7 +69,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.19.4 v-1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.19.4 version (-1) Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -147,24 +147,12 @@ public class APRandomizer {
     }
 
     public static boolean isRace() {
+        //return true;
         return getApmcData().race;
-    }
-
-    public static void sendBounce(BouncePacket packet) {
-        if (apClient != null)
-            apClient.sendBounce(packet);
     }
 
     public static GoalManager getGoalManager() {
         return goalManager;
-    }
-
-    public static void setLastDeathTimestamp(double deathTime) {
-        lastDeathTimestamp = deathTime;
-    }
-
-    public static double getLastDeathTimestamp() {
-        return lastDeathTimestamp;
     }
 
     @SubscribeEvent
