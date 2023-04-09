@@ -23,7 +23,7 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
     APClient(MinecraftServer server) {
         super();
 
-        this.setGame("Minecraft dig");
+        this.setGame("Minecraft Dig");
         this.setItemsHandlingFlags(ItemFlags.SEND_ITEMS + ItemFlags.SEND_OWN_ITEMS + ItemFlags.SEND_STARTING_INVENTORY);
         this.server = server;
 

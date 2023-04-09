@@ -61,15 +61,14 @@ public class APRandomizer {
     static private GoalManager goalManager;
     static private APMCData apmcData;
     static private final Set<Integer> validVersions = new HashSet<>() {{
-        this.add(-1); // april first
+        this.add(-1); // minecraft dig
     }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static public WorldData worldData;
-    static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.19.4 version (-1) Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.19.4 version (-2) Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
