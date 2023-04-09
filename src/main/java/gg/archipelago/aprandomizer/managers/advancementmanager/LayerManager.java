@@ -19,7 +19,7 @@ public class LayerManager {
 
     private static final Set<Long> clearedLayers = new HashSet<>();
 
-    public static final long START_INDEX = 42000;
+    public static final long START_INDEX = 50000;
 
     @SubscribeEvent
     public static void onTick(TickEvent.ServerTickEvent event) {

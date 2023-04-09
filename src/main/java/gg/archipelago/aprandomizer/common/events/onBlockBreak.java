@@ -47,6 +47,7 @@ public class onBlockBreak {
                     event.getLevel().destroyBlock(new BlockPos(x, layer, z),true);
                 }
             }
+            event.getPlayer().getInventory().removeItem(event.getPlayer().getMainHandItem());
             CustomAdvancementHandler.grantAdvancement((ServerPlayer)event.getPlayer(),new ResourceLocation(APRandomizer.MODID,"archipelago/use_true_pick"));
             APRandomizer.getLayerManager().addLayerCheck(layer);
         }

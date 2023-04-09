@@ -4,7 +4,6 @@ import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.events.AttemptedConnection;
 import gg.archipelago.aprandomizer.events.ConnectResult;
 import gg.archipelago.aprandomizer.events.ReceiveItem;
-import gg.archipelago.aprandomizer.events.onBounced;
 import gg.archipelago.client.ItemFlags;
 import gg.archipelago.client.Print.APPrint;
 import gg.archipelago.client.parts.NetworkItem;
@@ -24,7 +23,7 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
     APClient(MinecraftServer server) {
         super();
 
-        this.setGame("Minecraft");
+        this.setGame("Minecraft dig");
         this.setItemsHandlingFlags(ItemFlags.SEND_ITEMS + ItemFlags.SEND_OWN_ITEMS + ItemFlags.SEND_STARTING_INVENTORY);
         this.server = server;
 
@@ -34,7 +33,6 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
         this.getEventManager().registerListener(new ConnectResult(this));
         this.getEventManager().registerListener(new AttemptedConnection());
         this.getEventManager().registerListener(new ReceiveItem());
-        this.getEventManager().registerListener(new onBounced());
     }
 
     public SlotData getSlotData() {

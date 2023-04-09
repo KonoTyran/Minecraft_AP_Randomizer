@@ -45,6 +45,9 @@ public class onJoin {
         else if (data.state == APMCData.State.INVALID_SEED)
             Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
 
+        if(data.state != APMCData.State.VALID)
+            return;
+
         if(APRandomizer.getAP().isConnected() && APRandomizer.isJailPlayers()) {
             APRandomizer.getAP().setGameState(ClientStatus.CLIENT_READY);
         }
@@ -58,24 +61,8 @@ public class onJoin {
 
         APRandomizer.getGoalManager().updateInfoBar();
 
-        if(APRandomizer.isJailPlayers()) {
-            ServerLevel end = APRandomizer.getServer().getLevel(Level.END);
-            player.changeDimension(end);
-            WorldBorder border = end.getWorldBorder();
-            border.setCenter(ServerLevel.END_SPAWN_POINT.getX()+.5,ServerLevel.END_SPAWN_POINT.getZ()+.5);
-            border.setSize(5);
-            border.setWarningBlocks(0);
-            border.setWarningTime(0);
-            border.setDamageSafeZone(0);
-            border.setDamagePerBlock(Double.MAX_VALUE);
-//            player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
-//            //player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
-            player.setGameMode(GameType.SURVIVAL);
-//            for (int x = -5; x <= -1; x++) {
-//                for (int z = -5; z <= -1; z++) {
-//                    end.setBlock(new BlockPos(x, 128, z), Blocks.BARRIER.defaultBlockState(), 2);
-//                }
-//            }
-        }
+        BlockPos jail = APRandomizer.getJailPosition();
+        player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
+        player.setGameMode(GameType.SURVIVAL);
     }
 }

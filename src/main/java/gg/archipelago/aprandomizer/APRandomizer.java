@@ -158,7 +158,7 @@ public class APRandomizer {
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (apmcData.state != APMCData.State.VALID) {
-            LOGGER.error("invalid APMC file");
+            LOGGER.error("invalid APMC file. Reason: " + apmcData.state);
         }
         server = event.getServer();
     }
@@ -249,10 +249,10 @@ public class APRandomizer {
             overworld2Chunk.placeInWorld(overworld,overworld2ChunkPos,overworld2ChunkPos,new StructurePlaceSettings(), RandomSource.create(),2);
 
             overworld.setDefaultSpawnPos(new BlockPos(-3, 129, -3), 0f);
-            jailCenter = new BlockPos(0,127,0);
+            jailCenter = overworld.getSharedSpawnPos();
 
             WorldBorder border = overworld.getWorldBorder();
-            border.setCenter(ServerLevel.END_SPAWN_POINT.getX()+.5,ServerLevel.END_SPAWN_POINT.getZ()+.5);
+            border.setCenter(-2.5,-2.5);
             border.setSize(5);
             border.setWarningBlocks(0);
             border.setWarningTime(0);

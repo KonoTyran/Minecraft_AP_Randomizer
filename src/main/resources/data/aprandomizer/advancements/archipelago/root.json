@@ -3,8 +3,8 @@
     "icon": {
       "item": "minecraft:stone_shovel"
     },
-    "title": "Archipelago",
-    "description": "Congradulations, the game has started",
+    "title": "Minecraft Dig",
+    "description": "Congratulations, the game has started, now dig",
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,

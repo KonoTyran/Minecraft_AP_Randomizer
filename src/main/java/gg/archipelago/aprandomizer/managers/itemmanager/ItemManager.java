@@ -36,8 +36,10 @@ public class ItemManager {
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private long index = 50000;
+
     private final HashMap<Long, ProgressiveList<PermanentInterface>> progressiveItems = new HashMap<>() {{
-        put(42000L, new ProgressiveList<>() {{ //progressive pick
+        put(index++, new ProgressiveList<>() {{ //progressive pick
             add(new PermanentItem(new ItemStack(Items.IRON_PICKAXE), "pick"));
             add(new PermanentItem(new ItemStack(Items.DIAMOND_PICKAXE), "pick"));
 
@@ -61,7 +63,7 @@ public class ItemManager {
             eff11.enchant(Enchantments.BLOCK_EFFICIENCY, 11);
             add(new PermanentItem(eff11, "pick"));
         }});
-        put(42001L, new ProgressiveList<>() {{ //progressive shovel
+        put(index++, new ProgressiveList<>() {{ //progressive shovel
             add(new PermanentItem(new ItemStack(Items.IRON_SHOVEL), "shovel"));
             add(new PermanentItem(new ItemStack(Items.DIAMOND_SHOVEL), "shovel"));
 
@@ -77,21 +79,21 @@ public class ItemManager {
             eff7.enchant(Enchantments.BLOCK_EFFICIENCY, 7);
             add(new PermanentItem(eff7, "shovel"));
         }});
-        put(42002L, new ProgressiveList<>() {{ //progressive axe
+        put(index++, new ProgressiveList<>() {{ //progressive axe
             add(new PermanentItem(new ItemStack(Items.WOODEN_AXE), "axe"));
             add(new PermanentItem(new ItemStack(Items.STONE_AXE), "axe"));
             add(new PermanentItem(new ItemStack(Items.IRON_AXE), "axe"));
             add(new PermanentItem(new ItemStack(Items.DIAMOND_AXE), "axe"));
             add(new PermanentItem(new ItemStack(Items.NETHERITE_AXE), "axe"));
         }});
-        put(42003L, new ProgressiveList<>() {{ //progressive hoe
+        put(index++, new ProgressiveList<>() {{ //progressive hoe
             add(new PermanentItem(new ItemStack(Items.WOODEN_HOE), "hoe"));
             add(new PermanentItem(new ItemStack(Items.STONE_HOE), "hoe"));
             add(new PermanentItem(new ItemStack(Items.IRON_HOE), "hoe"));
             add(new PermanentItem(new ItemStack(Items.DIAMOND_HOE), "hoe"));
             add(new PermanentItem(new ItemStack(Items.NETHERITE_HOE), "hoe"));
         }});
-        put(42004L, new ProgressiveList<>() {{ //progressive hoe
+        put(index++, new ProgressiveList<>() {{ //progressive hoe
             add(new PermanentEffect(new MobEffectInstance(MobEffects.DIG_SPEED, MobEffectInstance.INFINITE_DURATION, 0, true, false), "haste"));
             add(new PermanentEffect(new MobEffectInstance(MobEffects.DIG_SPEED, MobEffectInstance.INFINITE_DURATION, 1, true, false), "haste"));
             add(new PermanentEffect(new MobEffectInstance(MobEffects.DIG_SPEED, MobEffectInstance.INFINITE_DURATION, 2, true, false), "haste"));
@@ -102,12 +104,12 @@ public class ItemManager {
     }};
 
     private final HashMap<Long, ItemStack> itemStacks = new HashMap<>() {{
-        put(42005L, new ItemStack(Items.TNT, 16));
+        put(index++, new ItemStack(Items.TNT, 16));
 
         ItemStack goldenPick = new ItemStack(Items.GOLDEN_PICKAXE);
         goldenPick.enchant(Enchantments.BLOCK_EFFICIENCY, 10);
         goldenPick.enchant(Enchantments.UNBREAKING, 5);
-        put(42006L, goldenPick);
+        put(index++, goldenPick);
 
         ItemStack trueGoldenPick = new ItemStack(Items.GOLDEN_PICKAXE);
         addLore(trueGoldenPick,"True Golden Pickaxe", new String[] {
@@ -123,32 +125,32 @@ public class ItemManager {
         trueGoldenPick.enchant(Enchantments.BLOCK_EFFICIENCY, 2);
         trueGoldenPick.setDamageValue(trueGoldenPick.getMaxDamage() - 1);
         trueGoldenPick.getOrCreateTag().putBoolean("truepick", true);
-        put(42007L, trueGoldenPick);
+        put(index++, trueGoldenPick);
 
         ItemStack DefensiveFish = new ItemStack(Items.SALMON);
         DefensiveFish.enchant(Enchantments.KNOCKBACK, 5);
-        put(42008L, DefensiveFish);
+        put(index++, DefensiveFish);
     }};
 
     private final HashMap<Long, Callable<Trap>> trapData = new HashMap<>() {{
-        put(42009L, BeeTrap::new);
-        put(42010L, CreeperTrap::new);
-        put(42011L, SandRain::new);
-        put(42012L, FakeWither::new);
-        put(42013L, GoonTrap::new);
-        put(42014L, FishFountainTrap::new);
-        put(42015L, MiningFatigueTrap::new);
-        put(42016L, BlindnessTrap::new);
-        put(42017L, PhantomTrap::new);
-        put(42018L, WaterTrap::new);
-        put(42019L, GhastTrap::new);
-        put(42020L, LevitateTrap::new);
-        put(42021L, AboutFaceTrap::new);
-        put(42022L, AnvilTrap::new);
+        put(index++, BeeTrap::new);
+        put(index++, CreeperTrap::new);
+        put(index++, SandRain::new);
+        put(index++, FakeWither::new);
+        put(index++, GoonTrap::new);
+        put(index++, FishFountainTrap::new);
+        put(index++, MiningFatigueTrap::new);
+        put(index++, BlindnessTrap::new);
+        put(index++, PhantomTrap::new);
+        put(index++, WaterTrap::new);
+        put(index++, GhastTrap::new);
+        put(index++, LevitateTrap::new);
+        put(index++, AboutFaceTrap::new);
+        put(index++, AnvilTrap::new);
     }};
 
     private final HashMap<Long, Power> powers = new HashMap<>() {{
-        put(42023L, new ExcavationPower());
+        put(index++, new ExcavationPower());
     }};
 
     private ArrayList<Long> receivedItems = new ArrayList<>();
