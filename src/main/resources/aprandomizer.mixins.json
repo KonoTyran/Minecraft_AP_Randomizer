@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "refmap": "aprandomizer.refmap.json",
   "mixins": [
+    "MixinAdvancementLoad",
     "MixinPropertyManager",
     "MixinRaid"
   ],

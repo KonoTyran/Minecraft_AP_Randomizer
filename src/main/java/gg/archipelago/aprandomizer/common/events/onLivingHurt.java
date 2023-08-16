@@ -7,6 +7,7 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -57,7 +58,7 @@ public class onLivingHurt {
         if (entity instanceof Pig) {
             if (entity.getPassengers().size() > 0) {
                 if (entity.getPassengers().get(0) instanceof ServerPlayer) {
-                    if (event.getSource().msgId.equals("fall")) {
+                    if (event.getSource().getMsgId().equals("fall")) {
                         ServerPlayer player = (ServerPlayer) entity.getPassengers().get(0);
                         Advancement advancement = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/ride_pig"));
                         AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
@@ -75,7 +76,7 @@ public class onLivingHurt {
         if (e instanceof ServerPlayer) {
             ServerPlayer player = (ServerPlayer) e;
             //Utils.sendMessageToAll("damage type: "+ event.getSource().getMsgId());
-            if (event.getAmount() >= 18 && !event.getSource().isExplosion() && !event.getSource().msgId.equals("fireball")) {
+            if (event.getAmount() >= 18 && !event.getSource().is(DamageTypes.EXPLOSION) && !event.getSource().getMsgId().equals("fireball")) {
                 Advancement a = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/overkill"));
                 AdvancementProgress ap = player.getAdvancements().getOrStartProgress(a);
                 if (!ap.isDone()) {

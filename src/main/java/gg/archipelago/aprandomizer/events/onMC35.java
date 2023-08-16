@@ -34,7 +34,7 @@ public class onMC35 {
             } catch (CommandSyntaxException ignored) {
             }
             eNBT.putString("id", event.getString("enemy"));
-            Entity entity = EntityType.loadEntityRecursive(eNBT, player.level, (spawnEntity) -> {
+            Entity entity = EntityType.loadEntityRecursive(eNBT, player.level(), (spawnEntity) -> {
                 Vec3 pos = player.position();
                 Vec3 offset = Utils.getRandomPosition(pos, 10);
                 spawnEntity.moveTo(offset.x, offset.y, offset.z, spawnEntity.yRotO, spawnEntity.xRotO);
@@ -45,7 +45,7 @@ public class onMC35 {
                     ((LivingEntity) entity).heal(((LivingEntity) entity).getMaxHealth());
                     ((LivingEntity) entity).setLastHurtByPlayer(player);
                 }
-                player.getLevel().addFreshEntity(entity);
+                player.level().addFreshEntity(entity);
             }
 
         }

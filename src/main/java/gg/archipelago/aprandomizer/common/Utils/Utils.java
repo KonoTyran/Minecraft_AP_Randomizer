@@ -222,14 +222,13 @@ public class Utils {
             if (itementity1 != null) {
                 itementity1.makeFakeItem();
             }
-
-            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             player.inventoryMenu.broadcastChanges();
         } else {
             ItemEntity itementity = player.drop(itemstack, false);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
-                itementity.setOwner(player.getUUID());
+                itementity.setTarget(player.getUUID());
             }
         }
     }

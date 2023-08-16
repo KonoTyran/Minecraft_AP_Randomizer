@@ -177,7 +177,6 @@ public class RecipeData {
             for (String namespaceID : entry.getValue().namespaceIDs) {
                 LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(), namespaceID);
                 if (iRecipe.getId().toString().equals(namespaceID)) {
-                    LOGGER.trace("injected recipe {} into {},", iRecipe.getResultItem().getDisplayName().getString(), namespaceID);
                     entry.getValue().addIRecipe(iRecipe);
                     return true;
                 }
@@ -189,7 +188,6 @@ public class RecipeData {
                 for (String s : namespaceIDs) {
                     LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(), s);
                     if (iRecipe.getId().toString().equals(s)) {
-                        LOGGER.trace("injected recipe {} into {} at tier {}", iRecipe.getResultItem().getDisplayName().getString(), s, i + 1);
                         entry.getValue().addIRecipe(iRecipe, i);
                         return true;
                     }

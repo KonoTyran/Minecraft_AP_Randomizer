@@ -6,9 +6,13 @@ import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.client.events.ArchipelagoEventListener;
 import gg.archipelago.client.events.BouncedEvent;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +28,7 @@ public class onDeathLink {
         if(event.tags.contains("DeathLink") && APRandomizer.getAP().getSlotData().deathlink) {
             if(event.getDouble("time") == APRandomizer.getLastDeathTimestamp())
                 return;
-            DeathLinkDamage deathLink = DeathLinkDamage.DEATH_LINK;
+
             GameRules.BooleanValue showDeathMessages = APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
             boolean showDeaths = showDeathMessages.get();
             if(showDeaths) {
@@ -36,7 +40,7 @@ public class onDeathLink {
             }
             showDeathMessages.set(false,APRandomizer.getServer());
             for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                player.hurt(deathLink , Float.MAX_VALUE);
+                player.hurt(new DeathLinkDamage() , Float.MAX_VALUE);
             }
             showDeathMessages.set(showDeaths,APRandomizer.getServer());
         }

@@ -18,7 +18,8 @@ import java.util.Properties;
 public abstract class MixinPropertyManager {
 
     @Inject(method = "loadFromFile(Ljava/nio/file/Path;)Ljava/util/Properties;", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT)
-    private static void onLoadFromFile(Path p_218969_0_, CallbackInfoReturnable<Properties> cir, Properties properties) {
+    private static void onLoadFromFile(Path pPath, CallbackInfoReturnable<Properties> cir) {
+        Properties properties = cir.getReturnValue();
         APMCData data = APRandomizer.getApmcData();
         LogManager.getLogger().info("Injecting Archipelago Seed");
 
@@ -27,6 +28,7 @@ public abstract class MixinPropertyManager {
         properties.setProperty("allow-flight", "true");
         properties.setProperty("level-name","Archipelago-"+ data.seed_name+"-P"+ data.player_id);
         properties.setProperty("level-type","default");
+        properties.setProperty("generator-settings","{}");
 
         if(data.race) {
             LogManager.getLogger().info("Archipelago race flag found enforcing race settings.");

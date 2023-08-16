@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.*;
 
@@ -22,126 +23,126 @@ import static gg.archipelago.aprandomizer.APRandomizer.*;
 
 public class AdvancementManager {
 
-    private final HashMap<String, Integer> advancementData = new HashMap<>() {{
-        put("minecraft:nether/obtain_crying_obsidian", 42000);
-        put("minecraft:nether/distract_piglin", 42001);
-        put("minecraft:story/obtain_armor", 42002);
-        put("minecraft:adventure/very_very_frightening", 42003);
-        put("minecraft:story/lava_bucket", 42004);
-        put("minecraft:end/kill_dragon", 42005);
-        put("minecraft:nether/all_potions", 42006);
-        put("minecraft:husbandry/tame_an_animal", 42007);
-        put("minecraft:nether/create_beacon", 42008);
-        put("minecraft:story/deflect_arrow", 42009);
-        put("minecraft:story/iron_tools", 42010);
-        put("minecraft:nether/brew_potion", 42011);
-        put("minecraft:end/dragon_egg", 42012);
-        put("minecraft:husbandry/fishy_business", 42013);
-        put("minecraft:nether/explore_nether", 42014);
-        put("minecraft:nether/ride_strider", 42015);
-        put("minecraft:adventure/sniper_duel", 42016);
-        put("minecraft:nether/root", 42017);
-        put("minecraft:end/levitate", 42018);
-        put("minecraft:nether/all_effects", 42019);
-        put("minecraft:adventure/bullseye", 42020);
-        put("minecraft:nether/get_wither_skull", 42021);
-        put("minecraft:husbandry/bred_all_animals", 42022);
-        put("minecraft:story/mine_stone", 42023);
-        put("minecraft:adventure/two_birds_one_arrow", 42024);
-        put("minecraft:story/enter_the_nether", 42025);
-        put("minecraft:adventure/whos_the_pillager_now", 42026);
-        put("minecraft:story/upgrade_tools", 42027);
-        put("minecraft:husbandry/tactical_fishing", 42028);
-        put("minecraft:story/cure_zombie_villager", 42029);
-        put("minecraft:end/find_end_city", 42030);
-        put("minecraft:story/form_obsidian", 42031);
-        put("minecraft:end/enter_end_gateway", 42032);
-        put("minecraft:nether/obtain_blaze_rod", 42033);
-        put("minecraft:nether/loot_bastion", 42034);
-        put("minecraft:adventure/shoot_arrow", 42035);
-        put("minecraft:husbandry/silk_touch_nest", 42036);
-        put("minecraft:adventure/arbalistic", 42037);
-        put("minecraft:end/respawn_dragon", 42038);
-        put("minecraft:story/smelt_iron", 42039);
-        put("minecraft:nether/charge_respawn_anchor", 42040);
-        put("minecraft:story/shiny_gear", 42041);
-        put("minecraft:end/elytra", 42042);
-        put("minecraft:adventure/summon_iron_golem", 42043);
-        put("minecraft:nether/return_to_sender", 42044);
-        put("minecraft:adventure/sleep_in_bed", 42045);
-        put("minecraft:end/dragon_breath", 42046);
-        put("minecraft:adventure/root", 42047);
-        put("minecraft:adventure/kill_all_mobs", 42048);
-        put("minecraft:story/enchant_item", 42049);
-        put("minecraft:adventure/voluntary_exile", 42050);
-        put("minecraft:story/follow_ender_eye", 42051);
-        put("minecraft:end/root", 42052);
-        put("minecraft:husbandry/obtain_netherite_hoe", 42053);
-        put("minecraft:adventure/totem_of_undying", 42054);
-        put("minecraft:adventure/kill_a_mob", 42055);
-        put("minecraft:adventure/adventuring_time", 42056);
-        put("minecraft:husbandry/plant_seed", 42057);
-        put("minecraft:nether/find_bastion", 42058);
-        put("minecraft:adventure/hero_of_the_village", 42059);
-        put("minecraft:nether/obtain_ancient_debris", 42060);
-        put("minecraft:nether/create_full_beacon", 42061);
-        put("minecraft:nether/summon_wither", 42062);
-        put("minecraft:husbandry/balanced_diet", 42063);
-        put("minecraft:nether/fast_travel", 42064);
-        put("minecraft:husbandry/root", 42065);
-        put("minecraft:nether/use_lodestone", 42066);
-        put("minecraft:husbandry/safely_harvest_honey", 42067);
-        put("minecraft:adventure/trade", 42068);
-        put("minecraft:nether/uneasy_alliance", 42069);
-        put("minecraft:story/mine_diamond", 42070);
-        put("minecraft:nether/find_fortress", 42071);
-        put("minecraft:adventure/throw_trident", 42072);
-        put("minecraft:story/root", 42073);
-        put("minecraft:adventure/honey_block_slide", 42074);
-        put("minecraft:adventure/ol_betsy", 42075);
-        put("minecraft:nether/netherite_armor", 42076);
-        put("minecraft:story/enter_the_end", 42077);
-        put("minecraft:husbandry/breed_an_animal", 42078);
-        put("minecraft:husbandry/complete_catalogue", 42079);
-        put("aprandomizer:archipelago/get_wood", 42080);
-        put("aprandomizer:archipelago/get_pickaxe", 42081);
-        put("aprandomizer:archipelago/hot_topic", 42082);
-        put("aprandomizer:archipelago/bake_bread", 42083);
-        put("aprandomizer:archipelago/the_lie", 42084);
-        put("aprandomizer:archipelago/ride_minecart", 42085);
-        put("aprandomizer:archipelago/craft_sword", 42086);
-        put("aprandomizer:archipelago/cow_tipper", 42087);
-        put("aprandomizer:archipelago/ride_pig", 42088);
-        put("aprandomizer:archipelago/overkill", 42089);
-        put("aprandomizer:archipelago/obtain_bookshelf", 42090);
-        put("aprandomizer:archipelago/overpowered", 42091);
-        put("minecraft:husbandry/wax_on", 42092);
-        put("minecraft:husbandry/wax_off", 42093);
-        put("minecraft:husbandry/axolotl_in_a_bucket", 42094);
-        put("minecraft:husbandry/kill_axolotl_target", 42095);
-        put("minecraft:adventure/spyglass_at_parrot", 42096);
-        put("minecraft:adventure/spyglass_at_ghast", 42097);
-        put("minecraft:adventure/spyglass_at_dragon", 42098);
-        put("minecraft:adventure/lightning_rod_with_villager_no_fire", 42099);
-        put("minecraft:adventure/walk_on_powder_snow_with_leather_boots", 42100);
-        put("minecraft:husbandry/make_a_sign_glow", 42101);
-        put("minecraft:husbandry/ride_a_boat_with_a_goat", 42102);
-        put("minecraft:adventure/fall_from_world_height", 42103);
-        put("minecraft:nether/ride_strider_in_overworld_lava", 42104);
-        put("minecraft:adventure/play_jukebox_in_meadows", 42105);
-        put("minecraft:adventure/trade_at_world_height", 42106);
+    private final HashMap<String, Long> advancementData = new HashMap<>() {{
+        put("minecraft:nether/obtain_crying_obsidian", 42000L);
+        put("minecraft:nether/distract_piglin", 42001L);
+        put("minecraft:story/obtain_armor", 42002L);
+        put("minecraft:adventure/very_very_frightening", 42003L);
+        put("minecraft:story/lava_bucket", 42004L);
+        put("minecraft:end/kill_dragon", 42005L);
+        put("minecraft:nether/all_potions", 42006L);
+        put("minecraft:husbandry/tame_an_animal", 42007L);
+        put("minecraft:nether/create_beacon", 42008L);
+        put("minecraft:story/deflect_arrow", 42009L);
+        put("minecraft:story/iron_tools", 42010L);
+        put("minecraft:nether/brew_potion", 42011L);
+        put("minecraft:end/dragon_egg", 42012L);
+        put("minecraft:husbandry/fishy_business", 42013L);
+        put("minecraft:nether/explore_nether", 42014L);
+        put("minecraft:nether/ride_strider", 42015L);
+        put("minecraft:adventure/sniper_duel", 42016L);
+        put("minecraft:nether/root", 42017L);
+        put("minecraft:end/levitate", 42018L);
+        put("minecraft:nether/all_effects", 42019L);
+        put("minecraft:adventure/bullseye", 42020L);
+        put("minecraft:nether/get_wither_skull", 42021L);
+        put("minecraft:husbandry/bred_all_animals", 42022L);
+        put("minecraft:story/mine_stone", 42023L);
+        put("minecraft:adventure/two_birds_one_arrow", 42024L);
+        put("minecraft:story/enter_the_nether", 42025L);
+        put("minecraft:adventure/whos_the_pillager_now", 42026L);
+        put("minecraft:story/upgrade_tools", 42027L);
+        put("minecraft:husbandry/tactical_fishing", 42028L);
+        put("minecraft:story/cure_zombie_villager", 42029L);
+        put("minecraft:end/find_end_city", 42030L);
+        put("minecraft:story/form_obsidian", 42031L);
+        put("minecraft:end/enter_end_gateway", 42032L);
+        put("minecraft:nether/obtain_blaze_rod", 42033L);
+        put("minecraft:nether/loot_bastion", 42034L);
+        put("minecraft:adventure/shoot_arrow", 42035L);
+        put("minecraft:husbandry/silk_touch_nest", 42036L);
+        put("minecraft:adventure/arbalistic", 42037L);
+        put("minecraft:end/respawn_dragon", 42038L);
+        put("minecraft:story/smelt_iron", 42039L);
+        put("minecraft:nether/charge_respawn_anchor", 42040L);
+        put("minecraft:story/shiny_gear", 42041L);
+        put("minecraft:end/elytra", 42042L);
+        put("minecraft:adventure/summon_iron_golem", 42043L);
+        put("minecraft:nether/return_to_sender", 42044L);
+        put("minecraft:adventure/sleep_in_bed", 42045L);
+        put("minecraft:end/dragon_breath", 42046L);
+        put("minecraft:adventure/root", 42047L);
+        put("minecraft:adventure/kill_all_mobs", 42048L);
+        put("minecraft:story/enchant_item", 42049L);
+        put("minecraft:adventure/voluntary_exile", 42050L);
+        put("minecraft:story/follow_ender_eye", 42051L);
+        put("minecraft:end/root", 42052L);
+        put("minecraft:husbandry/obtain_netherite_hoe", 42053L);
+        put("minecraft:adventure/totem_of_undying", 42054L);
+        put("minecraft:adventure/kill_a_mob", 42055L);
+        put("minecraft:adventure/adventuring_time", 42056L);
+        put("minecraft:husbandry/plant_seed", 42057L);
+        put("minecraft:nether/find_bastion", 42058L);
+        put("minecraft:adventure/hero_of_the_village", 42059L);
+        put("minecraft:nether/obtain_ancient_debris", 42060L);
+        put("minecraft:nether/create_full_beacon", 42061L);
+        put("minecraft:nether/summon_wither", 42062L);
+        put("minecraft:husbandry/balanced_diet", 42063L);
+        put("minecraft:nether/fast_travel", 42064L);
+        put("minecraft:husbandry/root", 42065L);
+        put("minecraft:nether/use_lodestone", 42066L);
+        put("minecraft:husbandry/safely_harvest_honey", 42067L);
+        put("minecraft:adventure/trade", 42068L);
+        put("minecraft:nether/uneasy_alliance", 42069L);
+        put("minecraft:story/mine_diamond", 42070L);
+        put("minecraft:nether/find_fortress", 42071L);
+        put("minecraft:adventure/throw_trident", 42072L);
+        put("minecraft:story/root", 42073L);
+        put("minecraft:adventure/honey_block_slide", 42074L);
+        put("minecraft:adventure/ol_betsy", 42075L);
+        put("minecraft:nether/netherite_armor", 42076L);
+        put("minecraft:story/enter_the_end", 42077L);
+        put("minecraft:husbandry/breed_an_animal", 42078L);
+        put("minecraft:husbandry/complete_catalogue", 42079L);
+        put("aprandomizer:archipelago/get_wood", 42080L);
+        put("aprandomizer:archipelago/get_pickaxe", 42081L);
+        put("aprandomizer:archipelago/hot_topic", 42082L);
+        put("aprandomizer:archipelago/bake_bread", 42083L);
+        put("aprandomizer:archipelago/the_lie", 42084L);
+        put("aprandomizer:archipelago/ride_minecart", 42085L);
+        put("aprandomizer:archipelago/craft_sword", 42086L);
+        put("aprandomizer:archipelago/cow_tipper", 42087L);
+        put("aprandomizer:archipelago/ride_pig", 42088L);
+        put("aprandomizer:archipelago/overkill", 42089L);
+        put("aprandomizer:archipelago/obtain_bookshelf", 42090L);
+        put("aprandomizer:archipelago/overpowered", 42091L);
+        put("minecraft:husbandry/wax_on", 42092L);
+        put("minecraft:husbandry/wax_off", 42093L);
+        put("minecraft:husbandry/axolotl_in_a_bucket", 42094L);
+        put("minecraft:husbandry/kill_axolotl_target", 42095L);
+        put("minecraft:adventure/spyglass_at_parrot", 42096L);
+        put("minecraft:adventure/spyglass_at_ghast", 42097L);
+        put("minecraft:adventure/spyglass_at_dragon", 42098L);
+        put("minecraft:adventure/lightning_rod_with_villager_no_fire", 42099L);
+        put("minecraft:adventure/walk_on_powder_snow_with_leather_boots", 42100L);
+        put("minecraft:husbandry/make_a_sign_glow", 42101L);
+        put("minecraft:husbandry/ride_a_boat_with_a_goat", 42102L);
+        put("minecraft:adventure/fall_from_world_height", 42103L);
+        put("minecraft:nether/ride_strider_in_overworld_lava", 42104L);
+        put("minecraft:adventure/play_jukebox_in_meadows", 42105L);
+        put("minecraft:adventure/trade_at_world_height", 42106L);
         // 1.19 advancements
-        put("minecraft:husbandry/allay_deliver_cake_to_note_block", 42107);
-        put("minecraft:husbandry/tadpole_in_a_bucket", 42108);
-        put("minecraft:adventure/kill_mob_near_sculk_catalyst", 42109);
-        put("minecraft:adventure/avoid_vibration", 42110);
-        put("minecraft:husbandry/leash_all_frog_variants", 42111);
-        put("minecraft:husbandry/froglights", 42112);
-        put("minecraft:husbandry/allay_deliver_item_to_player", 42113);
+        put("minecraft:husbandry/allay_deliver_cake_to_note_block", 42107L);
+        put("minecraft:husbandry/tadpole_in_a_bucket", 42108L);
+        put("minecraft:adventure/kill_mob_near_sculk_catalyst", 42109L);
+        put("minecraft:adventure/avoid_vibration", 42110L);
+        put("minecraft:husbandry/leash_all_frog_variants", 42111L);
+        put("minecraft:husbandry/froglights", 42112L);
+        put("minecraft:husbandry/allay_deliver_item_to_player", 42113L);
 
     }};
 
-    public final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
+    public static final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
         add(new ResourceLocation("adventure/very_very_frightening")); // Very Very Frightening
         add(new ResourceLocation("nether/all_potions")); // A Furious Cocktail
         add(new ResourceLocation("husbandry/bred_all_animals")); // Two by Two
@@ -172,45 +173,14 @@ public class AdvancementManager {
 
     }
 
-    @SubscribeEvent
-    public void onReload(AddReloadListenerEvent event) {
-        LOGGER.debug("Reload found.");
-        var advancementsList = event.getServerResources().getAdvancements().advancements;
-        advancementsList.getAllAdvancements().removeIf(
-                advancement -> advancement.getId().getPath().startsWith("recipes/")
-        );
 
-        Style hardStyle = Style.EMPTY.withBold(true).withColor(TextColor.parseColor("#FFA500"));
-        Component hardText = Component.literal(" (Hard)").withStyle(hardStyle);
-
-        var newAdvancements = new HashMap<ResourceLocation, Advancement.Builder>();
-        var advIterator = advancementsList.getAllAdvancements().iterator();
-        while (advIterator.hasNext()) {
-            var advancement = advIterator.next();
-            if(hardAdvancements.contains(advancement.getId())) {
-                advIterator.remove();
-                var display = advancement.getDisplay();
-                LOGGER.debug("Hard advancement " + advancement.getDisplay().getTitle().getString() + " found.");
-                var title = display.getTitle().copy().append(hardText);
-
-
-                var newDisplay = new DisplayInfo(display.getIcon(), title, display.getDescription(), display.getBackground(), display.getFrame(), true, false, false);
-                var advancementBuilder = advancement.deconstruct().display(newDisplay);
-                newAdvancements.put(advancement.getId(), advancementBuilder);
-                LOGGER.debug("Hard advancement " + newDisplay.getTitle().getString() + " modified.");
-            }
-        }
-
-        advancementsList.add(newAdvancements);
-    }
-
-    public int getAdvancementID(String namespacedID) {
+    public Long getAdvancementID(String namespacedID) {
         if (advancementData.containsKey(namespacedID))
             return advancementData.get(namespacedID);
-        return 0;
+        return 0L;
     }
 
-    public boolean hasAdvancement(int id) {
+    public boolean hasAdvancement(Long id) {
         return earnedAdvancements.contains(id);
     }
 

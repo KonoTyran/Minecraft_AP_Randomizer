@@ -69,7 +69,7 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
     @Override
     public void onPrintJson(APPrint apPrint, String type, int receiving, NetworkItem item) {
 
-        //don't print out messages if its an item send and the recipient is us.
+        //don't print out messages if it's an item send and the recipient is us.
         if(type.equals("ItemSend") && receiving != getSlot()) {
             Utils.sendFancyMessageToAll(apPrint);
         }

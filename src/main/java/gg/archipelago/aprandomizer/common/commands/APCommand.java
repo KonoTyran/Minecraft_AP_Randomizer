@@ -48,9 +48,8 @@ public class APCommand {
             source.getSource().sendFailure(Component.literal("Must be connected to an AP server to use this command"));
             return 0;
         }
-
         String enabled = (APRandomizer.getAP().getSlotData().deathlink) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(Component.literal("DeathLink is "+ enabled),false);
+        source.getSource().sendSuccess(() -> Component.literal("DeathLink is "+ enabled),false);
         return 1;
     }
 
@@ -69,7 +68,7 @@ public class APCommand {
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().deathlink) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(Component.literal("DeathLink is "+ enabled),false);
+        source.getSource().sendSuccess(() -> Component.literal("DeathLink is "+ enabled),false);
         return 1;
     }
 
@@ -80,7 +79,7 @@ public class APCommand {
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().MC35) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(Component.literal("MC35 is "+ enabled),false);
+        source.getSource().sendSuccess(() -> Component.literal("MC35 is "+ enabled),false);
         return 1;
     }
 
@@ -99,7 +98,7 @@ public class APCommand {
         }
 
         String enabled = (APRandomizer.getAP().getSlotData().MC35) ? "enabled" : "disabled";
-        source.getSource().sendSuccess(Component.literal("MC35 is "+ enabled),false);
+        source.getSource().sendSuccess(() -> Component.literal("MC35 is "+ enabled),false);
         return 1;
     }
 
