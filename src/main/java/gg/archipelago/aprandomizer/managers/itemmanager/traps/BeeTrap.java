@@ -2,7 +2,6 @@ package gg.archipelago.aprandomizer.managers.itemmanager.traps;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.aprandomizer.managers.itemmanager.Trap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EntityType;
@@ -16,6 +15,11 @@ public class BeeTrap implements Trap {
     public BeeTrap(int numberOfBees) {
         this.numberOfBees = numberOfBees;
     }
+
+    public BeeTrap() {
+        this(3);
+    }
+
     @Override
     public void trigger(ServerPlayer player) {
         APRandomizer.getServer().execute(() -> {

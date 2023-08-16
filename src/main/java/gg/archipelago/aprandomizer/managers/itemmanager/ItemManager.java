@@ -5,9 +5,8 @@ import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.aprandomizer.managers.itemmanager.traps.BeeTrap;
+import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -31,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 
 public class ItemManager {
     // Directly reference a log4j logger.
@@ -125,8 +125,22 @@ public class ItemManager {
         put(45028L, 50);
     }};
 
-    private final HashMap<Long, Trap> trapData = new HashMap<>() {{
-        put(45100L, new BeeTrap(3));
+    long index = 45100L;
+    private final HashMap<Long, Callable<Trap>> trapData = new HashMap<>() {{
+        put(index++, BeeTrap::new);
+        put(index++, CreeperTrap::new);
+        put(index++, SandRain::new);
+        put(index++, FakeWither::new);
+        put(index++, GoonTrap::new);
+        put(index++, FishFountainTrap::new);
+        put(index++, MiningFatigueTrap::new);
+        put(index++, BlindnessTrap::new);
+        put(index++, PhantomTrap::new);
+        put(index++, WaterTrap::new);
+        put(index++, GhastTrap::new);
+        put(index++, LevitateTrap::new);
+        put(index++, AboutFaceTrap::new);
+        put(index++, AnvilTrap::new);
     }};
 
     private ArrayList<Long> receivedItems = new ArrayList<>();
@@ -186,7 +200,10 @@ public class ItemManager {
             int xpValue = xpData.get(itemID);
             player.giveExperiencePoints(xpValue);
         } else if (trapData.containsKey(itemID)) {
-            trapData.get(itemID).trigger(player);
+            try {
+                trapData.get(itemID).call().trigger(player);
+            } catch (Exception ignored) {
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.managers.itemmanager;
+package gg.archipelago.aprandomizer.managers.itemmanager.traps;
 
 import net.minecraft.server.level.ServerPlayer;
 
