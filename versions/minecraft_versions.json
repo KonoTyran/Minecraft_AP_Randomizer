@@ -3,8 +3,8 @@
     {
       "version": 9,
       "java": "17",
-      "forge": "1.19.2-43.0.8",
-      "url": "https://github.com/KonoTyran/Minecraft_AP_Randomizer/releases/download/v0.4.2-beta1/aprandomizer-MC1.19.2-0.4.2.jar"
+      "forge": "1.20.1-47.2.0",
+      "url": "https://github.com/KonoTyran/Minecraft_AP_Randomizer/releases/download/v1.20.1-0.1.0/aprandomizer-MC1.20.1-0.1.0.jar"
     },
     {
       "version": 8,
@@ -26,11 +26,5 @@
     }
   ],
   "beta": [
-    {
-      "version": 9,
-      "java": "17",
-      "forge": "1.20.1-47.1.0",
-      "url": "https://github.com/KonoTyran/Minecraft_AP_Randomizer/releases/download/v1.20.1-0.1.0/aprandomizer-MC1.20.1-0.1.0.jar"
-    }
   ]
 }
