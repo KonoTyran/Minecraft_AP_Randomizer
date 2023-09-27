@@ -27,7 +27,7 @@
   ],
   "beta": [
   ],
-  "asych": [
+  "async": [
     {
       "version": 9,
       "java": "17",
