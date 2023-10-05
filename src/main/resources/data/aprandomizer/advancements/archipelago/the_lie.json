@@ -1,35 +1,41 @@
 {
-  "parent": "aprandomizer:archipelago/bake_bread",
   "display": {
     "icon": {
       "item": "minecraft:cake"
     },
-    "title": {
-      "text": "The Lie"
-    },
-    "description": {
-      "text": "Bake cake using wheat, sugar, milk, and eggs!"
-    },
+    "title": "The Lie",
+    "description": "Bake cake using wheat, sugar, milk, and eggs! And then Enjoy!",
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": false,
     "hidden": false
   },
+  "parent": "aprandomizer:archipelago/bake_bread",
   "criteria": {
     "eat_cake": {
       "trigger": "minecraft:item_used_on_block",
       "conditions": {
-        "location": {
-          "block": {
-            "blocks": ["minecraft:cake"]
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": [
+                  "minecraft:cake"
+                ]
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": [
+                "minecraft:air"
+              ]
+            }
           }
-        }
+        ]
       }
     }
-  },
-  "requirements": [
-    [
-      "eat_cake"
-    ]
-  ]
+  }
 }
