@@ -47,15 +47,12 @@ public class DeathLinkDamage extends DamageSource {
     }
     private static final DamageTypeWrapper damageType = new DamageTypeWrapper();
 
-    private final String deathSource;
-
-    public DeathLinkDamage(String source) {
+    public DeathLinkDamage() {
         super(damageType.damageType);
-        this.deathSource = source;
     }
 
     @Override
     public @NotNull Component getLocalizedDeathMessage(LivingEntity pLivingEntity) {
-        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was taken by " + deathSource);
+        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was linked to another's fate");
     }
 }
