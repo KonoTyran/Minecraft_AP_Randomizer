@@ -40,7 +40,7 @@ public class onDeathLink {
             }
             showDeathMessages.set(false,APRandomizer.getServer());
             for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                player.hurt(new DeathLinkDamage() , Float.MAX_VALUE);
+                player.hurt(new DeathLinkDamage() , DeathLinkDamage.KILL_DAMAGE);
             }
             showDeathMessages.set(showDeaths,APRandomizer.getServer());
         }
