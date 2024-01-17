@@ -19,10 +19,11 @@ public class DeathLinkDamage extends DamageSource {
 
     /**
      * Minecraft internally checks that the value is less than 3.4028235E37F,
-     * which is less than Float.MAX_VALUE.
-     * Decided to use a much lower value, in case Mojang decides to change it.
+     * since they multiply it by 10 when awarding the stat to the player who dealt the damage.
+     * Just setting this to some large number in case the code is changed or if some multiplications
+     * occur before that guard is reached.
      */
-    public static final float KILL_DAMAGE = 3.4028235E30F;
+    public static final float KILL_DAMAGE = 3.4028235E20F;
 
     public static ResourceKey<DamageType> DEATH_LINK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(APRandomizer.MODID,"indirect_magic"));
 
