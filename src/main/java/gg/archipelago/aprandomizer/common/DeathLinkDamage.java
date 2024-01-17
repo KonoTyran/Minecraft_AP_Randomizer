@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.common;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -25,7 +26,7 @@ public class DeathLinkDamage extends DamageSource {
      */
     public static final float KILL_DAMAGE = 3.4028235E20F;
 
-    public static ResourceKey<DamageType> DEATH_LINK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(APRandomizer.MODID,"indirect_magic"));
+    public static ResourceKey<DamageType> DEATH_LINK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(APRandomizer.MODID,"death_link"));
 
     private static class DamageTypeWrapper {
         public Holder.Reference<DamageType> damageType;
@@ -46,12 +47,15 @@ public class DeathLinkDamage extends DamageSource {
     }
     private static final DamageTypeWrapper damageType = new DamageTypeWrapper();
 
-    public DeathLinkDamage() {
+    private final String deathSource;
+
+    public DeathLinkDamage(String source) {
         super(damageType.damageType);
+        this.deathSource = source;
     }
 
     @Override
     public @NotNull Component getLocalizedDeathMessage(LivingEntity pLivingEntity) {
-        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was linked to another's fate.");
+        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was taken by " + deathSource);
     }
 }
