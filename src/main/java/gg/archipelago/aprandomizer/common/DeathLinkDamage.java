@@ -15,7 +15,7 @@ public class DeathLinkDamage extends DamageSource {
 
     /**
      * Minecraft internally checks that the value is less than 3.4028235E37F,
-     * since they multiply it by 10 when awarding the stat to the player who dealt the damage.
+     * because they then multiply it by 10 for other stuff (e38 is the max value for a float).
      * Just setting this to some large number in case the code is changed or if some multiplications
      * occur before that guard is reached.
      */
