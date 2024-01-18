@@ -31,6 +31,6 @@ public class DeathLinkDamage extends DamageSource {
 
     @Override
     public @NotNull Component getLocalizedDeathMessage(LivingEntity pLivingEntity) {
-        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was linked to another's fate");
+        return Component.literal(pLivingEntity.getDisplayName().getString() +  "'s soul was linked to another's fate.");
     }
 }
