@@ -32,7 +32,7 @@ public class DeathLinkDamage extends DamageSource {
         public Holder.Reference<DamageType> damageType;
         DamageTypeWrapper() {
             this.damageType = APRandomizer.getServer().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DeathLinkDamage.DEATH_LINK);
-            // Don't know if this is explicitly needed considering the damage value, but it can't hurt.
+            // Don't know if all of these are explicitly needed considering the damage value
             this.damageType.bindTags(Set.of(
                     DamageTypeTags.BYPASSES_INVULNERABILITY,
                     DamageTypeTags.BYPASSES_COOLDOWN,
