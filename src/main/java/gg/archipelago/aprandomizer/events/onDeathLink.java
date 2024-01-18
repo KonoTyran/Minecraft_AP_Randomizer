@@ -16,14 +16,20 @@ public class onDeathLink {
             if(event.time == APRandomizer.getLastDeathTimestamp())
                 return;
 
-            String cause = event.cause;
-            if(cause != null && !cause.isBlank())
-                Utils.sendMessageToAll(event.cause);
-            else
-                Utils.sendMessageToAll("This Death brought to you by " + event.source);
+            GameRules.BooleanValue showDeathMessages = APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
+            boolean showDeaths = showDeathMessages.get();
+            if(!showDeaths) {
+                String cause = event.cause;
+                if(cause != null && !cause.isBlank())
+                    Utils.sendMessageToAll(event.cause);
+                else
+                    Utils.sendMessageToAll("This Death brought to you by " + event.source);
+            }
+            showDeathMessages.set(false, APRandomizer.getServer());
             for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 player.hurt(new DeathLinkDamage(), DeathLinkDamage.KILL_DAMAGE);
             }
+            showDeathMessages.set(showDeaths, APRandomizer.getServer());
         }
     }
 }
