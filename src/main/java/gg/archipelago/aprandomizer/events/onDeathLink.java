@@ -21,7 +21,7 @@ public class onDeathLink {
             if(!showDeaths) {
                 String cause = event.cause;
                 if(cause != null && !cause.isBlank())
-                    Utils.sendMessageToAll(event.cause);
+                    Utils.sendMessageToAll(cause);
                 else
                     Utils.sendMessageToAll("This Death brought to you by " + event.source);
             }
