@@ -49,7 +49,7 @@ public class onDeath {
         deathMessages.set(false, server);
         for (ServerPlayer serverPlayer : APRandomizer.getServer().getPlayerList().getPlayers()) {
             if (serverPlayer != player) {
-                serverPlayer.hurt(new DeathLinkDamage(),Float.MAX_VALUE);
+                serverPlayer.hurt(new DeathLinkDamage(), DeathLinkDamage.KILL_DAMAGE);
             }
         }
         deathMessages.set(death, server);
