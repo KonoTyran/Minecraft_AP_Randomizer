@@ -139,6 +139,15 @@ public class AdvancementManager {
         put("minecraft:husbandry/leash_all_frog_variants", 42111L);
         put("minecraft:husbandry/froglights", 42112L);
         put("minecraft:husbandry/allay_deliver_item_to_player", 42113L);
+        // 1.20 advancements
+        put("minecraft:husbandry/obtain_sniffer_egg", 42114L);
+        put("minecraft:husbandry/feed_snifflet", 42115L);
+        put("minecraft:husbandry/plant_any_sniffer_seed", 42116L);
+        put("minecraft:adventure/trim_with_any_armor_pattern", 42117L);
+        put("minecraft:adventure/trim_with_all_exclusive_armor_patterns", 42118L);
+        put("minecraft:adventure/salvage_sherd", 42119L);
+        put("minecraft:adventure/craft_decorated_pot_using_only_sherds", 42120L);
+        put("minecraft:adventure/read_power_of_chiseled_bookshelf", 42121L);
 
     }};
 
@@ -160,6 +169,11 @@ public class AdvancementManager {
         add(new ResourceLocation("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
         add(new ResourceLocation("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
         add(new ResourceLocation("husbandry/froglights")); // With Our Powers Combined!
+        add(new ResourceLocation("husbandry/obtain_sniffer_egg)); // Smells Interesting
+        add(new ResourceLocation("husbandry/feed_snifflet)); // Little Sniffs
+        add(new ResourceLocation("husbandry/plant_any_sniffer_seed)); // Planting the Past
+        add(new ResourceLocation("adventure/trim_with_all_exclusive_armor_patterns)); // Smithing with Style
+        add(new ResourceLocation("adventure/craft_decorated_pot_using_only_sherds)); // Careful Restoration
     }};
 
     public final Set<ResourceLocation> unreasonableAdvancements = new HashSet<>() {{
