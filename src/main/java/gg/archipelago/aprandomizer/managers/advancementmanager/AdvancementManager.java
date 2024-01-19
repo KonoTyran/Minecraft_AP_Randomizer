@@ -167,18 +167,17 @@ public class AdvancementManager {
         add(new ResourceLocation("adventure/play_jukebox_in_meadows")); // Sound of Music
         add(new ResourceLocation("adventure/trade_at_world_height")); // Star Trader
         add(new ResourceLocation("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
-        add(new ResourceLocation("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
         add(new ResourceLocation("husbandry/froglights")); // With Our Powers Combined!
-        add(new ResourceLocation("husbandry/obtain_sniffer_egg)); // Smells Interesting
-        add(new ResourceLocation("husbandry/feed_snifflet)); // Little Sniffs
-        add(new ResourceLocation("husbandry/plant_any_sniffer_seed)); // Planting the Past
-        add(new ResourceLocation("adventure/trim_with_all_exclusive_armor_patterns)); // Smithing with Style
-        add(new ResourceLocation("adventure/craft_decorated_pot_using_only_sherds)); // Careful Restoration
+        add(new ResourceLocation("husbandry/obtain_sniffer_egg")); // Smells Interesting
+        add(new ResourceLocation("husbandry/feed_snifflet")); // Little Sniffs
+        add(new ResourceLocation("husbandry/plant_any_sniffer_seed")); // Planting the Past
+        add(new ResourceLocation("adventure/trim_with_all_exclusive_armor_patterns")); // Smithing with Style
+        add(new ResourceLocation("adventure/craft_decorated_pot_using_only_sherds")); // Careful Restoration
     }};
 
     public final Set<ResourceLocation> unreasonableAdvancements = new HashSet<>() {{
         add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
-        add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
+        add(new ResourceLocation("adventure/adventuring_time")); // Adventuring Time
     }};
 
     private final Set<Long> earnedAdvancements = new HashSet<>();
