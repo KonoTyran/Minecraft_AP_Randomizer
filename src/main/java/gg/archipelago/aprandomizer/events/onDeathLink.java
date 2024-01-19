@@ -19,9 +19,8 @@ public class onDeathLink {
             GameRules.BooleanValue showDeathMessages = APRandomizer.getServer().getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
             boolean showDeaths = showDeathMessages.get();
             if(!showDeaths) {
-                String cause = event.cause;
-                if(cause != null && !cause.isBlank())
-                    Utils.sendMessageToAll(cause);
+                if(event.cause != null && !event.cause.isBlank())
+                    Utils.sendMessageToAll(event.cause);
                 else
                     Utils.sendMessageToAll("This Death brought to you by " + event.source);
             }
