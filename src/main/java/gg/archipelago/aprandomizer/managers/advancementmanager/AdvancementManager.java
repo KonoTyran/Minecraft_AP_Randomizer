@@ -139,6 +139,15 @@ public class AdvancementManager {
         put("minecraft:husbandry/leash_all_frog_variants", 42111L);
         put("minecraft:husbandry/froglights", 42112L);
         put("minecraft:husbandry/allay_deliver_item_to_player", 42113L);
+        // 1.20 advancements
+        put("minecraft:adventure/trim_with_any_armor_pattern", 42114L);
+        put("minecraft:adventure/salvage_sherd",42115L);
+        put("minecraft:adventure/trim_with_all_exclusive_armor_patterns",42116L);
+        put("minecraft:adventure/craft_decorated_pot_using_only_sherds",42117L);
+        put("minecraft:adventure/read_power_of_chiseled_bookshelf",42118L);
+        put("minecraft:husbandry/obtain_sniffer_egg",42119L);
+        put("minecraft:husbandry/feed_snifflet",42120L);
+        put("minecraft:husbandry/plant_any_sniffer_seed",42121L);
 
     }};
 
