@@ -18,7 +18,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:sniffer_egg"
+          "name": "minecraft:sniffer_egg",
           "weight": 5
         },
         {
