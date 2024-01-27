@@ -34,7 +34,7 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:wayfinder_armor_trim_smithing_template"
+          "name": "minecraft:wayfinder_armor_trim_smithing_template",
           "weight": 3
         },
         {
