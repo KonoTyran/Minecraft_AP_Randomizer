@@ -1,6 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.client.network.client.BouncePacket;
+import dev.koifysh.archipelago.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -60,7 +60,7 @@ public class onLivingHurt {
                 if (entity.getPassengers().get(0) instanceof ServerPlayer) {
                     if (event.getSource().getMsgId().equals("fall")) {
                         ServerPlayer player = (ServerPlayer) entity.getPassengers().get(0);
-                        Advancement advancement = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/ride_pig"));
+                        var advancement = event.getEntity().getServer().getAdvancements().get(ResourceLocation.fromNamespaceAndPath(APRandomizer.MODID,"archipelago/ride_pig"));
                         AdvancementProgress ap = player.getAdvancements().getOrStartProgress(advancement);
                         if (!ap.isDone()) {
                             for (String s : ap.getRemainingCriteria()) {
@@ -77,7 +77,7 @@ public class onLivingHurt {
             ServerPlayer player = (ServerPlayer) e;
             //Utils.sendMessageToAll("damage type: "+ event.getSource().getMsgId());
             if (event.getAmount() >= 18 && !event.getSource().is(DamageTypes.EXPLOSION) && !event.getSource().getMsgId().equals("fireball")) {
-                Advancement a = event.getEntity().getServer().getAdvancements().getAdvancement(new ResourceLocation("aprandomizer:archipelago/overkill"));
+                var a = event.getEntity().getServer().getAdvancements().get(ResourceLocation.fromNamespaceAndPath(APRandomizer.MODID,"archipelago/overkill"));
                 AdvancementProgress ap = player.getAdvancements().getOrStartProgress(a);
                 if (!ap.isDone()) {
                     for (String s : ap.getRemainingCriteria()) {

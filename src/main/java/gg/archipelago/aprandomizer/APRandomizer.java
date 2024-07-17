@@ -1,7 +1,7 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
-import gg.archipelago.client.network.client.BouncePacket;
+import dev.koifysh.archipelago.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
@@ -19,10 +19,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,7 +37,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -61,18 +56,15 @@ public class APRandomizer {
     static private GoalManager goalManager;
     static private APMCData apmcData;
     static private final Set<Integer> validVersions = new HashSet<>() {{
-        this.add(6); //mc 1.16.5
-        this.add(7); //mc 1.17.1
-        this.add(8); //mc 1.18.2
         this.add(9); //mc 1.19
+        this.add(10);
     }};
     static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
-    static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.20.1 v0.1.1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.21 v0.1.3 Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -172,14 +164,6 @@ public class APRandomizer {
         return goalManager;
     }
 
-    public static void setLastDeathTimestamp(double deathTime) {
-        lastDeathTimestamp = deathTime;
-    }
-
-    public static double getLastDeathTimestamp() {
-        return lastDeathTimestamp;
-    }
-
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (apmcData.state != APMCData.State.VALID) {
@@ -188,7 +172,6 @@ public class APRandomizer {
         server = event.getServer();
     }
 
-    @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
@@ -232,65 +215,24 @@ public class APRandomizer {
         }
 
 
-        //preload the nether so that fetching of structures works.
-        ServerLevel nether = server.getLevel(Level.NETHER);
-        assert nether != null;
-
-        //check to see if the chunk is loaded then fetch/generate if it is not.
-        if (!nether.hasChunk(0, 0)) { //Chunk is unloaded
-            ChunkAccess chunk = nether.getChunk(0, 0, ChunkStatus.EMPTY, true);
-            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
-                chunk = nether.getChunk(0, 0, ChunkStatus.FULL);
-            }
-        }
-
-        ServerLevel theEnd = server.getLevel(Level.END);
-        assert theEnd != null;
-
-        //check to see if the chunk is loaded then fetch/generate if it is not.
-        if (!theEnd.hasChunk(0, 0)) { //Chunk is unloaded
-            ChunkAccess chunk = theEnd.getChunk(0, 0, ChunkStatus.EMPTY, true);
-            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
-                chunk = theEnd.getChunk(0, 0, ChunkStatus.FULL);
-            }
-        }
-        //check if there is dragon data, if not create new stuff.
-        if (theEnd.dragonFight == null)
-            theEnd.dragonFight = new EndDragonFight(theEnd, server.getWorldData().worldGenOptions().seed(), server.getWorldData().endDragonFightData());
-        //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
-        for (int i = 0; i < 20; i++) {
-            theEnd.dragonFight.spawnNewGateway();
-        }
-        if (theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
-            //get the top block of 0,0 then spawn the portal there, the parameter is whether or not to make it an active portal
-            BlockPos pos = theEnd.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
-            theEnd.dragonFight.portalLocation = pos.below();
-        }
-        theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
-        theEnd.save(null, true, false);
-        //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
-
-        //check if our boss requirements means we should start with the dragon spawned.
-        if(apmcData.dragonStartSpawned()) {
-            Utils.SpawnDragon(theEnd);
-            WorldData endData = theEnd.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
-            endData.setDragonState(WorldData.DRAGON_SPAWNED);
-        }
-
-
         if(jailPlayers) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
             BlockPos spawn = overworld.getSharedSpawnPos();
             // alter the spawn box position, so it doesn't interfere with spawning
-            StructureTemplate jail = overworld.getStructureManager().get(new ResourceLocation(MODID,"spawnjail")).get();
-            BlockPos jailPos = new BlockPos(spawn.getX()+5, 300, spawn.getZ()+5);
-            jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX()/2),jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ()/2));
-            jail.placeInWorld(overworld,jailPos,jailPos,new StructurePlaceSettings(), RandomSource.create(),2);
+
+            var jailOptional = overworld.getStructureManager().get(ResourceLocation.fromNamespaceAndPath(MODID,"spawnjail"));
+            if (jailOptional.isPresent()) {
+                StructureTemplate jail = overworld.getStructureManager().get(ResourceLocation.fromNamespaceAndPath(MODID, "spawnjail")).get();
+                BlockPos jailPos = new BlockPos(spawn.getX() + 5, 300, spawn.getZ() + 5);
+                jailCenter = new BlockPos(jailPos.getX() + (jail.getSize().getX() / 2), jailPos.getY() + 1, jailPos.getZ() + (jail.getSize().getZ() / 2));
+                jail.placeInWorld(overworld, jailPos, jailPos, new StructurePlaceSettings(), RandomSource.create(), 2);
+            } else {
+                jailCenter = spawn;
+            }
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);
-            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).value = 0;
-            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).onChanged(server);
+            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).set(0, server);
             server.getGameRules().getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false,server);

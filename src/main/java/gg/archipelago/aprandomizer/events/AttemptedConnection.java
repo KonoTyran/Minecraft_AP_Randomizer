@@ -4,8 +4,8 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.SlotData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.client.events.ArchipelagoEventListener;
-import gg.archipelago.client.events.ConnectionAttemptEvent;
+import dev.koifysh.archipelago.events.ArchipelagoEventListener;
+import dev.koifysh.archipelago.events.ConnectionAttemptEvent;
 
 public class AttemptedConnection {
 

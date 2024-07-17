@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +10,7 @@ public class GroupRecipe implements APRecipe {
     int id;
     String name;
     String[] namespaceIDs;
-    Set<Recipe<?>> iRecipes = new HashSet<>();
+    Set<RecipeHolder<?>> iRecipes = new HashSet<>();
 
     GroupRecipe(int id, String name, String[] namespaceIDs) {
         this.id = id;
@@ -17,16 +18,16 @@ public class GroupRecipe implements APRecipe {
         this.namespaceIDs = namespaceIDs;
     }
 
-    protected void addIRecipe(Recipe<?> iRecipe) {
+    protected void addIRecipe(RecipeHolder<?> iRecipe) {
         this.iRecipes.add(iRecipe);
     }
 
-    public Set<Recipe<?>> getIRecipes() {
+    public Set<RecipeHolder<?>> getIRecipes() {
         return iRecipes;
     }
 
     @Override
-    public Set<Recipe<?>> getGrantedRecipes() {
+    public Set<RecipeHolder<?>> getGrantedRecipes() {
         return iRecipes;
     }
 }

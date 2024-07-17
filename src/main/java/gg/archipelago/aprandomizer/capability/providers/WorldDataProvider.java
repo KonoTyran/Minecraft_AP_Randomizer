@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.capability.providers;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -47,7 +48,7 @@ public class WorldDataProvider implements ICapabilitySerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider registryAccess) {
         CompoundTag nbt = new CompoundTag();
         nbt.putInt("dragonState", worldData.getDragonState());
         nbt.putString("seedName", worldData.getSeedName());
@@ -56,7 +57,7 @@ public class WorldDataProvider implements ICapabilitySerializable<Tag> {
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider registryAccess, Tag nbt) {
         if (nbt.getType() == CompoundTag.TYPE) {
             CompoundTag read = (CompoundTag) nbt;
             worldData.setSeedName(read.getString("seedName"));

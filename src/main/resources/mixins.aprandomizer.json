@@ -2,9 +2,8 @@
   "required": true,
   "package": "gg.archipelago.aprandomizer.mixin",
   "compatibilityLevel": "JAVA_16",
-  "refmap": "aprandomizer.refmap.json",
+  "refmap": "mixins.aprandomizer.refmap.json",
   "mixins": [
-    "MixinAdvancementLoad",
     "MixinPropertyManager",
     "MixinRaid"
   ],

@@ -1,10 +1,10 @@
 package gg.archipelago.aprandomizer.common.Utils;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import gg.archipelago.client.Print.APPrint;
-import gg.archipelago.client.Print.APPrintColor;
-import gg.archipelago.client.Print.APPrintPart;
-import gg.archipelago.client.Print.APPrintType;
+import dev.koifysh.archipelago.Print.APPrint;
+import dev.koifysh.archipelago.Print.APPrintColor;
+import dev.koifysh.archipelago.Print.APPrintPart;
+import dev.koifysh.archipelago.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
@@ -153,16 +153,6 @@ public class Utils {
         });
     }
 
-    public static void SpawnDragon(ServerLevel end) {
-        end.getChunkAt(new BlockPos(0, 128, 0));
-        end.dragonFight.spawnExitPortal(false);
-        end.dragonFight.findOrCreateDragon();
-        end.dragonFight.dragonKilled = false;
-        end.dragonFight.previouslyKilled = false;
-        end.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).setDragonState(WorldData.DRAGON_SPAWNED);
-        end.save(null, true, false);
-    }
-
     public static ResourceKey<Level> getStructureWorld(TagKey<Structure> structureTag) {
 
         String structureName = getAPStructureName(structureTag);
@@ -204,14 +194,6 @@ public class Utils {
         double z = radius * Math.sin(a) * Math.sin(b) + pos.z;
         double y = radius * Math.cos(b) + pos.y;
         return new Vec3(x,y,z);
-    }
-
-    public static void addLodestoneTags(ResourceKey<Level> worldRegistryKey, BlockPos blockPos, CompoundTag nbt) {
-        nbt.put("LodestonePos", NbtUtils.writeBlockPos(blockPos));
-        Level.RESOURCE_KEY_CODEC.encodeStart(NbtOps.INSTANCE, worldRegistryKey).resultOrPartial(LOGGER::error).ifPresent((p_234668_1_) -> {
-            nbt.put("LodestoneDimension", p_234668_1_);
-        });
-        nbt.putBoolean("LodestoneTracked", false);
     }
 
     public static void giveItemToPlayer(ServerPlayer player, ItemStack itemstack) {

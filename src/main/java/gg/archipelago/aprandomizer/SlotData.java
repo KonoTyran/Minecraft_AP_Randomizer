@@ -1,14 +1,13 @@
 package gg.archipelago.aprandomizer;
 
-import archipelagoClient.com.google.gson.JsonArray;
-import archipelagoClient.com.google.gson.JsonElement;
-import archipelagoClient.com.google.gson.JsonObject;
-import archipelagoClient.com.google.gson.JsonParser;
-import archipelagoClient.com.google.gson.annotations.SerializedName;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -71,7 +70,7 @@ public class SlotData {
             int amount = object.has("amount") ? object.get("amount").getAsInt() : 1;
 
             try {
-                Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
+                Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.parse(itemName));
 
                 //air is the default item returned if the resource name is invalid.
                 if(item == Items.AIR) {
@@ -81,13 +80,14 @@ public class SlotData {
 
                 ItemStack iStack = new ItemStack(item,amount);
 
-                if(object.has("nbt"))
-                    iStack.setTag(TagParser.parseTag(object.get("nbt").getAsString()));
+                //todo: figure out starting inventory NBT
+//                if(object.has("nbt"))
+//                    iStack.set(TagParser.parseTag(object.get("nbt").getAsString()));
 
                 startingItemStacks.add(iStack);
 
-            } catch (CommandSyntaxException e) {
-                Utils.sendMessageToAll("NBT error in starting item " + itemName);
+//            } catch (CommandSyntaxException e) {
+//                Utils.sendMessageToAll("NBT error in starting item " + itemName);
             } catch (ResourceLocationException e) {
                 Utils.sendMessageToAll("No such item \"" + itemName + "\"");
             }

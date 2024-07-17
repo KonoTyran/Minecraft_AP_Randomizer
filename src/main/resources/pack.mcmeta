@@ -1,7 +1,13 @@
 {
   "pack": {
-    "description": "APRandomizer Resources",
-    "pack_format": 6,
-    "_comment": "the meat and potatoes of the AP Randomizer Mod"
+    "description": "${mod_id} resources",
+    "pack_format": 41
+  },
+  "filter": {
+    "block": [
+      {
+        "path": "advancements/recipes/*."
+      }
+    ]
   }
 }

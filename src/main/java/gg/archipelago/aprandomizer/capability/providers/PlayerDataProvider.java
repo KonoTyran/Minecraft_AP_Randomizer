@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.capability.providers;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
@@ -13,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class PlayerDataProvider implements ICapabilitySerializable<Tag> {
-
 
     private final PlayerData playerData = new PlayerData();
 
@@ -47,12 +47,12 @@ public class PlayerDataProvider implements ICapabilitySerializable<Tag> {
     }
 
     @Override
-    public Tag serializeNBT() {
+    public Tag serializeNBT(HolderLookup.Provider registryAccess) {
         return IntTag.valueOf(playerData.getIndex());
     }
 
     @Override
-    public void deserializeNBT(Tag nbt) {
+    public void deserializeNBT(HolderLookup.Provider registryAccess, Tag nbt) {
         int index = 0;
         if (nbt.getType() == IntTag.TYPE) {
             index = ((IntTag) nbt).getAsInt();

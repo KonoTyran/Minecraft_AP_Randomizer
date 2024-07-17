@@ -1,13 +1,13 @@
 package gg.archipelago.aprandomizer;
 
 import gg.archipelago.aprandomizer.events.*;
-import gg.archipelago.client.ItemFlags;
-import gg.archipelago.client.Print.APPrint;
-import gg.archipelago.client.Print.APPrintColor;
-import gg.archipelago.client.events.ConnectionAttemptEvent;
-import gg.archipelago.client.events.ConnectionResultEvent;
-import gg.archipelago.client.network.ConnectionResult;
-import gg.archipelago.client.parts.NetworkItem;
+import dev.koifysh.archipelago.ItemFlags;
+import dev.koifysh.archipelago.Print.APPrint;
+import dev.koifysh.archipelago.Print.APPrintColor;
+import dev.koifysh.archipelago.events.ConnectionAttemptEvent;
+import dev.koifysh.archipelago.events.ConnectionResultEvent;
+import dev.koifysh.archipelago.network.ConnectionResult;
+import dev.koifysh.archipelago.parts.NetworkItem;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.network.chat.Component;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class APClient extends gg.archipelago.client.ArchipelagoClient {
+public class APClient extends dev.koifysh.archipelago.Client {
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -52,30 +52,11 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
         this.getEventManager().registerListener(new AttemptedConnection());
         this.getEventManager().registerListener(new ReceiveItem());
         this.getEventManager().registerListener(new LocationChecked());
+        this.getEventManager().registerListener(new PrintJsonListener());
     }
 
     public SlotData getSlotData() {
         return slotData;
-    }
-
-
-    @Override
-    public void onPrint(String print) {
-        if (!print.startsWith(getAlias() + ":")) {
-            Utils.sendMessageToAll(print);
-        }
-    }
-
-    @Override
-    public void onPrintJson(APPrint apPrint, String type, int receiving, NetworkItem item) {
-
-        //don't print out messages if it's an item send and the recipient is us.
-        if(type.equals("ItemSend") && receiving != getSlot()) {
-            Utils.sendFancyMessageToAll(apPrint);
-        }
-        else if(!type.equals("ItemSend")) {
-            Utils.sendFancyMessageToAll(apPrint);
-        }
     }
 
     @Override
@@ -93,4 +74,5 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
         }
         APRandomizer.getGoalManager().updateInfoBar();
     }
+
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DeathLinkDamage extends DamageSource {
 
-    public static ResourceKey<DamageType> DEATH_LINK = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(APRandomizer.MODID,"indirect_magic"));
+    public static ResourceKey<DamageType> DEATH_LINK = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(APRandomizer.MODID,"indirect_magic"));
     private static final Holder<DamageType> damageType = APRandomizer.getServer().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DeathLinkDamage.DEATH_LINK);
     public DeathLinkDamage() {
         super(damageType);

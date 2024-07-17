@@ -2,6 +2,7 @@ package gg.archipelago.aprandomizer.managers.itemmanager.traps;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -38,7 +39,8 @@ public class GoonTrap implements Trap {
     @Override
     public void trigger(ServerPlayer player) {
         ItemStack fish = new ItemStack(Items.SALMON);
-        fish.enchant(Enchantments.KNOCKBACK,3);
+        var enchantmentRegistry = APRandomizer.getServer().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        fish.enchant(enchantmentRegistry.getHolder(Enchantments.KNOCKBACK).get(),3);
 
         APRandomizer.getServer().execute(() -> {
             ServerLevel world = (ServerLevel) player.level();

@@ -4,6 +4,7 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.capability.APCapabilities;
 import gg.archipelago.aprandomizer.capability.data.WorldData;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.network.chat.Component;
@@ -143,28 +144,28 @@ public class AdvancementManager {
     }};
 
     public static final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
-        add(new ResourceLocation("adventure/very_very_frightening")); // Very Very Frightening
-        add(new ResourceLocation("nether/all_potions")); // A Furious Cocktail
-        add(new ResourceLocation("husbandry/bred_all_animals")); // Two by Two
-        add(new ResourceLocation("adventure/two_birds_one_arrow")); // Two Birds, One Arrow
-        add(new ResourceLocation("adventure/arbalistic")); // Arbalistic
-        add(new ResourceLocation("adventure/kill_all_mobs")); // Monsters Hunted
-        add(new ResourceLocation("nether/create_full_beacon")); // Beaconator
-        add(new ResourceLocation("husbandry/balanced_diet")); // A Balanced Diet
-        add(new ResourceLocation("nether/uneasy_alliance")); // Uneasy Alliance
-        add(new ResourceLocation("nether/netherite_armor")); // Cover Me in Debris
-        add(new ResourceLocation("husbandry/complete_catalogue")); // A Complete Catalogue
-        add(new ResourceLocation("adventure/lightning_rod_with_villager_no_fire")); // Surge Protector
-        add(new ResourceLocation("adventure/play_jukebox_in_meadows")); // Sound of Music
-        add(new ResourceLocation("adventure/trade_at_world_height")); // Star Trader
-        add(new ResourceLocation("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
-        add(new ResourceLocation("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
-        add(new ResourceLocation("husbandry/froglights")); // With Our Powers Combined!
+        add(ResourceLocation.parse("adventure/very_very_frightening")); // Very Very Frightening
+        add(ResourceLocation.parse("nether/all_potions")); // A Furious Cocktail
+        add(ResourceLocation.parse("husbandry/bred_all_animals")); // Two by Two
+        add(ResourceLocation.parse("adventure/two_birds_one_arrow")); // Two Birds, One Arrow
+        add(ResourceLocation.parse("adventure/arbalistic")); // Arbalistic
+        add(ResourceLocation.parse("adventure/kill_all_mobs")); // Monsters Hunted
+        add(ResourceLocation.parse("nether/create_full_beacon")); // Beaconator
+        add(ResourceLocation.parse("husbandry/balanced_diet")); // A Balanced Diet
+        add(ResourceLocation.parse("nether/uneasy_alliance")); // Uneasy Alliance
+        add(ResourceLocation.parse("nether/netherite_armor")); // Cover Me in Debris
+        add(ResourceLocation.parse("husbandry/complete_catalogue")); // A Complete Catalogue
+        add(ResourceLocation.parse("adventure/lightning_rod_with_villager_no_fire")); // Surge Protector
+        add(ResourceLocation.parse("adventure/play_jukebox_in_meadows")); // Sound of Music
+        add(ResourceLocation.parse("adventure/trade_at_world_height")); // Star Trader
+        add(ResourceLocation.parse("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
+        add(ResourceLocation.parse("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
+        add(ResourceLocation.parse("husbandry/froglights")); // With Our Powers Combined!
     }};
 
     public final Set<ResourceLocation> unreasonableAdvancements = new HashSet<>() {{
-        add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
-        add(new ResourceLocation("nether/all_effects")); // How Did We Get Here?
+        add(ResourceLocation.parse("nether/all_effects")); // How Did We Get Here?
+        add(ResourceLocation.parse("nether/all_effects")); // How Did We Get Here?
     }};
 
     private final Set<Long> earnedAdvancements = new HashSet<>();
@@ -202,8 +203,8 @@ public class AdvancementManager {
         }
     }
 
-    public void syncAdvancement(Advancement a) {
-        if (hasAdvancement(a.getId().toString())) {
+    public void syncAdvancement(AdvancementHolder a) {
+        if (hasAdvancement(a.id().toString())) {
             for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
                 if (ap.isDone())
@@ -216,7 +217,7 @@ public class AdvancementManager {
     }
 
     public void syncAllAdvancements() {
-        for (Advancement a : getServer().getAdvancements().getAllAdvancements()) {
+        for (AdvancementHolder a : getServer().getAdvancements().getAllAdvancements()) {
             syncAdvancement(a);
         }
     }

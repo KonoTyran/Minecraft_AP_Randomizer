@@ -4,6 +4,7 @@ import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,26 +38,19 @@ public class onAdvancement {
             return;
 
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        Advancement advancement = event.getAdvancement();
-        String id = advancement.getId().toString();
+        AdvancementHolder advancementHolder = event.getAdvancement();
+        String id = advancementHolder.id().toString();
 
         AdvancementManager am = APRandomizer.getAdvancementManager();
         //don't do anything if this advancement has already been had, or is not on our list of tracked advancements.
         if (!am.hasAdvancement(id) && am.getAdvancementID(id) != 0) {
             LOGGER.debug("{} has gotten the advancement {}", player.getDisplayName().getString(), id);
             am.addAdvancement(am.getAdvancementID(id));
-            am.syncAdvancement(advancement);
-            if(advancement.getDisplay() == null)
-                return;
-            APRandomizer.getServer().getPlayerList().broadcastSystemMessage(
-                    Component.translatable(
-                            "chat.type.advancement."
-                                    + advancement.getDisplay().getFrame().getName(),
-                            player.getDisplayName(),
-                            advancement.getChatComponent()
-                    ),
-                    false
-            );
+            am.syncAdvancement(advancementHolder);
+
+            advancementHolder.value().display().ifPresent(it -> {
+                APRandomizer.getServer().getPlayerList().broadcastSystemMessage(it.getType().createAnnouncement(advancementHolder, player), false);
+            });
 
         }
     }

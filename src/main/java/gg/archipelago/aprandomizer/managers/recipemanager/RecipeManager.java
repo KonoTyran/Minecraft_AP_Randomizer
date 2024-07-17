@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.managers.recipemanager;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,17 +21,17 @@ public class RecipeManager {
     //have a lookup of every advancement
     private final RecipeData recipeData;
 
-    private final Set<Recipe<?>> initialRestricted = new HashSet<>();
-    private final Set<Recipe<?>> initialGranted = new HashSet<>();
+    private final Set<RecipeHolder<?>> initialRestricted = new HashSet<>();
+    private final Set<RecipeHolder<?>> initialGranted = new HashSet<>();
 
-    private Set<Recipe<?>> restricted = new HashSet<>();
-    private Set<Recipe<?>> granted = new HashSet<>();
+    private Set<RecipeHolder<?>> restricted = new HashSet<>();
+    private Set<RecipeHolder<?>> granted = new HashSet<>();
 
 
     public RecipeManager() {
         recipeData = new RecipeData();
-        Collection<Recipe<?>> recipeList = APRandomizer.getServer().getRecipeManager().getRecipes();
-        for (Recipe<?> iRecipe : recipeList) {
+        Collection<RecipeHolder<?>> recipeList = APRandomizer.getServer().getRecipeManager().getRecipes();
+        for (RecipeHolder<?> iRecipe : recipeList) {
             if (recipeData.injectIRecipe(iRecipe)) {
                 initialRestricted.add(iRecipe);
             } else {
@@ -45,7 +46,7 @@ public class RecipeManager {
         for (var id : recipes) {
             if (!recipeData.hasID(id))
                 continue;
-            Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
+            Set<RecipeHolder<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
             granted.addAll(toGrant);
             restricted.removeAll(toGrant);
         }
@@ -60,7 +61,7 @@ public class RecipeManager {
     public void grantRecipe(long id) {
         if (!recipeData.hasID(id))
             return;
-        Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
+        Set<RecipeHolder<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
 
         granted.addAll(toGrant);
         restricted.removeAll(toGrant);
@@ -71,11 +72,11 @@ public class RecipeManager {
         }
     }
 
-    public Set<Recipe<?>> getRestrictedRecipes() {
+    public Set<RecipeHolder<?>> getRestrictedRecipes() {
         return restricted;
     }
 
-    public Set<Recipe<?>> getGrantedRecipes() {
+    public Set<RecipeHolder<?>> getGrantedRecipes() {
         return granted;
     }
 

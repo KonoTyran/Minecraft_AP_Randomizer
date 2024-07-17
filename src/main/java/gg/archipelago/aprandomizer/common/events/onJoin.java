@@ -6,6 +6,7 @@ import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,8 +37,8 @@ public class onJoin {
             Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
 
         APRandomizer.getAdvancementManager().syncAllAdvancements();
-        Set<Recipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
-        Set<Recipe<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();
+        Set<RecipeHolder<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
+        Set<RecipeHolder<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();
         player.resetRecipes(restricted);
         player.awardRecipes(granted);
 

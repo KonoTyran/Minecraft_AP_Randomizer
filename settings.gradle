@@ -1,7 +1,17 @@
 pluginManagement {
-    plugins {
-        id 'com.github.johnrengelman.shadow' version '6.0.0'
+    repositories {
+        gradlePluginPortal()
+        maven {
+            name = 'MinecraftForge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
+            name = "ParchmentMC"
+            url = 'https://maven.parchmentmc.org'
+        }
     }
 }
-include ':APClient'
-project(":APClient").projectDir = file("../Archipelago.MultiClient.Java")
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+}
