@@ -151,7 +151,7 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.15'
+    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.16'
 }
 
 mixin {
