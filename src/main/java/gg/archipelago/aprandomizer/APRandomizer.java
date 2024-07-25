@@ -1,10 +1,10 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
+import cpw.mods.modlauncher.EnumerationHelper;
 import dev.koifysh.archipelago.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
+import gg.archipelago.aprandomizer.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
@@ -144,6 +144,7 @@ public class APRandomizer {
 
     public static void setJailPlayers(boolean jailPlayers) {
         APRandomizer.jailPlayers = jailPlayers;
+
         worldData.setJailPlayers(jailPlayers);
     }
 
@@ -163,6 +164,8 @@ public class APRandomizer {
     public static GoalManager getGoalManager() {
         return goalManager;
     }
+
+    public static WorldData getWorldData() {return worldData;}
 
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event) {
@@ -188,7 +191,7 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = server.overworld().getDataStorage().computeIfAbsent(WorldData.factory(),"apdata");
         jailPlayers = worldData.getJailPlayers();
         advancementManager.setCheckedAdvancements(worldData.getLocations());
 

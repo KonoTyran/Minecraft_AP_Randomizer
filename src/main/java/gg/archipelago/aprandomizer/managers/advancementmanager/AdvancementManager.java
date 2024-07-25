@@ -1,22 +1,11 @@
 package gg.archipelago.aprandomizer.managers.advancementmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
-import net.minecraft.advancements.Advancement;
+import gg.archipelago.aprandomizer.data.WorldData;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.*;
 
@@ -140,32 +129,54 @@ public class AdvancementManager {
         put("minecraft:husbandry/leash_all_frog_variants", 42111L);
         put("minecraft:husbandry/froglights", 42112L);
         put("minecraft:husbandry/allay_deliver_item_to_player", 42113L);
+        // 1.20 advancements
+        put("minecraft:husbandry/obtain_sniffer_egg", 42114L); // smells interesting
+        put("minecraft:husbandry/feed_snifflet", 42115L); // little sniffs
+        put("husbandry/plant_any_sniffer_seed", 42116L); // planting the past
+        put("minecraft:adventure/trim_with_any_armor_pattern", 42117L); // crafting a new look
+        put("minecraft:adventure/trim_with_all_exclusive_armor_patterns", 42118L); // smithing with style
+        put("minecraft:adventure/salvage_sherd", 42119L); // respecting the remnants
+        put("minecraft:adventure/craft_decorated_pot_using_only_sherds", 42120L); // careful restoration
+        put("minecraft:adventure/read_power_of_chiseled_bookshelf", 42120L); // the power of books
+        put("minecraft:adventure/brush_armadillo", 42122L); // isn't it scute
+        put("minecraft:husbandry/remove_wolf_armor", 42123L); // Shear Brilliance
+        put("minecraft:husbandry/repair_wolf_armor", 42124L); // good as new
+        put("minecraft:husbandry/whole_pack", 42125L); // the whole pack
+        // 1.21 advancements
+        put("minecraft:adventure/minecraft_trials_edition", 42126L); // Minecraft: Trial(s) Edition
+        put("minecraft:adventure/under_lock_and_key", 42127L); // Under Lock and Key
+        put("minecraft:adventure/blowback", 42128L); // blowback
+        put("minecraft:adventure/who_needs_rockets", 42129L); // Who needs rockets
+        put("minecraft:adventure/crafters_crafting_crafters", 42130L); // cafters crafting crafters
+        put("minecraft:adventure/lighten_up", 42131L); // lighten up
+        put("minecraft:adventure/overoverkill", 42132L); // over overkill
+        put("minecraft:adventure/revaulting", 42133L); // revaulting
 
     }};
 
     public static final Set<ResourceLocation> hardAdvancements = new HashSet<>() {{
-        add(ResourceLocation.parse("adventure/very_very_frightening")); // Very Very Frightening
-        add(ResourceLocation.parse("nether/all_potions")); // A Furious Cocktail
-        add(ResourceLocation.parse("husbandry/bred_all_animals")); // Two by Two
-        add(ResourceLocation.parse("adventure/two_birds_one_arrow")); // Two Birds, One Arrow
-        add(ResourceLocation.parse("adventure/arbalistic")); // Arbalistic
-        add(ResourceLocation.parse("adventure/kill_all_mobs")); // Monsters Hunted
-        add(ResourceLocation.parse("nether/create_full_beacon")); // Beaconator
-        add(ResourceLocation.parse("husbandry/balanced_diet")); // A Balanced Diet
-        add(ResourceLocation.parse("nether/uneasy_alliance")); // Uneasy Alliance
-        add(ResourceLocation.parse("nether/netherite_armor")); // Cover Me in Debris
-        add(ResourceLocation.parse("husbandry/complete_catalogue")); // A Complete Catalogue
-        add(ResourceLocation.parse("adventure/lightning_rod_with_villager_no_fire")); // Surge Protector
-        add(ResourceLocation.parse("adventure/play_jukebox_in_meadows")); // Sound of Music
-        add(ResourceLocation.parse("adventure/trade_at_world_height")); // Star Trader
-        add(ResourceLocation.parse("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
-        add(ResourceLocation.parse("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
-        add(ResourceLocation.parse("husbandry/froglights")); // With Our Powers Combined!
+        add(ResourceLocation.withDefaultNamespace("adventure/very_very_frightening")); // Very Very Frightening
+        add(ResourceLocation.withDefaultNamespace("nether/all_potions")); // A Furious Cocktail
+        add(ResourceLocation.withDefaultNamespace("husbandry/bred_all_animals")); // Two by Two
+        add(ResourceLocation.withDefaultNamespace("adventure/two_birds_one_arrow")); // Two Birds, One Arrow
+        add(ResourceLocation.withDefaultNamespace("adventure/arbalistic")); // Arbalistic
+        add(ResourceLocation.withDefaultNamespace("adventure/kill_all_mobs")); // Monsters Hunted
+        add(ResourceLocation.withDefaultNamespace("nether/create_full_beacon")); // Beaconator
+        add(ResourceLocation.withDefaultNamespace("husbandry/balanced_diet")); // A Balanced Diet
+        add(ResourceLocation.withDefaultNamespace("nether/uneasy_alliance")); // Uneasy Alliance
+        add(ResourceLocation.withDefaultNamespace("nether/netherite_armor")); // Cover Me in Debris
+        add(ResourceLocation.withDefaultNamespace("husbandry/complete_catalogue")); // A Complete Catalogue
+        add(ResourceLocation.withDefaultNamespace("adventure/lightning_rod_with_villager_no_fire")); // Surge Protector
+        add(ResourceLocation.withDefaultNamespace("adventure/play_jukebox_in_meadows")); // Sound of Music
+        add(ResourceLocation.withDefaultNamespace("adventure/trade_at_world_height")); // Star Trader
+        add(ResourceLocation.withDefaultNamespace("husbandry/leash_all_frog_variants")); // When the Squad Hops into Town
+        add(ResourceLocation.withDefaultNamespace("husbandry/leash_all_frog_variants")); // With Our Powers Combined!
+        add(ResourceLocation.withDefaultNamespace("husbandry/froglights")); // With Our Powers Combined!
     }};
 
     public final Set<ResourceLocation> unreasonableAdvancements = new HashSet<>() {{
-        add(ResourceLocation.parse("nether/all_effects")); // How Did We Get Here?
-        add(ResourceLocation.parse("nether/all_effects")); // How Did We Get Here?
+        add(ResourceLocation.withDefaultNamespace("nether/all_effects")); // How Did We Get Here?
+        add(ResourceLocation.withDefaultNamespace("nether/all_effects")); // How Did We Get Here?
     }};
 
     private final Set<Long> earnedAdvancements = new HashSet<>();
@@ -193,7 +204,7 @@ public class AdvancementManager {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal( true);
-        APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
+        APRandomizer.getWorldData().addLocation(id);
         syncAllAdvancements();
     }
 
@@ -228,7 +239,7 @@ public class AdvancementManager {
 
     public void setCheckedAdvancements(Set<Long> checkedLocations) {
         earnedAdvancements.addAll(checkedLocations);
-        WorldData data = APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData data = APRandomizer.getWorldData();
         for (var checkedLocation : checkedLocations) {
             data.addLocation(checkedLocation);
         }

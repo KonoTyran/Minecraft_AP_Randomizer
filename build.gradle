@@ -112,6 +112,8 @@ repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
+
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
     // flatDir {
@@ -149,7 +151,7 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.14'
+    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.15'
 }
 
 mixin {
@@ -193,7 +195,8 @@ tasks.named('jar', Jar).configure {
             'Specification-Version'   : '1', // We are version 1 of ourselves
             'Implementation-Title'    : project.name,
             'Implementation-Version'  : project.jar.archiveVersion,
-            'Implementation-Vendor'   : mod_authors
+            'Implementation-Vendor'   : mod_authors,
+            'MixinConfigs'            : 'mixins.aprandomizer.json'
         ])
     }
 }

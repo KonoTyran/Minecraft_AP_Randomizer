@@ -6,6 +6,7 @@ import dev.koifysh.archipelago.Print.APPrintColor;
 import dev.koifysh.archipelago.events.ArchipelagoEventListener;
 import dev.koifysh.archipelago.events.ReceiveItemEvent;
 import dev.koifysh.archipelago.parts.NetworkItem;
+import gg.archipelago.aprandomizer.managers.recipemanager.APRecipe;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -15,6 +16,12 @@ public class ReceiveItem {
 
     @ArchipelagoEventListener
     public static void onReceiveItem(ReceiveItemEvent event) {
+        // Dont fire if we have all ready recevied this location
+        if(event.getIndex() < APRandomizer.getWorldData().getItemIndex())
+            return;
+
+        APRandomizer.getWorldData().setItemIndex(event.getIndex());
+
         NetworkItem item = event.getItem();
         Component textItem = Component.literal(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())));
         Component chatMessage = Component.literal(
@@ -29,5 +36,6 @@ public class ReceiveItem {
         Utils.sendTitleToAll(title, textItem, chatMessage, 10, 60, 10);
         APRandomizer.getRecipeManager().grantRecipe(item.itemID);
         APRandomizer.getItemManager().giveItemToAll(item.itemID);
+
     }
 }

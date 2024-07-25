@@ -2,42 +2,27 @@ package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStructures;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.StructureTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.LodestoneTracker;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.bootstrap.ForgeBootstrap;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -198,11 +183,7 @@ public class ItemManager {
             return;
         }
         //update the player's index of received items for syncing later.
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
-        if (loPlayerData.isPresent()) {
-            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
-            playerData.setIndex(receivedItems.size());
-        }
+        APRandomizer.getWorldData().updatePlayerIndex(player.getStringUUID(),receivedItems.size());
 
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
@@ -248,14 +229,12 @@ public class ItemManager {
      * @param player ServerPlayer to catch up
      */
     public void catchUpPlayer(ServerPlayer player) {
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
-        if (loPlayerData.isPresent()) {
-            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
+        int playerIndex = APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID());
 
-            for (int i = playerData.getIndex(); i < receivedItems.size(); i++) {
-                giveItem(receivedItems.get(i), player);
-            }
+        for (int i = playerIndex; i < receivedItems.size(); i++) {
+            giveItem(receivedItems.get(i), player);
         }
+
     }
 
     public ArrayList<TagKey<Structure>> getCompasses() {

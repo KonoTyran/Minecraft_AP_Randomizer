@@ -25,8 +25,11 @@ public class onJoin {
     static void onPlayerLoginEvent(PlayerEvent.PlayerLoggedInEvent event) {
 
         ServerPlayer player = (ServerPlayer) event.getEntity();
-        if(APRandomizer.isRace())
+        if(APRandomizer.isRace()) {
+            if (player.gameMode.getGameModeForPlayer() != GameType.SURVIVAL) {
                 player.setGameMode(GameType.SURVIVAL);
+            }
+        }
 
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.MISSING)
@@ -49,7 +52,9 @@ public class onJoin {
         if(APRandomizer.isJailPlayers()) {
             BlockPos jail = APRandomizer.getJailPosition();
             player.teleportTo(jail.getX(),jail.getY(),jail.getZ());
-            player.setGameMode(GameType.SURVIVAL);
+            if (player.gameMode.getGameModeForPlayer() != GameType.SURVIVAL) {
+                player.setGameMode(GameType.SURVIVAL);
+            }
         }
     }
 }

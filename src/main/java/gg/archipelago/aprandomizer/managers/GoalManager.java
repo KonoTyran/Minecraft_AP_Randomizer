@@ -3,8 +3,7 @@ package gg.archipelago.aprandomizer.managers;
 import dev.koifysh.archipelago.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
+import gg.archipelago.aprandomizer.data.WorldData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
@@ -15,13 +14,11 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.bossevents.CustomBossEvent;
 import net.minecraft.server.bossevents.CustomBossEvents;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -156,7 +153,7 @@ public class GoalManager {
     }
 
     public void checkDragonSpawn() {
-        WorldData worldData = APRandomizer.getServer().overworld().getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData worldData = APRandomizer.getWorldData();
 
         //check if the dragon is not spawned and we need to spawn it.
         if (goalsDone() && worldData.getDragonState() == WorldData.DRAGON_ASLEEP) {
@@ -166,7 +163,7 @@ public class GoalManager {
             Utils.sendMessageToAll("The Dragon has awoken.");
             Utils.sendTitleToAll(Component.literal("Ender Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), Component.literal("has awoken"), 40, 120, 40);
 
-            // TODO: Spawn end dragonn
+            // TODO: Spawn end dragon
 //            Utils.SpawnDragon(end);
         }
     }

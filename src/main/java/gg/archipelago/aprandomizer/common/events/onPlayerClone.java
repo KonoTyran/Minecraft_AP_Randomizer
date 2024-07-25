@@ -1,10 +1,7 @@
 package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import net.minecraft.core.BlockPos;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -27,25 +24,5 @@ public class onPlayerClone {
         if(event.isEndConquered() && APRandomizer.getGoalManager().isDragonDead()) {
            APRandomizer.getGoalManager().checkGoalCompletion();
         }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerCloneEvent(PlayerEvent.Clone event) {
-        if(!event.isWasDeath())
-            return;
-
-        event.getOriginal().reviveCaps();
-
-        event.getEntity().getCapability(APCapabilities.PLAYER_INDEX).ifPresent(playerData -> {
-            LazyOptional<PlayerData> lazyOptional = event.getOriginal().getCapability(APCapabilities.PLAYER_INDEX);
-            if (lazyOptional.isPresent()) {
-                playerData.setIndex(lazyOptional.orElseThrow(AssertionError::new).getIndex());
-            }
-            else {
-                APRandomizer.LOGGER.error("unable to copy player index for player " + event.getEntity().getDisplayName().getString());
-            }
-        });
-
-        event.getOriginal().invalidateCaps();
     }
 }
