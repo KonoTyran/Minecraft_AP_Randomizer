@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.events;
+package gg.archipelago.aprandomizer.apevents;
 
 import dev.koifysh.archipelago.helper.DeathLink;
 import gg.archipelago.aprandomizer.APClient;

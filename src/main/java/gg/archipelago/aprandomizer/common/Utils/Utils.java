@@ -73,13 +73,14 @@ public class Utils {
     }
 
     public static Component apPrintToTextComponent(APPrint apPrint) {
+        boolean isMe = apPrint.receiving == APRandomizer.getAP().getSlot();
+
         MutableComponent message = Component.literal("");
         for (int i = 0; apPrint.parts.length > i; ++i) {
             APPrintPart part = apPrint.parts[i];
-            LOGGER.trace("part[" + i + "]: " + part.text + ", " + part.color + ", " + part.type);
-            Style style = Style.EMPTY;
+            LOGGER.trace("part[{}]: {}, {}, {}", i, part.text, part.color, part.type);
             //no default color was sent so use our own coloring.
-            Color color = Color.WHITE;
+            Color color = isMe ? Color.RED : Color.WHITE;
             boolean bold = false;
             boolean underline = false;
 
@@ -104,7 +105,7 @@ public class Utils {
 
             //blank out the first two bits because minecraft doesn't deal with alpha values
             int iColor = color.getRGB() & ~(0xFF << 24);
-            style = Style.EMPTY.withColor(iColor).withBold(bold).withUnderlined(underline);
+            Style style = Style.EMPTY.withColor(iColor).withBold(bold).withUnderlined(underline);
 
             message.append(Component.literal(part.text).withStyle(style));
         }

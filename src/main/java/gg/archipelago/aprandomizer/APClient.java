@@ -1,26 +1,11 @@
 package gg.archipelago.aprandomizer;
 
-import gg.archipelago.aprandomizer.events.*;
+import gg.archipelago.aprandomizer.apevents.*;
 import dev.koifysh.archipelago.ItemFlags;
-import dev.koifysh.archipelago.Print.APPrint;
-import dev.koifysh.archipelago.Print.APPrintColor;
-import dev.koifysh.archipelago.events.ConnectionAttemptEvent;
-import dev.koifysh.archipelago.events.ConnectionResultEvent;
-import dev.koifysh.archipelago.network.ConnectionResult;
-import dev.koifysh.archipelago.parts.NetworkItem;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 public class APClient extends dev.koifysh.archipelago.Client {
 

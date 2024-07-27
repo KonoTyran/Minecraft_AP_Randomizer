@@ -1,5 +1,6 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
+import gg.archipelago.aprandomizer.APComponent;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
@@ -7,8 +8,10 @@ import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.LodestoneTracker;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
@@ -146,11 +150,10 @@ public class ItemManager {
     private final ArrayList<TagKey<Structure>> receivedCompasses = new ArrayList<>();
 
     private void makeCompass(ItemStack iStack, TagKey<Structure> structureTag) {
-        var data = iStack.getComponents().get(DataComponents.CUSTOM_DATA);
 
-        //TODO: figure out CUSTOM_DATA
-//        iStack.set(DataComponents.CUSTOM_DATA,);
-//        data.put("structure", StringTag.valueOf(structureTag.location().toString()));
+        iStack.set(APComponent.TRACKED_STRUCTURE, structureTag.toString());
+
+        iStack.set(DataComponents.CUSTOM_NAME, Component.literal("Structure Compass"));
 
         BlockPos structureCords = new BlockPos(0,0,0);
         iStack.set(DataComponents.LODESTONE_TRACKER,new LodestoneTracker(Optional.of(new GlobalPos(Utils.getStructureWorld(structureTag), structureCords)),false));

@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.events;
+package gg.archipelago.aprandomizer.apevents;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.aprandomizer.APRandomizer;

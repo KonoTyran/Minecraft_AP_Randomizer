@@ -1,4 +1,4 @@
-package gg.archipelago.aprandomizer.events;
+package gg.archipelago.aprandomizer.apevents;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStorage.APMCData;

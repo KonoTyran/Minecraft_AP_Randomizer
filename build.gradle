@@ -116,9 +116,9 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+     flatDir {
+         dir 'libs'
+     }
 }
 
 dependencies {
@@ -151,7 +151,12 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.16'
+    implementation group: 'dev.koifysh', name: 'archipelago-client', version: '0.1.17'
+
+    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.5.2'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.11.0'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.2.1'
+    implementation group: 'org.apache.httpcomponents.core5', name: 'httpcore5', version: '5.2'
 }
 
 mixin {

@@ -75,7 +75,7 @@ public class WorldData extends SavedData {
     }
 
     public int getPlayerIndex(String playerUUID) {
-        return playerIndex.get(playerUUID);
+        return playerIndex.getOrDefault(playerUUID, 0);
     }
 
         public long getItemIndex() {
@@ -94,8 +94,9 @@ public class WorldData extends SavedData {
         tag.putBoolean("jailPlayers", jailPlayers);
         tag.putLongArray("locations",locations.stream().toList());
         tag.putLong("index", index);
-        CompoundTag tagIndex = tag.getCompound("playerIndex");
+        CompoundTag tagIndex = new CompoundTag();
         this.playerIndex.forEach(tagIndex::putInt);
+        tag.put("playerIndex", tagIndex);
         return tag;
     }
 
