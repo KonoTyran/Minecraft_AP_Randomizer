@@ -1,12 +1,10 @@
 package gg.archipelago.aprandomizer;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import gg.archipelago.aprandomizer.structures.BeeGroveStructure;
 import gg.archipelago.aprandomizer.structures.NetherEndCityStructure;
 import gg.archipelago.aprandomizer.structures.NetherPillagerOutpostStructure;
 import gg.archipelago.aprandomizer.structures.NetherVillageStructure;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

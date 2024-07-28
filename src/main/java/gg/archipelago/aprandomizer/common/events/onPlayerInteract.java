@@ -2,15 +2,12 @@ package gg.archipelago.aprandomizer.common.events;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -59,28 +56,27 @@ public class onPlayerInteract {
     static void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem event) {
         if(event.getSide().isClient())
             return;
-        //TODO: fix compasses right click to toggle
-//        if(event.getItemStack().getItem().equals(Items.COMPASS) && event.getItemStack().hasTag()) {
-//            ItemStack compass = event.getItemStack();
-//            if(!compass.hasTag())
-//                return;
-//            CompoundTag nbt = compass.getOrCreateTag();
-//            if(nbt.get("structure") == null)
-//                return;
-//
-//            //fetch our current compass list.
-//            ArrayList<TagKey<Structure>> compasses = APRandomizer.getItemManager().getCompasses();
-//
-//            TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, ResourceLocation.parse(nbt.getString("structure")));
-//            //get our current structures index in that list, increase it by one, wrapping it to 0 if needed.
-//            int index = compasses.indexOf(tagKey) + 1;
-//            if(index >= compasses.size())
-//                index = 0;
-//
-//            TagKey<Structure> structure = compasses.get(index);
-//
-//            ItemManager.updateCompassLocation(structure,event.getEntity(),compass);
-//
-//        }
+
+        if(event.getItemStack().getItem().equals(Items.COMPASS)) {
+            ItemStack compass = event.getItemStack();
+            if(!compass.has(DataComponents.CUSTOM_DATA)) return;
+            String trackedStructure = compass.get(DataComponents.CUSTOM_DATA).getUnsafe().getString(APRandomizer.MODID + ":tracked_structure");
+            if (trackedStructure.isBlank()) return;
+            ResourceLocation location = ResourceLocation.parse(trackedStructure);
+
+            //fetch our current compass list.
+            ArrayList<TagKey<Structure>> compasses = APRandomizer.getItemManager().getCompasses();
+
+            TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, location);
+            //get our current structures index in that list, increase it by one, wrapping it to 0 if needed.
+            int index = compasses.indexOf(tagKey) + 1;
+            if(index >= compasses.size())
+                index = 0;
+
+            if (compasses.isEmpty()) return;
+            TagKey<Structure> structure = compasses.get(index);
+            ItemManager.updateCompassLocation(structure,event.getEntity(), compass);
+
+        }
     }
 }

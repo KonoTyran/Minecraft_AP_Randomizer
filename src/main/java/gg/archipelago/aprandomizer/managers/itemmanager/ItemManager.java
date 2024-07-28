@@ -1,6 +1,5 @@
 package gg.archipelago.aprandomizer.managers.itemmanager;
 
-import gg.archipelago.aprandomizer.APComponent;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStructures;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
@@ -8,10 +7,8 @@ import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +24,6 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -151,7 +147,10 @@ public class ItemManager {
 
     private void makeCompass(ItemStack iStack, TagKey<Structure> structureTag) {
 
-        iStack.set(APComponent.TRACKED_STRUCTURE, structureTag.toString());
+        CustomData tracked_structure = CustomData.EMPTY;
+        tracked_structure.getUnsafe().putString(APRandomizer.MODID + ":tracked_structure", structureTag.location().toString());
+
+        iStack.set(DataComponents.CUSTOM_DATA, tracked_structure);
 
         iStack.set(DataComponents.CUSTOM_NAME, Component.literal("Structure Compass"));
 
@@ -191,11 +190,9 @@ public class ItemManager {
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
             if(compasses.containsKey(itemID)){
-                //TODO: figure out CUSTOM_DATA
-//                CustomData location = DataComponents
-//
-//                TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, ResourceLocation.parse());
-//                updateCompassLocation(tag, player , itemstack);
+
+                TagKey<Structure> tag = compasses.get(itemID);
+                updateCompassLocation(tag, player , itemstack);
             }
             Utils.giveItemToPlayer(player, itemstack);
         } else if (xpData.containsKey(itemID)) {
@@ -278,7 +275,7 @@ public class ItemManager {
             structurePos = new BlockPos(0,0,0);
         //update the nbt data with our new structure.
 
-        //nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
+        compass.get(DataComponents.CUSTOM_DATA).getUnsafe().putString(APRandomizer.MODID + ":tracked_structure", structureTag.location().toString());
 
 
         compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(new GlobalPos(world,structurePos)),false));
