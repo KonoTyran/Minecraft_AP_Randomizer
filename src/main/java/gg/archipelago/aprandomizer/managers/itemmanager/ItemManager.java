@@ -11,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
@@ -31,8 +32,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 public class ItemManager {
-    // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static final long DRAGON_EGG_SHARD = 45043L;
 
@@ -179,11 +178,14 @@ public class ItemManager {
         APRandomizer.getGoalManager().updateGoal(false);
     }
 
-    public void giveItem(Long itemID, ServerPlayer player) {
+    public void giveItem(Long itemID, ServerPlayer player, int itemIndex) {
         if (APRandomizer.isJailPlayers()) {
             //dont send items to players if game has not started.
             return;
         }
+
+        if (APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID()) >= itemIndex) return;
+
         //update the player's index of received items for syncing later.
         APRandomizer.getWorldData().updatePlayerIndex(player.getStringUUID(),receivedItems.size());
 
@@ -207,7 +209,7 @@ public class ItemManager {
     }
 
 
-    public void giveItemToAll(long itemID) {
+    public void giveItemToAll(long itemID, int index) {
 
         receivedItems.add(itemID);
         //check if this item is a structure compass, and we are not already tracking that one.
@@ -217,7 +219,7 @@ public class ItemManager {
 
         APRandomizer.getServer().execute(() -> {
             for (ServerPlayer serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                giveItem(itemID, serverplayerentity);
+                giveItem(itemID, serverplayerentity, index);
             }
         });
 
@@ -232,7 +234,7 @@ public class ItemManager {
         int playerIndex = APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID());
 
         for (int i = playerIndex; i < receivedItems.size(); i++) {
-            giveItem(receivedItems.get(i), player);
+            giveItem(receivedItems.get(i), player, i+1);
         }
 
     }
@@ -280,5 +282,20 @@ public class ItemManager {
 
         compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(new GlobalPos(world,structurePos)),false));
         compass.set(DataComponents.CUSTOM_NAME, displayName);
+    }
+
+    // refresh all compasses in player inventory
+    public static void refreshCompasses(ServerPlayer player) {
+        player.getInventory().items.forEach( (item) -> {
+            if(item.getItem().equals(Items.COMPASS)) {
+                CustomData tracked_structure = item.get(DataComponents.CUSTOM_DATA);
+                if(tracked_structure == null) return;
+                String trackedStructure = tracked_structure.getUnsafe().getString(APRandomizer.MODID + ":tracked_structure");
+                if (trackedStructure.isBlank()) return;
+
+                TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, ResourceLocation.parse(trackedStructure));
+                updateCompassLocation(tagKey, player, item);
+            }
+        });
     }
 }

@@ -22,9 +22,6 @@ import java.util.ArrayList;
 @Mod.EventBusSubscriber
 public class onPlayerInteract {
 
-    // Directly reference a log4j logger.
-    private static final Logger LOGGER = LogManager.getLogger();
-
     @SubscribeEvent
     static void onPlayerBlockInteract(PlayerInteractEvent event) {
         if(event.getSide().isClient())

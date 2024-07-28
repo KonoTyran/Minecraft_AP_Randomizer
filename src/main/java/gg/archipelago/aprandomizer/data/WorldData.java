@@ -1,18 +1,13 @@
 package gg.archipelago.aprandomizer.data;
 
 import com.google.common.collect.Lists;
-import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.datafix.DataFixTypes;
-import net.minecraft.world.level.ForcedChunksSavedData;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.unsafe.UnsafeFieldAccess;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class WorldData extends SavedData {
 
@@ -20,7 +15,7 @@ public class WorldData extends SavedData {
     private int dragonState = DRAGON_ASLEEP;
     private boolean jailPlayers = false;
     private Set<Long> locations = new HashSet<>();
-    private long index = 0;
+    private int index = 0;
     private Map<String, Integer> playerIndex = new HashMap<>();
 
     public static final int DRAGON_KILLED = 30;
@@ -78,11 +73,11 @@ public class WorldData extends SavedData {
         return playerIndex.getOrDefault(playerUUID, 0);
     }
 
-        public long getItemIndex() {
+    public int getItemIndex() {
         return this.index;
     }
 
-    public void setItemIndex(long index) {
+    public void setItemIndex(int index) {
         this.index = index;
         this.setDirty();
     }
@@ -95,7 +90,7 @@ public class WorldData extends SavedData {
         tag.putLongArray("locations",locations.stream().toList());
         tag.putLong("index", index);
         CompoundTag tagIndex = new CompoundTag();
-        this.playerIndex.forEach(tagIndex::putInt);
+        this.playerIndex.forEach(tagIndex::putLong);
         tag.put("playerIndex", tagIndex);
         return tag;
     }
@@ -107,13 +102,13 @@ public class WorldData extends SavedData {
     public WorldData() {
     }
 
-    private WorldData(String seedName, int dragonState, boolean jailPlayers, long[] locations, Map<String, Integer> playerIndex, long itemIndex) {
+    private WorldData(String seedName, int dragonState, boolean jailPlayers, long[] locations, Map<String, Integer> playerIndex, int itemIndex) {
         this.seedName = seedName;
         this.dragonState = dragonState;
         this.jailPlayers = jailPlayers;
         this.locations = new HashSet<>(Set.of(ArrayUtils.toObject(locations)));
-        this.playerIndex = new HashMap<>();
         this.index = itemIndex;
+        this.playerIndex = playerIndex;
     }
 
     public static WorldData load(CompoundTag tag, HolderLookup.Provider provider) {
@@ -126,7 +121,7 @@ public class WorldData extends SavedData {
                 tag.getBoolean("jailPlayers"),
                 tag.getLongArray("locations"),
                 indexMap,
-                tag.getLong("index")
+                tag.getInt("index")
                 );
     }
 }

@@ -16,13 +16,13 @@ public class ReceiveItem {
     public static void onReceiveItem(ReceiveItemEvent event) {
         NetworkItem item = event.getItem();
         APRandomizer.getRecipeManager().grantRecipe(item.itemID);
-        APRandomizer.getItemManager().giveItemToAll(item.itemID);
+        APRandomizer.getItemManager().giveItemToAll(item.itemID, (int) event.getIndex());
 
         // Dont fire if we have all ready recevied this location
         if(event.getIndex() <= APRandomizer.getWorldData().getItemIndex())
             return;
 
-        APRandomizer.getWorldData().setItemIndex(event.getIndex());
+        APRandomizer.getWorldData().setItemIndex((int) event.getIndex());
 
         Component textItem = Component.literal(item.itemName).withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.gold.color.getRGB())));
         Component title = Component.literal("Received").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(APPrintColor.red.color.getRGB())));
