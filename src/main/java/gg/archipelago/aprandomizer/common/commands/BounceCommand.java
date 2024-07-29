@@ -2,7 +2,7 @@ package gg.archipelago.aprandomizer.common.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.client.network.client.BouncePacket;
+import dev.koifysh.archipelago.network.client.BouncePacket;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

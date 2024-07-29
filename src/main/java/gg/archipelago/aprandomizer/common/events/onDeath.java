@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.client.network.client.BouncePacket;
+import dev.koifysh.archipelago.helper.DeathLink;
+import dev.koifysh.archipelago.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import net.minecraft.server.MinecraftServer;
@@ -27,22 +28,13 @@ public class onDeath {
         //only trigger on player death
         if (!(event.getEntity() instanceof ServerPlayer player))
             return;
-
         if(!APRandomizer.getAP().getSlotData().deathlink)
             return;
-
         //dont send deathlink if the cause of this death was a deathlink
         if(event.getSource() instanceof DeathLinkDamage)
             return;
 
-        double deathTime = (double)System.currentTimeMillis() / 1000D;
-        BouncePacket deathLinkPacket = new BouncePacket();
-        deathLinkPacket.tags = new String[]{"DeathLink"};
-        deathLinkPacket.setData(new HashMap<>(){{
-            put("cause",event.getSource().getLocalizedDeathMessage(player).getString());
-            put("time", deathTime);
-            put("source",player.getDisplayName().getString());
-        }});
+        DeathLink.SendDeathLink(event.getSource().getLocalizedDeathMessage(player).getString(), event.getEntity().getDisplayName().getString());
         MinecraftServer server = APRandomizer.getServer();
         GameRules.BooleanValue deathMessages = server.getGameRules().getRule(GameRules.RULE_SHOWDEATHMESSAGES);
         boolean death = deathMessages.get();
@@ -53,7 +45,6 @@ public class onDeath {
             }
         }
         deathMessages.set(death, server);
-        APRandomizer.setLastDeathTimestamp(deathTime);
-        APRandomizer.getAP().sendBounce(deathLinkPacket);
+
     }
 }

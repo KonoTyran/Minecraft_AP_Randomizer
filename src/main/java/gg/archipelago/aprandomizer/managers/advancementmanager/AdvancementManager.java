@@ -1,21 +1,12 @@
 package gg.archipelago.aprandomizer.managers.advancementmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
+import gg.archipelago.aprandomizer.data.WorldData;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.*;
 
@@ -192,7 +183,7 @@ public class AdvancementManager {
         earnedAdvancements.add(id);
         APRandomizer.getAP().checkLocation(id);
         APRandomizer.getGoalManager().updateGoal( true);
-        APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new).addLocation(id);
+        APRandomizer.getWorldData().addLocation(id);
         syncAllAdvancements();
     }
 
@@ -227,7 +218,7 @@ public class AdvancementManager {
 
     public void setCheckedAdvancements(Set<Long> checkedLocations) {
         earnedAdvancements.addAll(checkedLocations);
-        WorldData data = APRandomizer.getServer().getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData data = APRandomizer.getWorldData();
         for (var checkedLocation : checkedLocations) {
             data.addLocation(checkedLocation);
         }

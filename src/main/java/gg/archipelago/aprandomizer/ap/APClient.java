@@ -1,28 +1,16 @@
-package gg.archipelago.aprandomizer;
+package gg.archipelago.aprandomizer.ap;
 
-import gg.archipelago.aprandomizer.events.*;
-import gg.archipelago.client.ItemFlags;
-import gg.archipelago.client.Print.APPrint;
-import gg.archipelago.client.Print.APPrintColor;
-import gg.archipelago.client.events.ConnectionAttemptEvent;
-import gg.archipelago.client.events.ConnectionResultEvent;
-import gg.archipelago.client.network.ConnectionResult;
-import gg.archipelago.client.parts.NetworkItem;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
+import dev.koifysh.archipelago.Client;
+import dev.koifysh.archipelago.ItemFlags;
+import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.SlotData;
+import gg.archipelago.aprandomizer.ap.events.*;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerPlayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
-public class APClient extends gg.archipelago.client.ArchipelagoClient {
+public class APClient extends Client {
 
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,7 +19,7 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
 
     private final MinecraftServer server;
 
-    APClient(MinecraftServer server) {
+    public APClient(MinecraftServer server) {
         super();
 
         this.setGame("Minecraft");
@@ -52,31 +40,13 @@ public class APClient extends gg.archipelago.client.ArchipelagoClient {
         this.getEventManager().registerListener(new AttemptedConnection());
         this.getEventManager().registerListener(new ReceiveItem());
         this.getEventManager().registerListener(new LocationChecked());
+        this.getEventManager().registerListener(new PrintJsonListener());
     }
 
     public SlotData getSlotData() {
         return slotData;
     }
 
-
-    @Override
-    public void onPrint(String print) {
-        if (!print.startsWith(getAlias() + ":")) {
-            Utils.sendMessageToAll(print);
-        }
-    }
-
-    @Override
-    public void onPrintJson(APPrint apPrint, String type, int receiving, NetworkItem item) {
-
-        //don't print out messages if it's an item send and the recipient is us.
-        if(type.equals("ItemSend") && receiving != getSlot()) {
-            Utils.sendFancyMessageToAll(apPrint);
-        }
-        else if(!type.equals("ItemSend")) {
-            Utils.sendFancyMessageToAll(apPrint);
-        }
-    }
 
     @Override
     public void onError(Exception ex) {

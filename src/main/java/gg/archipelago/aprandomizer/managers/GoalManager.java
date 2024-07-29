@@ -1,11 +1,10 @@
 package gg.archipelago.aprandomizer.managers;
 
-import gg.archipelago.client.ClientStatus;
+import dev.koifysh.archipelago.ClientStatus;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
+import gg.archipelago.aprandomizer.ap.storage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.data.WorldData;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
 import net.minecraft.network.chat.Component;
@@ -155,20 +154,15 @@ public class GoalManager {
     }
 
     public void checkDragonSpawn() {
-        ServerLevel end = APRandomizer.getServer().getLevel(Level.END);
-        assert end != null;
-        assert end.dragonFight != null;
-        WorldData endData = end.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        WorldData worldData = APRandomizer.getWorldData();
 
         //check if the dragon is not spawned and we need to spawn it.
-        if (goalsDone() && endData.getDragonState() == WorldData.DRAGON_ASLEEP) {
+        if (goalsDone() && worldData.getDragonState() == WorldData.DRAGON_ASLEEP) {
             //set the dragon state to spawn as soon as the end 0,0 chunk is loaded
-            endData.setDragonState(WorldData.DRAGON_WAITING);
+            worldData.setDragonState(WorldData.DRAGON_WAITING);
             Utils.PlaySoundToAll(SoundEvents.ENDER_DRAGON_AMBIENT);
-            Utils.sendMessageToAll("The Dragon has awoken.");
-            Utils.sendTitleToAll(Component.literal("Ender Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), Component.literal("has awoken"), 40, 120, 40);
-
-            Utils.SpawnDragon(end);
+            Utils.sendMessageToAll("The Dragon is waiting...");
+            Utils.sendTitleToAll(Component.literal("The Dragon").withStyle(Style.EMPTY.withColor(TextColor.fromRgb(java.awt.Color.ORANGE.getRGB()))), Component.literal("is waiting..."), 40, 120, 40);
         }
     }
 

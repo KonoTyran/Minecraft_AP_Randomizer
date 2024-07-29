@@ -1,6 +1,6 @@
 package gg.archipelago.aprandomizer.common.events;
 
-import gg.archipelago.client.network.client.BouncePacket;
+import dev.koifysh.archipelago.network.client.BouncePacket;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -28,7 +28,6 @@ public class onLivingHurt {
 
     @SubscribeEvent
     static void onLivingDeathEvent(LivingDeathEvent event) {
-        //TODO: this may be broken.
         String name = event.getEntity().getEncodeId();
 
         if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)

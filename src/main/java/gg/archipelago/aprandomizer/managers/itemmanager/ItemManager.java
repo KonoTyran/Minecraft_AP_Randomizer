@@ -2,10 +2,9 @@ package gg.archipelago.aprandomizer.managers.itemmanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.APStructures;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.PlayerData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import gg.archipelago.aprandomizer.managers.itemmanager.traps.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -177,22 +176,22 @@ public class ItemManager {
         APRandomizer.getGoalManager().updateGoal(false);
     }
 
-    public void giveItem(Long itemID, ServerPlayer player) {
+        public void giveItem(Long itemID, ServerPlayer player, int itemIndex) {
         if (APRandomizer.isJailPlayers()) {
             //dont send items to players if game has not started.
             return;
         }
+
+        if (APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID()) >= itemIndex) return;
+
         //update the player's index of received items for syncing later.
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
-        if (loPlayerData.isPresent()) {
-            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
-            playerData.setIndex(receivedItems.size());
-        }
+        APRandomizer.getWorldData().updatePlayerIndex(player.getStringUUID(),receivedItems.size());
 
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
             if(compasses.containsKey(itemID)){
-                TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, new ResourceLocation(itemstack.getOrCreateTag().getString("structure")));
+
+                TagKey<Structure> tag = compasses.get(itemID);
                 updateCompassLocation(tag, player , itemstack);
             }
             Utils.giveItemToPlayer(player, itemstack);
@@ -208,7 +207,7 @@ public class ItemManager {
     }
 
 
-    public void giveItemToAll(long itemID) {
+    public void giveItemToAll(long itemID, int index) {
 
         receivedItems.add(itemID);
         //check if this item is a structure compass, and we are not already tracking that one.
@@ -218,7 +217,7 @@ public class ItemManager {
 
         APRandomizer.getServer().execute(() -> {
             for (ServerPlayer serverplayerentity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                giveItem(itemID, serverplayerentity);
+                giveItem(itemID, serverplayerentity, index);
             }
         });
 
@@ -230,14 +229,12 @@ public class ItemManager {
      * @param player ServerPlayer to catch up
      */
     public void catchUpPlayer(ServerPlayer player) {
-        LazyOptional<PlayerData> loPlayerData = player.getCapability(APCapabilities.PLAYER_INDEX);
-        if (loPlayerData.isPresent()) {
-            PlayerData playerData = loPlayerData.orElseThrow(AssertionError::new);
+        int playerIndex = APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID());
 
-            for (int i = playerData.getIndex(); i < receivedItems.size(); i++) {
-                giveItem(receivedItems.get(i), player);
-            }
+        for (int i = playerIndex; i < receivedItems.size(); i++) {
+            giveItem(receivedItems.get(i), player, i+1);
         }
+
     }
 
     public ArrayList<TagKey<Structure>> getCompasses() {
@@ -258,19 +255,48 @@ public class ItemManager {
         //only locate structure if the player is in the same world as the one for the compass
         //otherwise just point it to 0,0 in said dimension.
         BlockPos structurePos = new BlockPos(0,0,0);
-        if(player.getCommandSenderWorld().dimension().equals(world)) {
-            structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
-        }
 
-        String displayName = Utils.getAPStructureName(structureTag);
+        var displayName = Component.literal(String.format("Structure Compass (%s)", Utils.getAPStructureName(structureTag)));
+        if(player.getCommandSenderWorld().dimension().equals(world)) {
+            try {
+                structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
+            } catch (NullPointerException exception) {
+                player.sendSystemMessage(Component.literal("Could not find a nearby " + Utils.getAPStructureName(structureTag)));
+            }
+        }
+        else {
+            displayName = Component.literal(
+                    String.format("Structure Compass (%s) Wrong Dimension",
+                            Utils.getAPStructureName(structureTag))
+                    ).withStyle(ChatFormatting.DARK_RED);
+        }
 
         if(structurePos == null)
             structurePos = new BlockPos(0,0,0);
+        //update the nbt data with our new structure.
 
         CompoundTag nbt = compass.getOrCreateTag();
         //update the nbt data with our new structure.
         nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
         Utils.addLodestoneTags(world,structurePos,nbt);
-        compass.setHoverName(Component.literal(String.format("Structure Compass (%s)", displayName)));
+        compass.setHoverName(displayName);
+    }
+
+        // refresh all compasses in player inventory
+    public static void refreshCompasses(ServerPlayer player) {
+        player.getInventory().items.forEach( (item) -> {
+            if(item.getItem().equals(Items.COMPASS)) {
+                if(!item.hasTag())
+                    return;
+                CompoundTag nbt = item.getOrCreateTag();
+                if(nbt.get("structure") == null)
+                    return;
+
+                try {
+                    TagKey<Structure> tagKey = TagKey.create(Registries.STRUCTURE, ResourceLocation.tryParse(nbt.getString("structure")));
+                    updateCompassLocation(tagKey, player, item);
+                } catch (Exception ignored) {}
+            }
+        });
     }
 }

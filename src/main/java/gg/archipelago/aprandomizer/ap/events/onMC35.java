@@ -1,10 +1,10 @@
-package gg.archipelago.aprandomizer.events;
+package gg.archipelago.aprandomizer.ap.events;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
-import gg.archipelago.client.events.ArchipelagoEventListener;
-import gg.archipelago.client.events.BouncedEvent;
+import dev.koifysh.archipelago.events.ArchipelagoEventListener;
+import dev.koifysh.archipelago.events.BouncedEvent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.server.level.ServerPlayer;

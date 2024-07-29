@@ -4,9 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import gg.archipelago.aprandomizer.APClient;
+import gg.archipelago.aprandomizer.ap.APClient;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
+import gg.archipelago.aprandomizer.ap.storage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -62,13 +62,13 @@ public class ConnectCommand {
         APMCData data = APRandomizer.getApmcData();
         if (data.state == APMCData.State.VALID) {
 
-            APClient apClient = APRandomizer.getAP();
-            apClient.setName(data.player_name);
-            apClient.setPassword(password);
+            APClient APClient = APRandomizer.getAP();
+            APClient.setName(data.player_name);
+            APClient.setPassword(password);
             String address = (port==-1) ? hostname : hostname.concat(":" + port);
             Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
             try {
-                apClient.connect(address);
+                APClient.connect(address);
             } catch (URISyntaxException e) {
                 Utils.sendMessageToAll("Malformed address " + address);
             }

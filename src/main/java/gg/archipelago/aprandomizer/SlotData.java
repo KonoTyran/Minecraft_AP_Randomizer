@@ -1,14 +1,13 @@
 package gg.archipelago.aprandomizer;
 
-import archipelagoClient.com.google.gson.JsonArray;
-import archipelagoClient.com.google.gson.JsonElement;
-import archipelagoClient.com.google.gson.JsonObject;
-import archipelagoClient.com.google.gson.JsonParser;
-import archipelagoClient.com.google.gson.annotations.SerializedName;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.annotations.SerializedName;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.ResourceLocationException;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

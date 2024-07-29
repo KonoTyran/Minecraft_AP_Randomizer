@@ -28,6 +28,7 @@ public class onPlayerInteract {
 
     @SubscribeEvent
     static void onPlayerBlockInteract(PlayerInteractEvent event) {
+        if (event.getSide().isClient()) return;
         //stop all right click interactions if game has not started.
         if(APRandomizer.isJailPlayers())
             event.setCanceled(true);
@@ -35,6 +36,7 @@ public class onPlayerInteract {
 
     @SubscribeEvent
     static void onPlayerBlockInteract(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getSide().isClient()) return;
         if(!event.getItemStack().getItem().equals(Items.COMPASS) || !event.getItemStack().hasTag()) {
             return;
         }

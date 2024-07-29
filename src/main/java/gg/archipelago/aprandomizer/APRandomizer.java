@@ -1,11 +1,11 @@
 package gg.archipelago.aprandomizer;
 
 import com.google.gson.Gson;
-import gg.archipelago.client.network.client.BouncePacket;
-import gg.archipelago.aprandomizer.APStorage.APMCData;
-import gg.archipelago.aprandomizer.capability.APCapabilities;
-import gg.archipelago.aprandomizer.capability.data.WorldData;
+import dev.koifysh.archipelago.network.client.BouncePacket;
+import gg.archipelago.aprandomizer.ap.APClient;
+import gg.archipelago.aprandomizer.ap.storage.APMCData;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
+import gg.archipelago.aprandomizer.data.WorldData;
 import gg.archipelago.aprandomizer.managers.GoalManager;
 import gg.archipelago.aprandomizer.managers.advancementmanager.AdvancementManager;
 import gg.archipelago.aprandomizer.managers.itemmanager.ItemManager;
@@ -19,10 +19,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.MinecraftForge;
@@ -41,7 +37,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(APRandomizer.MODID)
@@ -51,7 +46,7 @@ public class APRandomizer {
     public static final String MODID = "aprandomizer";
 
     //store our APClient
-    static private APClient apClient;
+    static private APClient APClient;
 
     static public MinecraftServer server;
 
@@ -61,9 +56,6 @@ public class APRandomizer {
     static private GoalManager goalManager;
     static private APMCData apmcData;
     static private final Set<Integer> validVersions = new HashSet<>() {{
-        this.add(6); //mc 1.16.5
-        this.add(7); //mc 1.17.1
-        this.add(8); //mc 1.18.2
         this.add(9); //mc 1.19
     }};
     static private boolean jailPlayers = true;
@@ -114,11 +106,11 @@ public class APRandomizer {
     }
 
     public static APClient getAP() {
-        return apClient;
+        return APClient;
     }
 
     public static boolean isConnected() {
-        return (apClient != null && apClient.isConnected());
+        return (APClient != null && APClient.isConnected());
     }
 
     public static AdvancementManager getAdvancementManager() {
@@ -164,8 +156,8 @@ public class APRandomizer {
     }
 
     public static void sendBounce(BouncePacket packet) {
-        if(apClient != null)
-            apClient.sendBounce(packet);
+        if(APClient != null)
+            APClient.sendBounce(packet);
     }
 
     public static GoalManager getGoalManager() {
@@ -180,6 +172,10 @@ public class APRandomizer {
         return lastDeathTimestamp;
     }
 
+    public static WorldData getWorldData() {
+        return worldData;
+    }
+
     @SubscribeEvent
     public void onServerAboutToStart(ServerAboutToStartEvent event) {
         if (apmcData.state != APMCData.State.VALID) {
@@ -188,7 +184,6 @@ public class APRandomizer {
         server = event.getServer();
     }
 
-    @SuppressWarnings("UnusedAssignment")
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
 
@@ -205,7 +200,7 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = server.getLevel(Level.OVERWORLD).getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
+        worldData = WorldData.initialize(server.overworld().getDataStorage());
         jailPlayers = worldData.getJailPlayers();
         advancementManager.setCheckedAdvancements(worldData.getLocations());
 
@@ -228,53 +223,7 @@ public class APRandomizer {
         }
 
         if(apmcData.state == APMCData.State.VALID) {
-            apClient = new APClient(server);
-        }
-
-
-        //preload the nether so that fetching of structures works.
-        ServerLevel nether = server.getLevel(Level.NETHER);
-        assert nether != null;
-
-        //check to see if the chunk is loaded then fetch/generate if it is not.
-        if (!nether.hasChunk(0, 0)) { //Chunk is unloaded
-            ChunkAccess chunk = nether.getChunk(0, 0, ChunkStatus.EMPTY, true);
-            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
-                chunk = nether.getChunk(0, 0, ChunkStatus.FULL);
-            }
-        }
-
-        ServerLevel theEnd = server.getLevel(Level.END);
-        assert theEnd != null;
-
-        //check to see if the chunk is loaded then fetch/generate if it is not.
-        if (!theEnd.hasChunk(0, 0)) { //Chunk is unloaded
-            ChunkAccess chunk = theEnd.getChunk(0, 0, ChunkStatus.EMPTY, true);
-            if (!chunk.getStatus().isOrAfter(ChunkStatus.FULL)) {
-                chunk = theEnd.getChunk(0, 0, ChunkStatus.FULL);
-            }
-        }
-        //check if there is dragon data, if not create new stuff.
-        if (theEnd.dragonFight == null)
-            theEnd.dragonFight = new EndDragonFight(theEnd, server.getWorldData().worldGenOptions().seed(), server.getWorldData().endDragonFightData());
-        //spawn 20 end gateways spawnNewGateway will do nothing if they are all already spawned.
-        for (int i = 0; i < 20; i++) {
-            theEnd.dragonFight.spawnNewGateway();
-        }
-        if (theEnd.dragonFight.portalLocation == null || theEnd.dragonFight.portalLocation.getY() == -1) {
-            //get the top block of 0,0 then spawn the portal there, the parameter is whether or not to make it an active portal
-            BlockPos pos = theEnd.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(0, 255, 0));
-            theEnd.dragonFight.portalLocation = pos.below();
-        }
-        theEnd.dragonFight.spawnExitPortal(theEnd.dragonFight.dragonKilled);
-        theEnd.save(null, true, false);
-        //theEnd.getServer().getWorldData().setEndDragonFightData(theEnd.dragonFight().saveData());
-
-        //check if our boss requirements means we should start with the dragon spawned.
-        if(apmcData.dragonStartSpawned()) {
-            Utils.SpawnDragon(theEnd);
-            WorldData endData = theEnd.getCapability(APCapabilities.WORLD_DATA).orElseThrow(AssertionError::new);
-            endData.setDragonState(WorldData.DRAGON_SPAWNED);
+            APClient = new APClient(server);
         }
 
 
@@ -289,8 +238,7 @@ public class APRandomizer {
             server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
             server.getGameRules().getRule(GameRules.RULE_DOFIRETICK).set(false, server);
-            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).value = 0;
-            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).onChanged(server);
+            server.getGameRules().getRule(GameRules.RULE_RANDOMTICKING).set(0, server);
             server.getGameRules().getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false,server);
             server.getGameRules().getRule(GameRules.RULE_MOBGRIEFING).set(false,server);
@@ -304,14 +252,14 @@ public class APRandomizer {
 
         if (apmcData.state == APMCData.State.VALID && apmcData.server != null) {
 
-            APClient apClient = APRandomizer.getAP();
-            apClient.setName(apmcData.player_name);
+            APClient APClient = APRandomizer.getAP();
+            APClient.setName(apmcData.player_name);
             String address = apmcData.server.concat(":" + apmcData.port);
 
             Utils.sendMessageToAll("Connecting to Archipelago server at " + address);
 
             try {
-                apClient.connect(address);
+                APClient.connect(address);
             } catch (URISyntaxException e) {
                 Utils.sendMessageToAll("unable to connect");
             }
@@ -320,13 +268,13 @@ public class APRandomizer {
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
-        if(apClient != null)
-            apClient.close();
+        if(APClient != null)
+            APClient.close();
     }
 
     @SubscribeEvent
     public void onServerStopped(ServerStoppedEvent event) {
-        if(apClient != null)
-            apClient.close();
+        if(APClient != null)
+            APClient.close();
     }
 }
