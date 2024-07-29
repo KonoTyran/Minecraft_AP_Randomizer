@@ -9,9 +9,9 @@ pluginManagement {
             name = "ParchmentMC"
             url = 'https://maven.parchmentmc.org'
         }
-    }
-    plugins {
-        id 'com.github.johnrengelman.shadow' version '6.0.0'
+        maven {
+            url = 'https://dl.bintray.com/palantir/releases'
+        }
     }
 }
 

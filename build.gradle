@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'io.github.goooler.shadow' version '8.1.8'
 }
 
 version = mod_version
@@ -151,7 +152,7 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    implementation('dev.koifysh:archipelago-client:0.1.17')
+    implementation 'dev.koifysh:archipelago-client:0.1.17'
 }
 
 mixin {
@@ -227,4 +228,18 @@ sourceSets.each {
     def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
+}
+
+// Output to build/libs/shadow.jar
+shadowJar {
+    archiveBaseName.set(mod_id)
+    archiveClassifier.set('shadow')
+    archiveVersion.set(mod_version)
+    configurations = [project.configurations.compileClasspath]
+    dependencies {
+        include(dependency("dev.koifysh:archipelago-client"))
+        include(dependency("org.java-websocket:Java-WebSocket"))
+        include(dependency("org.apache.httpcomponents.client5:httpclient5"))
+        include(dependency("org.apache.httpcomponents.core5:httpcore5"))
+    }
 }
