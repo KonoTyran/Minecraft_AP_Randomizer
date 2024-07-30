@@ -28,16 +28,18 @@ public class onLivingHurt {
 
     @SubscribeEvent
     static void onLivingDeathEvent(LivingDeathEvent event) {
-        String name = event.getEntity().getEncodeId();
+        if(!APRandomizer.isConnected())
+            return;
 
-        if(APRandomizer.isConnected() && !APRandomizer.getAP().getSlotData().MC35)
+        String name = event.getEntity().getEncodeId();
+        if(!APRandomizer.getAP().getSlotData().MC35)
             return;
 
         Entity damageSource = event.getSource().getEntity();
         if(damageSource != null && damageSource.getType() == EntityType.PLAYER) {
             BouncePacket packet = new BouncePacket();
             packet.tags = new String[]{"MC35"};
-            packet.setData(new HashMap<String, Object>() {{
+            packet.setData(new HashMap<>() {{
                 put("enemy", name);
                 put("source", APRandomizer.getAP().getSlot());
                 CompoundTag nbt = event.getEntity().saveWithoutId(new CompoundTag());

@@ -8,7 +8,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -23,7 +22,6 @@ import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraftforge.common.util.LazyOptional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -79,31 +77,24 @@ public class ItemManager {
         put(45035L, new ItemStack(Items.ARROW, 32));
         put(45036L, new ItemStack(Items.SADDLE, 1));
 
-        String[] compassLore = new String[]{"Right click with compass in hand to","cycle to next known structure location."};
-
         ItemStack villageCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(villageCompass, APStructures.VILLAGE_TAG);
-        addLore(villageCompass, "Structure Compass (Village)", compassLore);
         put(45037L, villageCompass);
 
         ItemStack outpostCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(outpostCompass, APStructures.OUTPOST_TAG);
-        addLore(outpostCompass, "Structure Compass (Pillager Outpost)", compassLore);
         put(45038L, outpostCompass);
 
         ItemStack fortressCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(fortressCompass, APStructures.FORTRESS_TAG);
-        addLore(fortressCompass, "Structure Compass (Nether Fortress)", compassLore);
         put(45039L, fortressCompass);
 
         ItemStack bastionCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(bastionCompass, APStructures.BASTION_REMNANT_TAG);
-        addLore(bastionCompass, "Structure Compass (Bastion Remnant)", compassLore);
         put(45040L,bastionCompass);
 
         ItemStack endCityCompass = new ItemStack(Items.COMPASS, 1);
         makeCompass(endCityCompass, APStructures.END_CITY_TAG);
-        addLore(endCityCompass, "Structure Compass (End City)", compassLore);
         put(45041L, endCityCompass);
 
         put(45042L, new ItemStack(Items.SHULKER_BOX, 1));
@@ -151,19 +142,14 @@ public class ItemManager {
         nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
 
         BlockPos structureCords = new BlockPos(0,0,0);
-
         Utils.addLodestoneTags(Utils.getStructureWorld(structureTag),structureCords, iStack.getOrCreateTag());
-    }
-
-    private void addLore(ItemStack iStack, String name, String[] compassLore) {
-        iStack.setHoverName(Component.literal(name));
-        CompoundTag compoundnbt = iStack.getOrCreateTagElement("display");
-        ListTag itemLoreLines = new ListTag();
-        for (String s : compassLore) {
-            StringTag itemLore = StringTag.valueOf(Component.Serializer.toJson(Component.literal(s)));
-            itemLoreLines.add(itemLore);
-        }
-        compoundnbt.put("Lore",itemLoreLines);
+        Utils.setItemName(iStack, "uninitialized structure compass");
+        Utils.setItemLore(iStack, new ArrayList<>(){{
+            add("oops, this compass is broken.");
+            add("right click with compass in hand to fix.");
+            add("hopefully it will point to the right place.");
+            add("no guarantees.");
+        }});
     }
 
     public void setReceivedItems(ArrayList<Long> items) {
@@ -255,11 +241,15 @@ public class ItemManager {
         //only locate structure if the player is in the same world as the one for the compass
         //otherwise just point it to 0,0 in said dimension.
         BlockPos structurePos = new BlockPos(0,0,0);
-
+        ArrayList<String> lore = new ArrayList<>(){{
+            add("Right click with compass in hand to");
+            add("cycle though unlocked compasses.");
+        }};
         var displayName = Component.literal(String.format("Structure Compass (%s)", Utils.getAPStructureName(structureTag)));
         if(player.getCommandSenderWorld().dimension().equals(world)) {
             try {
                 structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
+                lore.addFirst("Location X:" + structurePos.getX() + ", Y:" + structurePos.getZ());
             } catch (NullPointerException exception) {
                 player.sendSystemMessage(Component.literal("Could not find a nearby " + Utils.getAPStructureName(structureTag)));
             }
@@ -279,7 +269,7 @@ public class ItemManager {
         //update the nbt data with our new structure.
         nbt.put("structure", StringTag.valueOf(structureTag.location().toString()));
         Utils.addLodestoneTags(world,structurePos,nbt);
-        compass.setHoverName(displayName);
+        Utils.setNameAndLore(compass, displayName, lore);
     }
 
         // refresh all compasses in player inventory

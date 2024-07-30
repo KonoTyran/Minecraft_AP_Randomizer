@@ -12,10 +12,10 @@ import java.util.*;
 
 public class WorldData extends SavedData {
 
-    private String seedName = "";
-    private int dragonState = DRAGON_ASLEEP;
-    private boolean jailPlayers = false;
-    private Set<Long> locations = new HashSet<>();
+    private String seedName;
+    private int dragonState;
+    private boolean jailPlayers;
+    private Set<Long> locations;
     private int index = 0;
     private Map<String, Integer> playerIndex = new HashMap<>();
 
@@ -27,6 +27,11 @@ public class WorldData extends SavedData {
     public static WorldData initialize(DimensionDataStorage dataStorage) {
         return dataStorage.computeIfAbsent(WorldData::load, WorldData::create, "apdata");
     }
+
+    public static WorldData create() {
+        return new WorldData("", DRAGON_ASLEEP, true, new long[0], new HashMap<>(), 0);
+    }
+
 
     public void setSeedName(String seedName) {
         this.seedName = seedName;
@@ -99,11 +104,6 @@ public class WorldData extends SavedData {
         tag.put("playerIndex", tagIndex);
         return tag;
     }
-
-    public static WorldData create() {
-        return new WorldData("default", DRAGON_ASLEEP, false, new long[0], new HashMap<>(), 0);
-    }
-
 
     private WorldData(String seedName, int dragonState, boolean jailPlayers, long[] locations, Map<String, Integer> playerIndex, int itemIndex) {
         this.seedName = seedName;

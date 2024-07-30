@@ -152,8 +152,15 @@ dependencies {
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    implementation 'dev.koifysh:archipelago-client:0.1.17'
+    minecraftLibrary 'dev.koifysh:archipelago-client:0.1.18'
+
+    // Archipelago Client Java Library Dependencies
+    // for use when local testing new library updates.
+//    minecraftLibrary "org.java-websocket:Java-WebSocket:1.5.7"
+//    minecraftLibrary "org.apache.httpcomponents.client5:httpclient5:5.2.1"
+//    minecraftLibrary "org.apache.httpcomponents.core5:httpcore5:5.2.5"
 }
+
 
 mixin {
     // MixinGradle Settings

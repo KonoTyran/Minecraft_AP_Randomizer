@@ -6,7 +6,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 
 import java.util.*;
 
@@ -195,6 +194,16 @@ public class AdvancementManager {
 
     public void syncAdvancement(Advancement a) {
         if (hasAdvancement(a.getId().toString())) {
+            for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
+                AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
+                if (ap.isDone())
+                    continue;
+                for (String remainingCriterion : ap.getRemainingCriteria()) {
+                    serverPlayerEntity.getAdvancements().award(a, remainingCriterion);
+                }
+            }
+        }
+        if (APRandomizer.getRecipeManager().hasReceived(a.getId())) {
             for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
                 AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
                 if (ap.isDone())

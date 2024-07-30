@@ -29,6 +29,7 @@ public class ConnectCommand {
 
         dispatcher.register(
                 Commands.literal("connect") //base slash command is "connect"
+                        .executes(context -> connectToAPServer(context, null, -2, null))
                         //take the first argument as a string and name it "Address"
                         .then(Commands.argument("Address", StringArgumentType.string())
                                 .executes(context -> connectToAPServer(
@@ -60,6 +61,10 @@ public class ConnectCommand {
 
     private static int connectToAPServer(CommandContext<CommandSourceStack> commandContext, String hostname, int port, String password) {
         APMCData data = APRandomizer.getApmcData();
+        if(hostname == null) {
+            hostname = data.server;
+            port = data.port;
+        }
         if (data.state == APMCData.State.VALID) {
 
             APClient APClient = APRandomizer.getAP();

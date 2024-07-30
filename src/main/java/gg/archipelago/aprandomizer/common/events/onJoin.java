@@ -33,7 +33,7 @@ public class onJoin {
         else if (data.state == APMCData.State.INVALID_VERSION)
             Utils.sendMessageToAll("This Seed was generated using an incompatible randomizer version.");
         else if (data.state == APMCData.State.INVALID_SEED)
-            Utils.sendMessageToAll("Invalid Minecraft World please only start the Minecraft server via the correct APMC file");
+            Utils.sendMessageToAll("Failed to Connect to Archipelago Server: Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
 
         APRandomizer.getAdvancementManager().syncAllAdvancements();
         Set<Recipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();

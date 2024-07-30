@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import gg.archipelago.aprandomizer.APRandomizer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
 import org.apache.logging.log4j.LogManager;
@@ -26,6 +27,8 @@ public class RecipeManager {
     private Set<Recipe<?>> restricted = new HashSet<>();
     private Set<Recipe<?>> granted = new HashSet<>();
 
+    private Set<ResourceLocation> itemAdvancements = new HashSet<>();
+
 
     public RecipeManager() {
         recipeData = new RecipeData();
@@ -41,20 +44,13 @@ public class RecipeManager {
         granted = initialGranted;
     }
 
-    public boolean grantRecipeList(List<Long> recipes) {
+    public void grantRecipeList(List<Long> recipes) {
         for (var id : recipes) {
             if (!recipeData.hasID(id))
                 continue;
-            Set<Recipe<?>> toGrant = recipeData.getID(id).getGrantedRecipes();
-            granted.addAll(toGrant);
-            restricted.removeAll(toGrant);
+            grantRecipe(id);
+            return;
         }
-        for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-            player.resetRecipes(restricted);
-            player.awardRecipes(granted);
-
-        }
-        return true;
     }
 
     public void grantRecipe(long id) {
@@ -64,10 +60,21 @@ public class RecipeManager {
 
         granted.addAll(toGrant);
         restricted.removeAll(toGrant);
+        itemAdvancements.addAll(recipeData.getID(id).getUnlockedTrackingAdvanements());
 
         for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
             //player.resetRecipes(restricted);
             player.awardRecipes(granted);
+
+            var serverAdvancements = APRandomizer.getServer().getAdvancements();
+            recipeData.getID(id).getUnlockedTrackingAdvanements().forEach(
+                    location -> {
+                        var trackingAdvancement = serverAdvancements.getAdvancement(location);
+                        if (trackingAdvancement != null) {
+                            APRandomizer.getAdvancementManager().syncAdvancement(trackingAdvancement);
+                        }
+
+                    });
         }
     }
 
@@ -83,5 +90,9 @@ public class RecipeManager {
         restricted = initialRestricted;
         granted = initialGranted;
         recipeData.reset();
+    }
+
+    public boolean hasReceived(ResourceLocation id) {
+        return itemAdvancements.contains(id);
     }
 }

@@ -6,9 +6,7 @@ import dev.koifysh.archipelago.Print.APPrintPart;
 import dev.koifysh.archipelago.Print.APPrintType;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -28,9 +26,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.*;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Utils {
     // Directly reference a log4j logger.
@@ -195,5 +191,33 @@ public class Utils {
                 itementity.setTarget(player.getUUID());
             }
         }
+    }
+
+    public static void setNameAndLore(ItemStack itemstack, String itemName, Collection<String> itemLore) {
+        setItemName(itemstack, itemName);
+        setItemLore(itemstack, itemLore);
+    }
+
+    public static void setNameAndLore(ItemStack itemstack, Component itemName, Collection<String> itemLore) {
+        setItemName(itemstack, itemName);
+        setItemLore(itemstack, itemLore);
+    }
+
+    public static void setItemName(ItemStack itemstack, String itemName) {
+        itemstack.setHoverName(Component.literal(itemName));
+    }
+
+    public static void setItemName(ItemStack itemstack, Component itemName) {
+        itemstack.setHoverName(itemName);
+    }
+
+    public static void setItemLore(ItemStack iStack, Collection<String> itemLore) {
+        CompoundTag compoundnbt = iStack.getOrCreateTagElement("display");
+        ListTag itemLoreLines = new ListTag();
+        for (String line : itemLore) {
+            StringTag lineTag = StringTag.valueOf(Component.Serializer.toJson(Component.literal(line)));
+            itemLoreLines.add(lineTag);
+        }
+        compoundnbt.put("Lore",itemLoreLines);
     }
 }
