@@ -249,9 +249,13 @@ public class ItemManager {
         if(player.getCommandSenderWorld().dimension().equals(world)) {
             try {
                 structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
-                lore.addFirst("Location X:" + structurePos.getX() + ", Y:" + structurePos.getZ());
+                lore.addFirst("Location X: " + structurePos.getX() + ", Z: " + structurePos.getZ());
             } catch (NullPointerException exception) {
                 player.sendSystemMessage(Component.literal("Could not find a nearby " + Utils.getAPStructureName(structureTag)));
+                displayName = Component.literal(
+                        String.format("Structure Compass (%s) Not Found",
+                                Utils.getAPStructureName(structureTag))
+                ).withStyle(ChatFormatting.YELLOW);
             }
         }
         else {
