@@ -35,6 +35,10 @@ public class APStructureModifier implements StructureModifier {
 
     public static void loadTags() {
         if (!structures.isEmpty()) return;
+        if (APRandomizer.getApmcData().state == APMCData.State.MISSING) {
+            APRandomizer.LOGGER.error("APMCData is missing, cannot load tags.");
+            return;
+        }
         APRandomizer.LOGGER.info("Loading Tags and Biome info.");
 
         Registry<Biome> biomeRegistry = ServerLifecycleHooks.getCurrentServer().registryAccess().registryOrThrow(Registries.BIOME);
@@ -70,6 +74,10 @@ public class APStructureModifier implements StructureModifier {
     @Override
     public void modify(Holder<Structure> structure, Phase phase, ModifiableStructureInfo.StructureInfo.Builder builder) {
         if (!phase.equals(Phase.MODIFY) || structure.unwrapKey().isEmpty()) return;
+        if (APRandomizer.getApmcData().state == APMCData.State.MISSING) {
+            APRandomizer.LOGGER.error("APMCData is missing, cannot modify structures.");
+            return;
+        }
         if (structures.isEmpty()) loadTags();
         APRandomizer.LOGGER.debug("Altering biome list for " + structure.unwrapKey().get().location());
 

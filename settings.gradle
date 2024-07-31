@@ -9,6 +9,9 @@ pluginManagement {
             name = "ParchmentMC"
             url = 'https://maven.parchmentmc.org'
         }
+        maven {
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
     }
 }
 

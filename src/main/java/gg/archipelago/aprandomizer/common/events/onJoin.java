@@ -28,13 +28,18 @@ public class onJoin {
                 player.setGameMode(GameType.SURVIVAL);
 
         APMCData data = APRandomizer.getApmcData();
-        if (data.state == APMCData.State.MISSING)
+        if (data.state == APMCData.State.MISSING) {
             Utils.sendMessageToAll("No APMC file found, please only start the server via the APMC file.");
-        else if (data.state == APMCData.State.INVALID_VERSION)
+            return;
+        }
+        else if (data.state == APMCData.State.INVALID_VERSION) {
             Utils.sendMessageToAll("This Seed was generated using an incompatible randomizer version.");
-        else if (data.state == APMCData.State.INVALID_SEED)
-            Utils.sendMessageToAll("Failed to Connect to Archipelago Server: Wrong .apmc file found. please stop the server, use the correct .apmc file, delete the world folder, then relaunch the server.");
-
+            return;
+        }
+        else if (data.state == APMCData.State.INVALID_SEED) {
+            Utils.sendMessageToAll("Supplied APMC file does not match world loaded. something went very wrong here.");
+            return;
+        }
         APRandomizer.getAdvancementManager().syncAllAdvancements();
         Set<Recipe<?>> restricted = APRandomizer.getRecipeManager().getRestrictedRecipes();
         Set<Recipe<?>> granted = APRandomizer.getRecipeManager().getGrantedRecipes();

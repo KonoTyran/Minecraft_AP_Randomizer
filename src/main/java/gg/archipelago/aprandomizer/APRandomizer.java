@@ -64,7 +64,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.20.1 v0.1.1 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.20.1 v0.1.2 Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
@@ -186,7 +186,10 @@ public class APRandomizer {
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-
+        if (apmcData.state == APMCData.State.MISSING) {
+            LOGGER.error("NO APMC FILE FOUND. PLEASE PLACE A VALID APMC FILE IN THE APDATA FOLDER.");
+            return;
+        }
         // do something when the server starts
         advancementManager = new AdvancementManager();
         recipeManager = new RecipeManager();

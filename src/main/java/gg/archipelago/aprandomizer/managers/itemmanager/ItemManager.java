@@ -171,7 +171,7 @@ public class ItemManager {
         if (APRandomizer.getWorldData().getPlayerIndex(player.getStringUUID()) >= itemIndex) return;
 
         //update the player's index of received items for syncing later.
-        APRandomizer.getWorldData().updatePlayerIndex(player.getStringUUID(),receivedItems.size());
+        APRandomizer.getWorldData().updatePlayerIndex(player.getStringUUID(),itemIndex);
 
         if (itemStacks.containsKey(itemID)) {
             ItemStack itemstack = itemStacks.get(itemID).copy();
@@ -249,7 +249,7 @@ public class ItemManager {
         if(player.getCommandSenderWorld().dimension().equals(world)) {
             try {
                 structurePos = APRandomizer.getServer().getLevel(world).findNearestMapStructure(structureTag, player.blockPosition(), 75, false);
-                lore.addFirst("Location X: " + structurePos.getX() + ", Z: " + structurePos.getZ());
+                lore.add(0,"Location X: " + structurePos.getX() + ", Z: " + structurePos.getZ());
             } catch (NullPointerException exception) {
                 player.sendSystemMessage(Component.literal("Could not find a nearby " + Utils.getAPStructureName(structureTag)));
                 displayName = Component.literal(

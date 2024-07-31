@@ -1,7 +1,7 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'io.github.goooler.shadow' version '8.1.8'
 }
@@ -34,7 +34,7 @@ minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
     // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
-    reobf = false
+//    reobf = false
 
     // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
     // In most cases, it is not necessary to enable.
@@ -113,8 +113,6 @@ repositories {
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
-    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
-
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
     // flatDir {
@@ -149,7 +147,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+//    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
     minecraftLibrary 'dev.koifysh:archipelago-client:0.1.18'
@@ -207,6 +205,9 @@ tasks.named('jar', Jar).configure {
             'MixinConfigs'            : 'mixins.aprandomizer.json'
         ])
     }
+
+    // This is the preferred method to reobfuscate your jar file
+    finalizedBy 'reobfJar'
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
@@ -249,4 +250,8 @@ shadowJar {
         include(dependency("org.apache.httpcomponents.client5:httpclient5"))
         include(dependency("org.apache.httpcomponents.core5:httpcore5"))
     }
+}
+
+reobf {
+    shadowJar {} // Reobfuscate the shadowed JAR
 }

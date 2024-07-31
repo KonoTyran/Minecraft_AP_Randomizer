@@ -4,6 +4,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import gg.archipelago.aprandomizer.APRandomizer;
+import gg.archipelago.aprandomizer.common.Utils.TitleQueue;
+import gg.archipelago.aprandomizer.common.Utils.Utils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -38,9 +40,19 @@ public class APCommand {
                                 .executes(APCommand::setMC35)
                         )
                 )
+                //third sub-command to stop titlequeue
+                .then(Commands.literal("clearTitleQueue")
+                        .executes(APCommand::clearTitleQueue)
+                )
 
         );
 
+    }
+
+    private static int clearTitleQueue(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        Utils.sendMessageToAll("Title Queue Cleared");
+        TitleQueue.clearTitleQueue();
+        return 1;
     }
 
     private static int queryDeathLink(CommandContext<CommandSourceStack> source) {
