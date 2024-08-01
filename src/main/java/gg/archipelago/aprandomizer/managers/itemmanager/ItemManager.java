@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 public class ItemManager {
@@ -36,34 +37,17 @@ public class ItemManager {
     public static final long DRAGON_EGG_SHARD = 45043L;
 
     private final HashMap<Long, ItemStack> itemStacks = new HashMap<>() {{
-
         put(45015L, new ItemStack(Items.NETHERITE_SCRAP, 8));
         put(45016L, new ItemStack(Items.EMERALD, 8));
         put(45017L, new ItemStack(Items.EMERALD, 4));
 
-        ItemStack channelingBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(channelingBook,new EnchantmentInstance(Enchantments.CHANNELING, 1));
-        put(45018L, channelingBook);
+        put(45018L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.CHANNELING, 1)));
+        put(45019L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.SILK_TOUCH, 1)));
+        put(45020L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.SHARPNESS, 3)));
+        put(45021L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.PIERCING, 4)));
+        put(45022L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.MOB_LOOTING, 3)));
+        put(45023L, EnchantedBookItem.createForEnchantment(new EnchantmentInstance(Enchantments.INFINITY_ARROWS, 1)));
 
-        ItemStack silkTouchBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(silkTouchBook,new EnchantmentInstance(Enchantments.SILK_TOUCH, 1));
-        put(45019L, silkTouchBook);
-
-        ItemStack sharpnessBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(sharpnessBook,new EnchantmentInstance(Enchantments.SHARPNESS, 3));
-        put(45020L, sharpnessBook);
-
-        ItemStack piercingBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(piercingBook,new EnchantmentInstance(Enchantments.PIERCING, 4));
-        put(45021L, piercingBook);
-
-        ItemStack lootingBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(lootingBook,new EnchantmentInstance(Enchantments.MOB_LOOTING, 3));
-        put(45022L, lootingBook);
-
-        ItemStack infinityBook = new ItemStack(Items.ENCHANTED_BOOK);
-        EnchantedBookItem.addEnchantment(infinityBook,new EnchantmentInstance(Enchantments.INFINITY_ARROWS, 1));
-        put(45023L, infinityBook);
 
         put(45024L, new ItemStack(Items.DIAMOND_ORE, 4));
         put(45025L, new ItemStack(Items.IRON_ORE, 16));
@@ -73,7 +57,9 @@ public class ItemManager {
         put(45031L, new ItemStack(Items.COOKED_PORKCHOP, 16));
         put(45032L, new ItemStack(Items.GOLD_ORE, 8));
         put(45033L, new ItemStack(Items.ROTTEN_FLESH, 8));
-        put(45034L, new ItemStack(Items.ARROW, 1).setHoverName(Component.literal("The Arrow")));
+        var arrow = new ItemStack(Items.ARROW, 1);
+        Utils.setItemName(arrow, "The Arrow");
+        put(45034L, arrow);
         put(45035L, new ItemStack(Items.ARROW, 32));
         put(45036L, new ItemStack(Items.SADDLE, 1));
 

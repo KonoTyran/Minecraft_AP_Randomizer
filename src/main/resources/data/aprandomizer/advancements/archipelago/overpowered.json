@@ -1,26 +1,23 @@
 {
-  "parent": "aprandomizer:archipelago/bake_bread",
   "display": {
     "icon": {
       "item": "minecraft:enchanted_golden_apple"
     },
-    "title": {
-      "text": "Overpowered"
-    },
-    "description": {
-      "text": "Eat a Notch apple"
-    },
+    "title": "Overpowered",
+    "description": "Eat an enchanted golden apple.",
     "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": false,
-    "hidden": false
+    "show_toast": true,
+    "announce_to_chat": true
   },
+  "parent": "aprandomizer:archipelago/bake_bread",
   "criteria": {
     "consumed_item": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
-          "items": ["minecraft:enchanted_golden_apple"]
+          "items": [
+            "minecraft:enchanted_golden_apple"
+          ]
         }
       }
     }

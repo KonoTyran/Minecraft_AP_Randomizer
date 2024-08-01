@@ -4,34 +4,27 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class WorldData extends SavedData {
 
-    private String seedName;
-    private int dragonState;
-    private boolean jailPlayers;
-    private Set<Long> locations;
+
+    private String seedName = "";
+    private int dragonState = ASLEEP;
+    private int witherState = ASLEEP;
+    private boolean jailPlayers = true;
+    private Set<Long> locations = new HashSet<>();
     private int index = 0;
     private Map<String, Integer> playerIndex = new HashMap<>();
 
-    public static final int DRAGON_KILLED = 30;
-    public static final int DRAGON_SPAWNED = 20;
-    public static final int DRAGON_WAITING = 15;
-    public static final int DRAGON_ASLEEP = 10;
-
-    public static WorldData initialize(DimensionDataStorage dataStorage) {
-        return dataStorage.computeIfAbsent(WorldData::load, WorldData::create, "apdata");
-    }
-
-    public static WorldData create() {
-        return new WorldData("", DRAGON_ASLEEP, true, new long[0], new HashMap<>(), 0);
-    }
-
+    public static final int KILLED = 30;
+    public static final int SPAWNED = 20;
+    public static final int WAITING = 15;
+    public static final int ASLEEP = 10;
 
     public void setSeedName(String seedName) {
         this.seedName = seedName;
@@ -93,16 +86,23 @@ public class WorldData extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
-        tag.putString("seedName", seedName);
-        tag.putInt("dragonState", dragonState);
-        tag.putBoolean("jailPlayers", jailPlayers);
-        tag.putLongArray("locations",locations.stream().toList());
-        tag.putLong("index", index);
+    public @NotNull CompoundTag save(CompoundTag compoundTag) {
+        compoundTag.putString("seedName", seedName);
+        compoundTag.putInt("dragonState", dragonState);
+        compoundTag.putBoolean("jailPlayers", jailPlayers);
+        compoundTag.putLongArray("locations",locations.stream().toList());
+        compoundTag.putLong("index", index);
         CompoundTag tagIndex = new CompoundTag();
         this.playerIndex.forEach(tagIndex::putLong);
-        tag.put("playerIndex", tagIndex);
-        return tag;
+        compoundTag.put("playerIndex", tagIndex);
+        return compoundTag;
+    }
+
+    public static SavedData.Factory<WorldData> factory() {
+        return new SavedData.Factory<>(WorldData::new, WorldData::load, null);
+    }
+
+    public WorldData() {
     }
 
     private WorldData(String seedName, int dragonState, boolean jailPlayers, long[] locations, Map<String, Integer> playerIndex, int itemIndex) {
@@ -126,5 +126,14 @@ public class WorldData extends SavedData {
                 indexMap,
                 tag.getInt("index")
                 );
+    }
+
+    public int getWitherState() {
+        return witherState;
+    }
+
+    public void setWitherState(int waiting) {
+        this.witherState = waiting;
+        this.setDirty();
     }
 }

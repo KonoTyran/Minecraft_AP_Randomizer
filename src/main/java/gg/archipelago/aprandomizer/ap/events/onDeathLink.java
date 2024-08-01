@@ -2,9 +2,9 @@ package gg.archipelago.aprandomizer.ap.events;
 
 import dev.koifysh.archipelago.events.DeathLinkEvent;
 import gg.archipelago.aprandomizer.APRandomizer;
-import gg.archipelago.aprandomizer.common.DeathLinkDamage;
 import gg.archipelago.aprandomizer.common.Utils.Utils;
 import dev.koifysh.archipelago.events.ArchipelagoEventListener;
+import gg.archipelago.aprandomizer.common.events.onDeath;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.GameRules;
 
@@ -21,10 +21,12 @@ public class onDeathLink {
             else
                 Utils.sendMessageToAll("This Death brought to you by "+ event.source);
         }
-        showDeathMessages.set(false,APRandomizer.getServer());
+        showDeathMessages.set(false, APRandomizer.getServer());
+        onDeath.sendDeathLink = false;
         for (ServerPlayer player : APRandomizer.getServer().getPlayerList().getPlayers()) {
-            player.hurt(new DeathLinkDamage() , Float.MAX_VALUE);
+            player.kill();
         }
+        onDeath.sendDeathLink = true;
         showDeathMessages.set(showDeaths,APRandomizer.getServer());
 
     }

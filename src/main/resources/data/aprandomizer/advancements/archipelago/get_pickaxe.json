@@ -1,29 +1,21 @@
 {
-  "parent": "aprandomizer:archipelago/get_wood",
   "display": {
     "icon": {
       "item": "minecraft:wooden_pickaxe"
     },
-    "title": {
-      "text": "Time to Mine!"
-    },
-    "description": {
-      "text": "Use planks and sticks to make a pickaxe"
-    },
+    "title": "Time to Mine!",
+    "description": "Use planks and sticks to make a pickaxe",
     "frame": "task",
     "show_toast": true,
-    "announce_to_chat": false,
+    "announce_to_chat": true,
     "hidden": false
   },
+  "parent": "aprandomizer:archipelago/get_wood",
   "criteria": {
     "get_pick": {
-      "trigger": "minecraft:inventory_changed",
+      "trigger": "minecraft:recipe_crafted",
       "conditions": {
-        "items": [
-          {
-            "items": ["minecraft:wooden_pickaxe"]
-          }
-        ]
+        "recipe_id": "minecraft:wooden_pickaxe"
       }
     }
   },

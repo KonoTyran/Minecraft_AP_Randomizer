@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import gg.archipelago.aprandomizer.structures.BeeGroveStructure;
 import gg.archipelago.aprandomizer.structures.NetherEndCityStructure;
 import gg.archipelago.aprandomizer.structures.NetherVillageStructure;

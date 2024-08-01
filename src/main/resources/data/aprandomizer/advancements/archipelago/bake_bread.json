@@ -1,29 +1,20 @@
 {
-  "parent": "aprandomizer:archipelago/root",
   "display": {
     "icon": {
       "item": "minecraft:bread"
     },
-    "title": {
-      "text": "Bake Bread"
-    },
-    "description": {
-      "text": "Turn wheat into bread"
-    },
+    "title": "Bake Bread",
+    "description": "Turn wheat into bread",
     "frame": "task",
     "show_toast": true,
-    "announce_to_chat": false,
-    "hidden": false
+    "announce_to_chat": true
   },
+  "parent": "aprandomizer:archipelago/root",
   "criteria": {
     "get_bread": {
-      "trigger": "minecraft:inventory_changed",
+      "trigger": "minecraft:recipe_crafted",
       "conditions": {
-        "items": [
-          {
-            "items": ["minecraft:bread"]
-          }
-        ]
+        "recipe_id": "minecraft:bread"
       }
     }
   },

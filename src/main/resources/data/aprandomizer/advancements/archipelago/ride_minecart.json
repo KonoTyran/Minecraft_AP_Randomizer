@@ -7,8 +7,7 @@
     "description": "Reach 1km by minecart in your statistics.",
     "frame": "goal",
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
+    "announce_to_chat": true
   },
   "parent": "aprandomizer:archipelago/root",
   "criteria": {

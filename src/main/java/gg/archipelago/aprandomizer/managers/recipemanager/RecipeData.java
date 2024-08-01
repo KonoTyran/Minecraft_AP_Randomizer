@@ -1,6 +1,7 @@
 package gg.archipelago.aprandomizer.managers.recipemanager;
 
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -172,11 +173,11 @@ public class RecipeData {
         );
     }};
 
-    protected boolean injectIRecipe(Recipe<?> iRecipe) {
+    protected boolean injectIRecipe(RecipeHolder<?> iRecipe) {
         for (var entry : recipes.entrySet()) {
             for (String namespaceID : entry.getValue().namespaceIDs) {
-                LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(), namespaceID);
-                if (iRecipe.getId().toString().equals(namespaceID)) {
+                LOGGER.trace("checking {} vs {},", iRecipe.id().toString(), namespaceID);
+                if (iRecipe.id().toString().equals(namespaceID)) {
                     entry.getValue().addIRecipe(iRecipe);
                     return true;
                 }
@@ -186,8 +187,8 @@ public class RecipeData {
             for (int i = 0; entry.getValue().namespaceIDs.size() > i; ++i) {
                 String[] namespaceIDs = entry.getValue().namespaceIDs.get(i);
                 for (String s : namespaceIDs) {
-                    LOGGER.trace("checking {} vs {},", iRecipe.getId().toString(), s);
-                    if (iRecipe.getId().toString().equals(s)) {
+                    LOGGER.trace("checking {} vs {},", iRecipe.id().toString(), s);
+                    if (iRecipe.id().toString().equals(s)) {
                         entry.getValue().addIRecipe(iRecipe, i);
                         return true;
                     }

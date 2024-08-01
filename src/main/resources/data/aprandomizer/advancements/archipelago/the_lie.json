@@ -4,37 +4,17 @@
       "item": "minecraft:cake"
     },
     "title": "The Lie",
-    "description": "Bake cake using wheat, sugar, milk, and eggs! And then Enjoy!",
+    "description": "Bake cake using wheat, sugar, milk, and eggs!",
     "frame": "challenge",
     "show_toast": true,
-    "announce_to_chat": false,
-    "hidden": false
+    "announce_to_chat": true
   },
   "parent": "aprandomizer:archipelago/bake_bread",
   "criteria": {
-    "eat_cake": {
-      "trigger": "minecraft:item_used_on_block",
+    "bake_cake": {
+      "trigger": "minecraft:recipe_crafted",
       "conditions": {
-        "location": [
-          {
-            "condition": "minecraft:location_check",
-            "predicate": {
-              "block": {
-                "blocks": [
-                  "minecraft:cake"
-                ]
-              }
-            }
-          },
-          {
-            "condition": "minecraft:match_tool",
-            "predicate": {
-              "items": [
-                "minecraft:air"
-              ]
-            }
-          }
-        ]
+        "recipe_id": "minecraft:cake"
       }
     }
   }

@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.managers.recipemanager;
 import gg.archipelago.aprandomizer.APRandomizer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class GroupRecipe implements APRecipe {
     int id;
     ResourceLocation trackingAdvancement;
     String[] namespaceIDs;
-    Set<Recipe<?>> iRecipes = new HashSet<>();
+    Set<RecipeHolder<?>> iRecipes = new HashSet<>();
 
     GroupRecipe(int id, String trackingAdvancement, String[] namespaceIDs) {
         this.id = id;
@@ -19,21 +20,21 @@ public class GroupRecipe implements APRecipe {
         this.namespaceIDs = namespaceIDs;
     }
 
-    protected void addIRecipe(Recipe<?> iRecipe) {
+    protected void addIRecipe(RecipeHolder<?> iRecipe) {
         this.iRecipes.add(iRecipe);
     }
 
-    public Set<Recipe<?>> getIRecipes() {
+    public Set<RecipeHolder<?>> getIRecipes() {
         return iRecipes;
     }
 
     @Override
-    public Set<Recipe<?>> getGrantedRecipes() {
+    public Set<RecipeHolder<?>> getGrantedRecipes() {
         return iRecipes;
     }
 
     @Override
-    public Set<ResourceLocation> getUnlockedTrackingAdvanements() {
+    public Set<ResourceLocation> getUnlockedTrackingAdvancements() {
         return Set.of(trackingAdvancement);
     }
 

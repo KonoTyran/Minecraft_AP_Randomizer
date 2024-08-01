@@ -58,7 +58,6 @@ public class APRandomizer {
     static private final Set<Integer> validVersions = new HashSet<>() {{
         this.add(9); //mc 1.19
     }};
-    static private boolean jailPlayers = true;
     static private BlockPos jailCenter = BlockPos.ZERO;
     static private WorldData worldData;
     static private double lastDeathTimestamp;
@@ -139,11 +138,10 @@ public class APRandomizer {
 
 
     public static boolean isJailPlayers() {
-        return jailPlayers;
+        return worldData.getJailPlayers();
     }
 
     public static void setJailPlayers(boolean jailPlayers) {
-        APRandomizer.jailPlayers = jailPlayers;
         worldData.setJailPlayers(jailPlayers);
     }
 
@@ -203,8 +201,7 @@ public class APRandomizer {
         server.setDifficulty(Difficulty.NORMAL, true);
 
         //fetch our custom world save data we attach to the worlds.
-        worldData = WorldData.initialize(server.overworld().getDataStorage());
-        jailPlayers = worldData.getJailPlayers();
+        worldData = server.overworld().getDataStorage().computeIfAbsent(WorldData.factory(),MODID);
         advancementManager.setCheckedAdvancements(worldData.getLocations());
 
 
@@ -230,7 +227,7 @@ public class APRandomizer {
         }
 
 
-        if(jailPlayers) {
+        if(worldData.getJailPlayers()) {
             ServerLevel overworld = server.getLevel(Level.OVERWORLD);
             BlockPos spawn = overworld.getSharedSpawnPos();
             // alter the spawn box position, so it doesn't interfere with spawning

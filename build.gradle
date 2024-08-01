@@ -1,7 +1,7 @@
 plugins {
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'io.github.goooler.shadow' version '8.1.8'
 }
@@ -57,7 +57,7 @@ minecraft {
     // However, it must be at "META-INF/accesstransformer.cfg" in the final mod jar to be loaded by Forge.
     // This default location is a best practice to automatically put the file in the right place in the final jar.
     // See https://docs.minecraftforge.net/en/latest/advanced/accesstransformers/ for more information.
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -147,10 +147,10 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     // Hack fix for now, force jopt-simple to be exactly 5.0.4 because Mojang ships that version, but some transitive dependencies request 6.0+
-//    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 
     // Archipelago Client Java Library
-    minecraftLibrary 'dev.koifysh:archipelago-client:0.1.18'
+    minecraftLibrary 'dev.koifysh:archipelago-client:0.1.19'
 
     // Archipelago Client Java Library Dependencies
     // for use when local testing new library updates.
@@ -243,7 +243,6 @@ shadowJar {
     archiveBaseName.set(mod_id)
     archiveClassifier.set('shadow')
     archiveVersion.set(mod_version)
-    configurations = [project.configurations.compileClasspath]
     dependencies {
         include(dependency("dev.koifysh:archipelago-client"))
         include(dependency("org.java-websocket:Java-WebSocket"))

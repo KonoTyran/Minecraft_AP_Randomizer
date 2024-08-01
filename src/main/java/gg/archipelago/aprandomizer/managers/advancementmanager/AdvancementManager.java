@@ -3,6 +3,7 @@ package gg.archipelago.aprandomizer.managers.advancementmanager;
 import gg.archipelago.aprandomizer.APRandomizer;
 import gg.archipelago.aprandomizer.data.WorldData;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -192,31 +193,31 @@ public class AdvancementManager {
         }
     }
 
-    public void syncAdvancement(Advancement a) {
-        if (hasAdvancement(a.getId().toString())) {
+    public void syncAdvancement(AdvancementHolder advancementHolder) {
+        if (hasAdvancement(advancementHolder.id().toString())) {
             for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
+                AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(advancementHolder);
                 if (ap.isDone())
                     continue;
                 for (String remainingCriterion : ap.getRemainingCriteria()) {
-                    serverPlayerEntity.getAdvancements().award(a, remainingCriterion);
+                    serverPlayerEntity.getAdvancements().award(advancementHolder, remainingCriterion);
                 }
             }
         }
-        if (APRandomizer.getRecipeManager().hasReceived(a.getId())) {
+        if (APRandomizer.getRecipeManager().hasReceived(advancementHolder.id())) {
             for (ServerPlayer serverPlayerEntity : APRandomizer.getServer().getPlayerList().getPlayers()) {
-                AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(a);
+                AdvancementProgress ap = serverPlayerEntity.getAdvancements().getOrStartProgress(advancementHolder);
                 if (ap.isDone())
                     continue;
                 for (String remainingCriterion : ap.getRemainingCriteria()) {
-                    serverPlayerEntity.getAdvancements().award(a, remainingCriterion);
+                    serverPlayerEntity.getAdvancements().award(advancementHolder, remainingCriterion);
                 }
             }
         }
     }
 
     public void syncAllAdvancements() {
-        for (Advancement a : getServer().getAdvancements().getAllAdvancements()) {
+        for (var a : getServer().getAdvancements().getAllAdvancements()) {
             syncAdvancement(a);
         }
     }
