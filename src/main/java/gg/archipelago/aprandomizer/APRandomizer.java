@@ -63,7 +63,7 @@ public class APRandomizer {
     static private double lastDeathTimestamp;
 
     public APRandomizer() {
-        LOGGER.info("Minecraft Archipelago 1.20.1 v0.1.2 Randomizer initializing.");
+        LOGGER.info("Minecraft Archipelago 1.20.4 v0.1.3 Randomizer initializing.");
 
         // Register ourselves for server and other game events we are interested in
         IEventBus forgeBus = MinecraftForge.EVENT_BUS;
