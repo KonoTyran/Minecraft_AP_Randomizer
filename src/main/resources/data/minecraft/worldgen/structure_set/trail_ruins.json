@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "minecraft:trail_ruins",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 83469867,
+    "spacing": 10,
+    "separation": 2,
+    "type": "minecraft:random_spread"
+  }
+}
