@@ -52,6 +52,8 @@ It is highly recommended to ues the Archipelago installer to handle the installa
 support will not be given for those wishing to manually install forge. For those of you who know how, and wish to do so,
 the following links are the versions of the software we use.
 
+You will need to place your `.apmc` file in a folder called `APData` in the forge server directory.
+
 ### Manual install Software links
 
 - [Minecraft Forge Download Page](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.19.html)
