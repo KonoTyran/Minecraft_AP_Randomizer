@@ -1,3 +1,5 @@
+I no longer plan on working on this, anyone is free to use any part of the code to continue maintaing this if they so wish.
+
 # Minecraft Randomizer Setup Guide
 
 ## Required Software
